@@ -6,15 +6,24 @@ Built with semantic HTML5, modern Tailwind CSS architecture, Chart.js analytics,
 
 ---
 
-## 1. Quick Start & Setup
+## 1. Quick Start & Setup (Full-Stack Framework)
 
-### Running Locally
-- **Option A (Instant Direct Access):** Double-click [`index.html`](file:///f:/Al-Ameen%20IT/web/Personal%20Traker/index.html) to open directly in any modern web browser (Google Chrome, Microsoft Edge, Mozilla Firefox, Apple Safari).
-- **Option B (Local Web Server):**
-  ```bash
-  python -m http.server 3000
-  ```
-  Then open in your browser: **[http://localhost:3000](http://localhost:3000)**.
+### Running the Full-Stack Server (Node.js & Express REST API)
+NEXUS is now powered by a production-ready **Node.js + Express REST API Backend** paired with an offline-resilient Frontend:
+```bash
+# Install dependencies
+npm install
+
+# Start Full-Stack Server
+npm start
+
+# Run Automated Test Suite
+npm test
+```
+Then open in your browser: **[http://localhost:3000](http://localhost:3000)** (API health check at `http://localhost:3000/api/health`).
+
+### Running Standalone (Offline / Static)
+- **Direct Browser Access:** Double-click [`index.html`](file:///f:/Al-Ameen%20IT/web/Personal%20Traker/index.html) to run 100% offline with zero server required.
 
 ---
 

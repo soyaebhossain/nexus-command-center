@@ -2,6 +2,10 @@
 .DS_Store
 Thumbs.db
 *.tmp
-*.log
-.vscode/
-.idea/
+# Node Modules & Package Locks
+node_modules/
+npm-debug.log*
+
+# Server Data Cache
+server/data/db.json
+

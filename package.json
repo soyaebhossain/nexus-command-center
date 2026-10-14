@@ -1,0 +1,30 @@
+{
+  "name": "nexus-command-center",
+  "version": "2.5.0",
+  "description": "NEXUS Command Center & Universal Personal Life & Work OS",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "test": "node server/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soyaebhossain/nexus-command-center.git"
+  },
+  "keywords": [
+    "life-os",
+    "productivity",
+    "finance-tracker",
+    "habit-tracker",
+    "executive-command-center",
+    "express",
+    "pwa"
+  ],
+  "author": "Md. Soyaeb Hossain",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
