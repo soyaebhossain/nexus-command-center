@@ -5,6 +5,7 @@ import {
   Sun, CheckSquare, Wallet, Activity, Target, 
   Calendar, GraduationCap, Mail 
 } from 'lucide-react';
+import { ROUTE_CONFIGS, getRoutePath } from '../../utils/routes';
 
 interface NavItem {
   id: ModuleId;
@@ -24,7 +25,6 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'learning', labelEn: 'Learning & Skills', labelBn: 'শিক্ষা ও ক্যারিয়ার', icon: <GraduationCap className="w-3.5 h-3.5" /> }
 ];
 
-
 export const NavigationBar: React.FC = () => {
   const { activeModule, setActiveModule, enabledModules, isFocusMode, lang } = useApp();
 
@@ -37,14 +37,19 @@ export const NavigationBar: React.FC = () => {
   return (
     <nav className="px-4 sm:px-8 py-1 bg-[#090b0f]/80">
       <div className="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
-
         {items.map(item => {
           const isActive = activeModule === item.id;
+          const routePath = getRoutePath(item.id);
+
           return (
-            <button
+            <a
               key={item.id}
-              onClick={() => setActiveModule(item.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shrink-0 ${
+              href={routePath}
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveModule(item.id);
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shrink-0 select-none ${
                 isActive
                   ? 'bg-lime-400/15 text-lime-300 border border-lime-400/30 shadow-sm'
                   : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900 border border-transparent'
@@ -52,10 +57,11 @@ export const NavigationBar: React.FC = () => {
             >
               {item.icon}
               <span>{lang === 'bn' ? item.labelBn : item.labelEn}</span>
-            </button>
+            </a>
           );
         })}
       </div>
     </nav>
   );
 };
+

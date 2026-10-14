@@ -7,6 +7,7 @@ import {
 import { getStoragePrefix, loadLocalData, saveLocalData, syncWithBackend } from '../utils/storage';
 import { playChime, playCelebrationArpeggio } from '../utils/audio';
 import { sendLocalNotification } from '../utils/notifications';
+import { getModuleFromUrl, getRoutePath, ROUTE_CONFIGS } from '../utils/routes';
 
 interface AppContextType {
   accounts: Account[];
@@ -157,7 +158,37 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [currency, setCurrencyState] = useState<CurrencySymbol>(() => (localStorage.getItem('nexus_currency') as CurrencySymbol) || '৳');
   const [lang, setLangState] = useState<LanguageCode>(() => (localStorage.getItem('nexus_lang') as LanguageCode) || 'bn');
   const [theme, setThemeState] = useState<'dark' | 'light'>('dark');
-  const [activeModule, setActiveModule] = useState<ModuleId>('dashboard');
+  const [activeModule, setActiveModuleState] = useState<ModuleId>(() => {
+    return getModuleFromUrl(window.location.pathname, window.location.hash);
+  });
+
+  const setActiveModule = (m: ModuleId) => {
+    setActiveModuleState(m);
+    const targetPath = getRoutePath(m);
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState({ module: m }, '', targetPath);
+    }
+    const config = ROUTE_CONFIGS[m];
+    if (config) {
+      document.title = `${lang === 'bn' ? config.titleBn : config.titleEn} • NEXUS Life OS`;
+    }
+  };
+
+  // Browser Back/Forward History Popstate Listener
+  useEffect(() => {
+    const handlePopState = () => {
+      const detected = getModuleFromUrl(window.location.pathname, window.location.hash);
+      setActiveModuleState(detected);
+      const config = ROUTE_CONFIGS[detected];
+      if (config) {
+        document.title = `${lang === 'bn' ? config.titleBn : config.titleEn} • NEXUS Life OS`;
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [lang]);
+
   const [enabledModules, setEnabledModules] = useState<ModuleId[]>(() => {
     const loaded = loadLocalData<ModuleId[]>('nexus_enabled_modules', ALL_MODULES);
     if (Array.isArray(loaded) && !loaded.includes('triage')) {

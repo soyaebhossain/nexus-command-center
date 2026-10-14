@@ -2,20 +2,21 @@ import React, { useEffect } from 'react';
 import { useApp } from './context/AppContext';
 import { Header } from './components/common/Header';
 import { NavigationBar } from './components/common/NavigationBar';
-import { DashboardModule } from './components/modules/DashboardModule';
-import { TasksModule } from './components/modules/TasksModule';
-import { FinanceModule } from './components/modules/FinanceModule';
-import { HealthModule } from './components/modules/HealthModule';
-import { PlannerModule } from './components/modules/PlannerModule';
-import { CalendarModule } from './components/modules/CalendarModule';
-import { LearningModule } from './components/modules/LearningModule';
-import { EmailTriageModule } from './components/modules/EmailTriageModule';
+import { 
+  DailyFlowPage, 
+  TasksPage, 
+  DailyEmailPage, 
+  FinancePage, 
+  HealthPage, 
+  LifePlannerPage, 
+  CalendarPage, 
+  LearningPage 
+} from './pages';
 import { AccountModal } from './components/common/AccountModal';
 import { SettingsModal } from './components/common/SettingsModal';
 import { SpotlightModal } from './components/common/SpotlightModal';
 import { ProfileWizardModal } from './components/common/ProfileWizardModal';
 import { Sparkles } from 'lucide-react';
-
 
 export const App: React.FC = () => {
   const { 
@@ -55,27 +56,26 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [openSearchModal, closeAccountModal, closeSettingsModal, closeSearchModal, closeProfileWizard]);
 
-
-  const renderModule = () => {
+  const renderPage = () => {
     switch (activeModule) {
       case 'dashboard':
-        return <DashboardModule />;
+        return <DailyFlowPage />;
       case 'tasks':
-        return <TasksModule />;
+        return <TasksPage />;
       case 'triage':
-        return <EmailTriageModule />;
+        return <DailyEmailPage />;
       case 'finance':
-        return <FinanceModule />;
+        return <FinancePage />;
       case 'health':
-        return <HealthModule />;
+        return <HealthPage />;
       case 'planner':
-        return <PlannerModule />;
+        return <LifePlannerPage />;
       case 'calendar':
-        return <CalendarModule />;
+        return <CalendarPage />;
       case 'learning':
-        return <LearningModule />;
+        return <LearningPage />;
       default:
-        return <DashboardModule />;
+        return <DailyFlowPage />;
     }
   };
 
@@ -87,10 +87,9 @@ export const App: React.FC = () => {
         <NavigationBar />
       </header>
 
-
-      {/* Active Module Container */}
+      {/* Active Dedicated Page Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-6">
-        {renderModule()}
+        {renderPage()}
       </main>
 
       {/* Global Modals */}
