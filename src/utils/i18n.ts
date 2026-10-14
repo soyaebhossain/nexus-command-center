@@ -1,0 +1,303 @@
+import { LanguageCode } from '../types';
+
+export const translations = {
+  en: {
+    // Header & Common
+    appName: 'NEXUS',
+    appSub: 'LIFE OS',
+    searchPlaceholder: 'Quick Search or Jump...',
+    ctrlK: 'Ctrl K',
+    time: 'Time',
+    
+    // Account Dropdown
+    workspace: 'Workspace',
+    switchProfile: 'Switch / +Add',
+    language: 'Language',
+    currency: 'Currency',
+    appearance: 'Appearance',
+    darkMode: 'Dark Mode',
+    lightMode: 'Light Mode',
+    saasPlan: 'SaaS Plan',
+    proTier: 'Pro Tier ($9)',
+    workspaceSettings: 'Workspace Preferences & Modules',
+    downloadBackup: 'Download Full Backup (.json)',
+    backupToast: 'Full offline backup downloaded!',
+    proToast: 'Pro Plan: Lifetime Workspace Active',
+
+    // Navigation
+    navDailyFlow: 'Daily Flow',
+    navTasks: 'Tasks & Focus',
+    navFinance: 'Finance & Budget',
+    navHealth: 'Health & Meals',
+    navPlanner: 'Life Planner',
+    navCalendar: 'Calendar',
+    navLearning: 'Learning & Skills',
+
+    // Dashboard
+    commandCenter: 'COMMAND CENTER',
+    streak: 'Days Streak',
+    welcomeBack: 'Welcome back',
+    dashboardSub: 'Unified life cockpit: tracking clarity, finances, and circadian vitality.',
+    focusModeOn: '⚡ Focus Mode: Active',
+    focusModeOff: '⚡ Focus Mode',
+    tasksProgress: 'Tasks & Progress',
+    pendingDeadlines: 'pending tasks',
+    netCashBalance: 'Net Cash Balance',
+    totalOutflow: 'total outflow',
+    consistency: 'Circadian Cadence',
+    streakSubtitle: 'Consecutive days active',
+    waterVitality: 'Hydration Target',
+    waterGoal: 'Optimal target: 2,500ml',
+    ruleOf3Title: '3 Absolute Daily Priorities (Rule of 3)',
+    ruleOf3Sub: 'Based on high-performance research: complete these 3 non-negotiables before anything else.',
+    smartCaptureTitle: 'Smart Natural Language Capture',
+    smartCaptureSub: 'Type naturally in English or Bengali. AI parser detects expense, task, priority, and amount.',
+    capturePlaceholder: "e.g., 'spent 500 for lunch' or 'review report tomorrow 10am'",
+    addSmartItem: 'Add Item',
+    detectedExpense: 'Expense Detected',
+    detectedTask: 'Task Detected',
+    eveningTitle: 'Evening Reflection & Gratitude',
+    eveningSub: 'Journal daily wins before sleeping to boost dopamine and reinforce cognitive habits.',
+    eveningPlaceholder: 'What was your single biggest win today? What are you grateful for?',
+    howEnergy: 'How was your energy today?',
+    saveReflection: 'Save Reflection',
+    reflectionSaved: 'Evening reflection saved!',
+
+    // Tasks Module
+    tasksTitle: 'Active Tasks & Focus Engine',
+    tasksSub: 'Eisenhower matrix prioritization with built-in Pomodoro deep work timer.',
+    pomodoroTimer: 'Pomodoro Focus Timer',
+    startFocus: 'Start Focus (25m)',
+    pauseFocus: 'Pause',
+    resetFocus: 'Reset',
+    shortBreak: 'Short Break (5m)',
+    longBreak: 'Long Break (15m)',
+    addTaskPlaceholder: 'Enter a task title...',
+    priorityHigh: 'High (P1)',
+    priorityMedium: 'Medium (P2)',
+    priorityLow: 'Low (P3)',
+    addTaskBtn: 'Add Task',
+    filterAll: 'All',
+    filterPending: 'Pending',
+    filterCompleted: 'Completed',
+    noTasks: 'No tasks found. Add a task above to begin your focus block!',
+
+    // Finance Module
+    financeTitle: 'Finance & Budget Engine',
+    financeSub: 'Cashflow tracking, monthly budget threshold, and offline export.',
+    monthlyBudgetCap: 'Monthly Budget Cap',
+    budgetUsed: 'used',
+    budgetRemaining: 'remaining',
+    budgetExceeded: 'Budget exceeded!',
+    editBudget: 'Set Budget',
+    income: 'Income',
+    expense: 'Expense',
+    addTransaction: 'Add Transaction',
+    descPlaceholder: 'Description (e.g. Salary, Groceries)',
+    amountPlaceholder: 'Amount',
+    category: 'Category',
+    recentTransactions: 'Recent Transactions',
+    exportCsv: 'Export CSV',
+    noTransactions: 'No transactions recorded yet.',
+
+    // Health Module
+    healthTitle: 'Health & Circadian Nutrition',
+    healthSub: 'Synchronize meals with your biological clock and track hydration for sustained energy.',
+    mealCadence: 'Circadian 4-Meal Schedule',
+    mealCompleted: 'Completed',
+    markDone: 'Mark as eaten',
+    addGlass: '+250ml Glass',
+    resetWater: 'Reset Target',
+    vitalityScore: 'Circadian Vitality Score',
+    vitalitySub: 'Calculated from consistent meal timing and adequate hydration.',
+
+    // Planner Module
+    plannerTitle: 'Life Vision & 1-3 Year OKRs',
+    plannerSub: 'Turn long-term ambitions into measurable quarterly objectives and key results.',
+    addGoal: 'Add Life Goal',
+    goalTitlePlaceholder: 'Goal Title (e.g. Launch SaaS startup)',
+    targetDate: 'Target Date',
+    quarterlyProgress: 'Progress',
+
+    // Calendar Module
+    calendarTitle: 'Unified Time Schedule',
+    calendarSub: 'Synchronize tasks, meals, and life milestones on an hourly timeline.',
+
+    // Learning Module
+    learningTitle: 'Skill Acquisition & Reading Matrix',
+    learningSub: 'Track deliberate practice hours, ongoing courses, and reading list.',
+    addCourse: 'Add Course / Book',
+    studyHours: 'Study Hours Logged',
+
+    // Account Modal
+    modalMultiUser: 'Multi-User Space Isolation',
+    modalWho: 'Who is using NEXUS?',
+    modalProfilesSub: 'Switch between isolated profiles. Each profile keeps separate tasks, budgets, and habits.',
+    createProfile: '+ Create New Profile',
+    profileNamePlaceholder: 'Enter profile name (e.g. Al-Ameen)',
+    selectRole: 'Select Workspace Role',
+    pinOptional: 'Optional 4-digit PIN lock',
+    saveProfile: 'Save Profile',
+    activeProfile: 'Active',
+    deleteProfile: 'Delete Profile',
+    switchBtn: 'Select Profile',
+
+    // Settings Modal
+    settingsTitle: 'Workspace Preferences & Settings',
+    settingsSub: 'Customize your local preferences, currency formats, and active pillars.',
+    close: 'Close',
+    saveChanges: 'Save Changes'
+  },
+  bn: {
+    // Header & Common
+    appName: 'নেক্সাস',
+    appNameEn: 'NEXUS',
+    appSub: 'লাইফ ওএস',
+    searchPlaceholder: 'দ্রুত অনুসন্ধান বা জাম্প করুন...',
+    ctrlK: 'Ctrl K',
+    time: 'সময়',
+    
+    // Account Dropdown
+    workspace: 'ওয়ার্কস্পেস',
+    switchProfile: 'প্রোফাইল বদল / +নতুন',
+    language: 'ভাষা',
+    currency: 'মুদ্রা',
+    appearance: 'থিম',
+    darkMode: 'ডার্ক মোড',
+    lightMode: 'লাইট মোড',
+    saasPlan: 'প্যাকেজ প্ল্যান',
+    proTier: 'প্রো প্ল্যান ($৯)',
+    workspaceSettings: 'ওয়ার্কস্পেস সেটিংস ও মডিউল',
+    downloadBackup: 'ফুল ব্যাকআপ ডাউনলোড (.json)',
+    backupToast: 'সম্পূর্ণ অফলাইন ব্যাকআপ ডাউনলোড হয়েছে!',
+    proToast: 'প্রো প্ল্যান: লাইফটাইম ওয়ার্কস্পেস সক্রিয়',
+
+    // Navigation
+    navDailyFlow: 'দৈনিক প্রবাহ',
+    navTasks: 'কাজ ও ফোকাস',
+    navFinance: 'অর্থ ও বাজেট',
+    navHealth: 'স্বাস্থ্য ও আহার',
+    navPlanner: 'জীবন পরিকল্পনা',
+    navCalendar: 'ক্যালেন্ডার',
+    navLearning: 'শিক্ষা ও ক্যারিয়ার',
+
+    // Dashboard
+    commandCenter: 'কমান্ড সেন্টার',
+    streak: 'দিনের ধারাবাহিকতা',
+    welcomeBack: 'স্বাগতম',
+    dashboardSub: 'দৈনিক অগ্রাধিকার, আর্থিক স্বচ্ছতা এবং পুষ্টিকর অভ্যাসের ব্যক্তিগত কমান্ড সেন্টার।',
+    focusModeOn: '⚡ ফোকাস মোড: সক্রিয়',
+    focusModeOff: '⚡ ফোকাস মোড',
+    tasksProgress: 'কাজের অগ্রগতি',
+    pendingDeadlines: 'টি কাজ বাকি',
+    netCashBalance: 'নেট ক্যাশ ব্যালেন্স',
+    totalOutflow: 'মোট ব্যয়',
+    consistency: 'সার্কেডিয়ান ধারাবাহিকতা',
+    streakSubtitle: 'টানা সক্রিয় দিন',
+    waterVitality: 'পানি পানের লক্ষ্যমাত্রা',
+    waterGoal: 'দৈনিক লক্ষ্য: ২,৫০০ মিলি',
+    ruleOf3Title: 'আজকের ৩টি সর্বোচ্চ গুরুত্বপূর্ণ কাজ (রুল অব থ্রি)',
+    ruleOf3Sub: 'হাই-পারফরম্যান্স নীতি অনুযায়ী দিনের এই ৩টি কাজ সম্পন্ন করলে দিনটি সফল হিসেবে গণ্য হবে।',
+    smartCaptureTitle: 'স্মার্ট ন্যাচারাল ল্যাঙ্গুয়েজ ইনপুট',
+    smartCaptureSub: 'সহজ ভাষায় বাংলা বা ইংরেজিতে লিখুন। এআই স্বয়ংক্রিয়ভাবে খরচ বা টাস্ক ডিটেক্ট করবে।',
+    capturePlaceholder: "যেমন: 'দুপুরের খাবার ৫০০ টাকা' অথবা 'কাল সকাল ১০টায় রিপোর্ট রিভিউ'",
+    addSmartItem: 'যুক্ত করুন',
+    detectedExpense: 'খরচ শনাক্ত হয়েছে',
+    detectedTask: 'টাস্ক শনাক্ত হয়েছে',
+    eveningTitle: 'সন্ধ্যার আত্মপর্যালোচনা ও কৃতজ্ঞতা',
+    eveningSub: 'ঘুমের আগে দিনের বড় অর্জনগুলো লিখে রাখুন, এটি মানসিক প্রশান্তি ও আত্মবিশ্বাস বাড়ায়।',
+    eveningPlaceholder: 'আজকে আপনার সবচেয়ে বড় অর্জন কী ছিল? কোন বিষয়টির জন্য আপনি কৃতজ্ঞ?',
+    howEnergy: 'আজকে আপনার এনার্জি লেভেল কেমন ছিল?',
+    saveReflection: 'সংরক্ষণ করুন',
+    reflectionSaved: 'সন্ধ্যার আত্মপর্যালোচনা সংরক্ষিত হয়েছে!',
+
+    // Tasks Module
+    tasksTitle: 'কাজ ও ফোকাস ইঞ্জিন',
+    tasksSub: 'আইজেনহাওয়ার ম্যাট্রিক্স অনুযায়ী অগ্রাধিকার ও পোমোডোরো ডিপ ওয়ার্ক টাইমার।',
+    pomodoroTimer: 'পোমোডোরো ফোকাস টাইমার',
+    startFocus: 'ফোকাস শুরু (২৫ মিনিট)',
+    pauseFocus: 'বিরতি',
+    resetFocus: 'রিসেট',
+    shortBreak: 'ছোট বিরতি (৫ মিনিট)',
+    longBreak: 'বড় বিরতি (১৫ মিনিট)',
+    addTaskPlaceholder: 'নতুন কাজের শিরোনাম লিখুন...',
+    priorityHigh: 'জরুরি (P1)',
+    priorityMedium: 'মাঝারি (P2)',
+    priorityLow: 'সাধারণ (P3)',
+    addTaskBtn: 'কাজ যুক্ত করুন',
+    filterAll: 'সকল',
+    filterPending: 'চলমান',
+    filterCompleted: 'সম্পন্ন',
+    noTasks: 'কোনো কাজ পাওয়া যায়নি। নতুন কাজ যুক্ত করে ফোকাস শুরু করুন!',
+
+    // Finance Module
+    financeTitle: 'অর্থ ও বাজেট ইঞ্জিন',
+    financeSub: 'আয়-ব্যয়ের হিসাব, মাসিক বাজেটের সর্বোচ্চ সীমা এবং অফলাইন এক্সপোর্ট।',
+    monthlyBudgetCap: 'মাসিক বাজেট সীমা',
+    budgetUsed: 'ব্যয় হয়েছে',
+    budgetRemaining: 'অবশিষ্ট আছে',
+    budgetExceeded: 'বাজেট সীমা অতিক্রম করেছে!',
+    editBudget: 'বাজেট নির্ধারণ',
+    income: 'আয়',
+    expense: 'ব্যয়',
+    addTransaction: 'লেনদেন যুক্ত করুন',
+    descPlaceholder: 'বিবরণ (যেমন: বেতন, মুদি সদাই)',
+    amountPlaceholder: 'পরিমাণ',
+    category: 'ক্যাটাগরি',
+    recentTransactions: 'সাম্প্রতিক লেনদেন',
+    exportCsv: 'CSV এক্সপোর্ট',
+    noTransactions: 'এখনও কোনো লেনদেন লিপিবদ্ধ করা হয়নি।',
+
+    // Health Module
+    healthTitle: 'স্বাস্থ্য ও সার্কেডিয়ান পুষ্টি',
+    healthSub: 'আপনার বায়োলজিক্যাল ক্লকের সাথে ৪ বেলার খাবার সিঙ্ক করুন এবং হাইড্রেশন ট্র্যাক করুন।',
+    mealCadence: 'সার্কেডিয়ান ৪ বেলার খাবারের সময়সূচি',
+    mealCompleted: 'খাওয়া সম্পন্ন',
+    markDone: 'সম্পন্ন চিহ্নিত করুন',
+    addGlass: '+২৫০ মিলি গ্লাস',
+    resetWater: 'টার্গেট রিসেট',
+    vitalityScore: 'সার্কেডিয়ান ভাইটালিটি স্কোর',
+    vitalitySub: 'নিয়মিত খাবার গ্রহণ ও পর্যাপ্ত পানি পানের ওপর ভিত্তি করে হিসাব করা হয়।',
+
+    // Planner Module
+    plannerTitle: 'জীবন পরিকল্পনা ও ১-৩ বছরের লক্ষ্য (OKR)',
+    plannerSub: 'দীর্ঘমেয়াদী স্বপ্নগুলোকে পরিমাপযোগ্য কোয়ার্টারলি লক্ষ্যে রূপান্তর করুন।',
+    addGoal: 'নতুন লক্ষ্য যুক্ত করুন',
+    goalTitlePlaceholder: 'লক্ষ্যের শিরোনাম (যেমন: নতুন স্টার্টআপ লঞ্চ)',
+    targetDate: 'অর্জনের সময়সীমা',
+    quarterlyProgress: 'অগ্রগতি',
+
+    // Calendar Module
+    calendarTitle: 'একীভূত সময়সূচি ও ক্যালেন্ডার',
+    calendarSub: 'ক্যালেন্ডার ও টাইমলাইনে আপনার কাজ এবং রুটিন একনজরে দেখুন।',
+
+    // Learning Module
+    learningTitle: 'দক্ষতা উন্নয়ন ও অধ্যয়ন ম্যাট্রিক্স',
+    learningSub: 'শেখার সময়, চলমান কোর্স এবং বই পড়ার অগ্রগতি ট্র্যাক করুন।',
+    addCourse: 'কোর্স / বই যুক্ত করুন',
+    studyHours: 'মোট পড়াশোনার ঘণ্টা',
+
+    // Account Modal
+    modalMultiUser: 'মাল্টি-ইউজার স্পেস আইসোলেশন',
+    modalWho: 'কে নেক্সাস ব্যবহার করছেন?',
+    modalProfilesSub: 'সম্পূর্ণ আলাদা প্রোফাইলে সুইচ করুন। প্রতি প্রোফাইলের কাজ, বাজেট ও অভ্যাস পৃথক থাকবে।',
+    createProfile: '+ নতুন প্রোফাইল তৈরি করুন',
+    profileNamePlaceholder: 'প্রোফাইলের নাম লিখুন (যেমন: আল-আমীন)',
+    selectRole: 'ওয়ার্কস্পেস রোল নির্বাচন করুন',
+    pinOptional: 'ঐচ্ছিক ৪-সংখ্যার পিন কোড',
+    saveProfile: 'প্রোফাইল সংরক্ষণ',
+    activeProfile: 'সক্রিয়',
+    deleteProfile: 'প্রোফাইল মুছুন',
+    switchBtn: 'প্রোফাইল বেছে নিন',
+
+    // Settings Modal
+    settingsTitle: 'ওয়ার্কস্পেস প্রেফারেন্সেস ও সেটিংস',
+    settingsSub: 'আপনার স্থানীয় সেটিংস, মুদ্রা ফরম্যাট ও মডিউল নিয়ন্ত্রণ করুন।',
+    close: 'বন্ধ করুন',
+    saveChanges: 'পরিবর্তন সংরক্ষণ করুন'
+  }
+};
+
+export const useTranslation = (lang: LanguageCode) => {
+  return translations[lang] || translations.en;
+};

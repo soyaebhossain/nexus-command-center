@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Target, Plus, CheckCircle, Flag } from 'lucide-react';
+import { Target, Plus } from 'lucide-react';
 import { Goal } from '../../types';
 import { loadLocalData, saveLocalData } from '../../utils/storage';
+import { useTranslation } from '../../utils/i18n';
 
 export const PlannerModule: React.FC = () => {
   const { lang } = useApp();
+  const t = useTranslation(lang);
+
   const [goals, setGoals] = useState<Goal[]>(() => loadLocalData('nexus_goals_react', [
     { id: 1, title: 'Master Production React & TypeScript Framework', horizon: '1-Year', category: 'Career', progress: 85, deadline: '2026-12-31' },
     { id: 2, title: 'Achieve Emergency Fund of ৳ 200,000', horizon: '1-Year', category: 'Finance', progress: 55, deadline: '2026-11-30' },
@@ -48,14 +51,14 @@ export const PlannerModule: React.FC = () => {
     <div className="space-y-6">
       <div className="p-6 sm:p-7 rounded-3xl bg-gray-950 border border-gray-800 space-y-2">
         <span className="text-lime-300 text-xs font-bold font-mono uppercase tracking-wider">
-          STRATEGIC VISION & HORIZONS
+          STRATEGIC VISION
         </span>
         <h2 className="text-2xl font-bold text-gray-100 flex items-center gap-2">
           <Target className="text-lime-300 w-6 h-6" />
-          <span>{lang === 'bn' ? 'জীবন পরিকল্পনা ও লক্ষ্য নির্ধারণ' : 'Life Planner & 1-3 Year Goal Matrix'}</span>
+          <span>{t.plannerTitle}</span>
         </h2>
         <p className="text-xs text-gray-400">
-          {lang === 'bn' ? 'দীর্ঘমেয়াদী ভিশন নির্ধারণ করুন এবং নিয়মিত অগ্রগতির ট্র্যাকিং রাখুন।' : 'Set long-term OKRs, career milestones, and track percentage milestones.'}
+          {t.plannerSub}
         </p>
       </div>
 
@@ -63,7 +66,7 @@ export const PlannerModule: React.FC = () => {
       <div className="p-6 rounded-3xl bg-gray-950 border border-gray-800 space-y-3">
         <h3 className="text-sm font-bold text-gray-100 flex items-center gap-2">
           <Plus className="w-4 h-4 text-lime-300" />
-          <span>Add Vision Milestone (নতুন লক্ষ্য যুক্ত করুন)</span>
+          <span>{t.addGoal}</span>
         </h3>
         <form onSubmit={handleAdd} className="grid grid-cols-1 sm:grid-cols-12 gap-3 text-xs">
           <input
@@ -71,7 +74,7 @@ export const PlannerModule: React.FC = () => {
             required
             value={title}
             onChange={e => setTitle(e.target.value)}
-            placeholder="Vision milestone title..."
+            placeholder={t.goalTitlePlaceholder}
             className="field sm:col-span-6 py-2.5"
           />
           <select
@@ -79,22 +82,22 @@ export const PlannerModule: React.FC = () => {
             onChange={e => setHorizon(e.target.value as any)}
             className="field sm:col-span-3 py-2.5"
           >
-            <option value="1-Year">1-Year Horizon</option>
-            <option value="3-Year">3-Year Horizon</option>
-            <option value="Strategic">Strategic Vision</option>
+            <option value="1-Year">{lang === 'bn' ? '১ বছরের লক্ষ্য' : '1-Year Horizon'}</option>
+            <option value="3-Year">{lang === 'bn' ? '৩ বছরের লক্ষ্য' : '3-Year Horizon'}</option>
+            <option value="Strategic">{lang === 'bn' ? 'কৌশলগত ভিশন' : 'Strategic Vision'}</option>
           </select>
           <select
             value={category}
             onChange={e => setCategory(e.target.value)}
             className="field sm:col-span-2 py-2.5"
           >
-            <option value="Career">Career & Dev</option>
-            <option value="Finance">Finance & Asset</option>
-            <option value="Health">Health & Fitness</option>
-            <option value="Personal">Personal Growth</option>
+            <option value="Career">{lang === 'bn' ? 'ক্যারিয়ার ও স্কিল' : 'Career & Dev'}</option>
+            <option value="Finance">{lang === 'bn' ? 'অর্থ ও সম্পদ' : 'Finance & Asset'}</option>
+            <option value="Health">{lang === 'bn' ? 'স্বাস্থ্য ও ফিটনেস' : 'Health & Fitness'}</option>
+            <option value="Personal">{lang === 'bn' ? 'ব্যক্তিগত উন্নয়ন' : 'Personal Growth'}</option>
           </select>
           <button type="submit" className="sm:col-span-1 bg-lime-300 hover:bg-lime-400 text-gray-950 font-bold py-2.5 rounded-xl">
-            Add
+            {lang === 'bn' ? 'যুক্ত' : 'Add'}
           </button>
         </form>
       </div>

@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { GraduationCap, BookOpen, Plus, Check } from 'lucide-react';
+import { GraduationCap, Plus } from 'lucide-react';
 import { Course } from '../../types';
 import { loadLocalData, saveLocalData } from '../../utils/storage';
+import { useTranslation } from '../../utils/i18n';
 
 export const LearningModule: React.FC = () => {
   const { lang, showToast } = useApp();
+  const t = useTranslation(lang);
+
   const [courses, setCourses] = useState<Course[]>(() => loadLocalData('nexus_courses_react', [
     { id: 1, name: 'Advanced React 19 & TypeScript Masterclass', platform: 'Udemy', totalHours: 40, hoursCompleted: 28, completed: false },
     { id: 2, name: 'System Design & Distributed Architecture', platform: 'Coursera', totalHours: 35, hoursCompleted: 15, completed: false },
@@ -32,7 +35,7 @@ export const LearningModule: React.FC = () => {
     saveLocalData('nexus_courses_react', updated);
     setName('');
     setPlatform('');
-    showToast(`Added course: "${newCourse.name}"`);
+    showToast(lang === 'bn' ? `কোর্স যোগ হয়েছে: "${newCourse.name}"` : `Added course: "${newCourse.name}"`);
   };
 
   const logHours = (id: number, hrs: number) => {
@@ -45,21 +48,21 @@ export const LearningModule: React.FC = () => {
     });
     setCourses(updated);
     saveLocalData('nexus_courses_react', updated);
-    showToast(`+${hrs} Study hours logged!`);
+    showToast(lang === 'bn' ? `+${hrs} ঘণ্টা পড়ার সময় যোগ হয়েছে!` : `+${hrs} Study hours logged!`);
   };
 
   return (
     <div className="space-y-6">
       <div className="p-6 sm:p-7 rounded-3xl bg-gray-950 border border-gray-800 space-y-2">
         <span className="text-purple-400 text-xs font-bold font-mono uppercase tracking-wider">
-          SKILL ACQUISITION & EDUCATION HUB
+          SKILL & EDUCATION
         </span>
         <h2 className="text-2xl font-bold text-gray-100 flex items-center gap-2">
           <GraduationCap className="text-purple-400 w-6 h-6" />
-          <span>{lang === 'bn' ? 'শিক্ষা, কোর্স ও স্কিল ডেভেলপমেন্ট' : 'Learning, Coursework & Skill Matrix'}</span>
+          <span>{t.learningTitle}</span>
         </h2>
         <p className="text-xs text-gray-400">
-          {lang === 'bn' ? 'সক্রিয় কোর্সগুলো ট্র্যাক করুন এবং পড়াশোনার সময় লগ করুন।' : 'Track active courses, log study hours, and monitor syllabus completion.'}
+          {t.learningSub}
         </p>
       </div>
 
@@ -67,7 +70,7 @@ export const LearningModule: React.FC = () => {
       <div className="p-6 rounded-3xl bg-gray-950 border border-gray-800 space-y-3">
         <h3 className="text-sm font-bold text-gray-100 flex items-center gap-2">
           <Plus className="w-4 h-4 text-purple-400" />
-          <span>Enroll New Course (নতুন কোর্স যুক্ত করুন)</span>
+          <span>{t.addCourse}</span>
         </h3>
         <form onSubmit={handleAdd} className="grid grid-cols-1 sm:grid-cols-12 gap-3 text-xs">
           <input
@@ -75,25 +78,25 @@ export const LearningModule: React.FC = () => {
             required
             value={name}
             onChange={e => setName(e.target.value)}
-            placeholder="Course name (e.g. 'Advanced AI Engineering')..."
+            placeholder={lang === 'bn' ? "কোর্সের নাম লিখুন (যেমন: 'অ্যাডভান্সড এআই ইঞ্জিনিয়ারিং')..." : "Course name (e.g. 'Advanced AI Engineering')..."}
             className="field sm:col-span-6 py-2.5"
           />
           <input
             type="text"
             value={platform}
             onChange={e => setPlatform(e.target.value)}
-            placeholder="Platform (e.g. Coursera / YouTube / EdX)..."
+            placeholder={lang === 'bn' ? "প্ল্যাটফর্ম (যেমন: Coursera / YouTube / বই)..." : "Platform (e.g. Coursera / YouTube / Book)..."}
             className="field sm:col-span-3 py-2.5"
           />
           <input
             type="number"
             value={totalHours}
             onChange={e => setTotalHours(e.target.value)}
-            placeholder="Total Hours..."
+            placeholder={lang === 'bn' ? "মোট ঘণ্টা..." : "Total Hours..."}
             className="field sm:col-span-2 py-2.5 font-mono"
           />
           <button type="submit" className="sm:col-span-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-xl">
-            Add
+            {lang === 'bn' ? 'যুক্ত' : 'Add'}
           </button>
         </form>
       </div>
@@ -112,14 +115,18 @@ export const LearningModule: React.FC = () => {
               </div>
               <h4 className="font-bold text-sm text-gray-200">{c.name}</h4>
               <div className="text-xs font-mono text-gray-400">
-                {c.hoursCompleted} / {c.totalHours} Hours Logged
+                {c.hoursCompleted} / {c.totalHours} {lang === 'bn' ? 'ঘণ্টা সম্পন্ন' : 'Hours Logged'}
               </div>
               <div className="w-full bg-gray-900 h-2 rounded-full overflow-hidden">
                 <div className="bg-purple-500 h-full rounded-full transition-all" style={{ width: `${pct}%` }} />
               </div>
               <div className="flex gap-2 pt-1 text-xs">
-                <button onClick={() => logHours(c.id, 1)} className="flex-1 py-1.5 bg-gray-900 border border-gray-800 hover:border-purple-400/40 rounded-lg text-purple-300 font-bold">+1h Study</button>
-                <button onClick={() => logHours(c.id, 2)} className="flex-1 py-1.5 bg-gray-900 border border-gray-800 hover:border-purple-400/40 rounded-lg text-purple-300 font-bold">+2h Study</button>
+                <button onClick={() => logHours(c.id, 1)} className="flex-1 py-1.5 bg-gray-900 border border-gray-800 hover:border-purple-400/40 rounded-lg text-purple-300 font-bold">
+                  {lang === 'bn' ? '+১ ঘণ্টা' : '+1h Study'}
+                </button>
+                <button onClick={() => logHours(c.id, 2)} className="flex-1 py-1.5 bg-gray-900 border border-gray-800 hover:border-purple-400/40 rounded-lg text-purple-300 font-bold">
+                  {lang === 'bn' ? '+২ ঘণ্টা' : '+2h Study'}
+                </button>
               </div>
             </div>
           );

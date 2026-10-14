@@ -5,6 +5,7 @@ import {
   Flame, Plus, RotateCcw 
 } from 'lucide-react';
 import { requestNotificationPermission, sendLocalNotification } from '../../utils/notifications';
+import { useTranslation } from '../../utils/i18n';
 
 export const HealthModule: React.FC = () => {
   const { 
@@ -12,16 +13,18 @@ export const HealthModule: React.FC = () => {
     waterMl, addWater, resetWater, lang, showToast 
   } = useApp();
 
+  const t = useTranslation(lang);
+
   const handleTestAlert = async () => {
     const granted = await requestNotificationPermission();
     if (granted) {
       sendLocalNotification(
-        '🥗 Meal & Health Reminder Active!',
-        'You will receive timely biological circadian alerts for meals and hydration.'
+        lang === 'bn' ? '🥗 খাবারের রিমাইন্ডার সক্রিয়!' : '🥗 Meal & Health Reminder Active!',
+        lang === 'bn' ? 'নিয়মিত খাবার ও পানি পানের সার্কেডিয়ান অ্যালার্ট পাবেন।' : 'You will receive timely biological circadian alerts for meals and hydration.'
       );
-      showToast('Notification test alert sent!');
+      showToast(lang === 'bn' ? 'অ্যালার্ট সফলভাবে পরীক্ষা করা হয়েছে!' : 'Notification test alert sent!');
     } else {
-      showToast('Notification permission denied or blocked in browser');
+      showToast(lang === 'bn' ? 'ব্রাউজারে নোটিফিকেশন অনুমতি পাওয়া যায়নি' : 'Notification permission denied in browser');
     }
   };
 
@@ -31,16 +34,14 @@ export const HealthModule: React.FC = () => {
       <div className="p-6 sm:p-7 rounded-3xl bg-gray-950 border border-gray-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <span className="text-cyan-400 text-xs font-bold font-mono uppercase tracking-wider">
-            CIRCADIAN BIOLOGICAL CLOCK
+            CIRCADIAN HEALTH
           </span>
           <h2 className="text-2xl font-bold text-gray-100 flex items-center gap-2 mt-1">
             <Activity className="text-cyan-400 w-6 h-6" />
-            <span>{lang === 'bn' ? 'স্বাস্থ্য, পুষ্টি ও আহার ব্যবস্থাপনা' : 'Health, Vitality & Nutrition Rhythm'}</span>
+            <span>{t.healthTitle}</span>
           </h2>
           <p className="text-xs text-gray-400 mt-1">
-            {lang === 'bn' 
-              ? 'শারীরিক শক্তি ও দীর্ঘায়ু নিশ্চিত করতে নিয়মিত খাবার ও পর্যাপ্ত পানির বিকল্প নেই।' 
-              : 'Optimize cognitive focus and daily energy with automated circadian nutrition and hydration windows.'}
+            {t.healthSub}
           </p>
         </div>
 
@@ -60,10 +61,10 @@ export const HealthModule: React.FC = () => {
             <span className="text-xl">🥗</span>
             <div>
               <h3 className="text-sm font-bold text-gray-100">
-                {lang === 'bn' ? 'দৈনিক আহার ও পুষ্টির সময়সূচী' : 'Daily Meal Schedule & Alerts'}
+                {t.mealCadence}
               </h3>
               <p className="text-[11px] text-gray-400">
-                {lang === 'bn' ? 'প্রতিটি খাবারের সময় ব্রাউজারে মৃদু অ্যালার্ট পাবেন।' : 'Timely browser & audio alerts for healthy biological nutrition.'}
+                {lang === 'bn' ? 'প্রতিটি খাবারের সময় ব্রাউজারে মৃদু অ্যালার্ট পাবেন।' : 'Timely browser & audio alerts for healthy biological nutrition.'}
               </p>
             </div>
           </div>
@@ -97,7 +98,7 @@ export const HealthModule: React.FC = () => {
                       type="checkbox"
                       checked={m.enabled}
                       onChange={() => toggleMealEnabled(m.id)}
-                      title="Enable Alert"
+                      title={lang === 'bn' ? 'অ্যালার্ট চালু রাখুন' : 'Enable Alert'}
                       className="accent-lime-300 rounded cursor-pointer w-4 h-4"
                     />
                   </div>
@@ -134,11 +135,11 @@ export const HealthModule: React.FC = () => {
           <div className="flex justify-between items-center">
             <span className="text-xs font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
               <Droplets className="w-4 h-4" />
-              <span>{lang === 'bn' ? 'দৈনিক পানি পানের লক্ষ্যমাত্রা (২,৫০০ ml)' : 'Daily Hydration Target (2,500 ml)'}</span>
+              <span>{t.waterVitality} (2,500 ml)</span>
             </span>
             <button onClick={resetWater} className="text-xs text-gray-500 hover:text-red-400 flex items-center gap-1">
               <RotateCcw className="w-3 h-3" />
-              <span>Reset</span>
+              <span>{t.resetWater}</span>
             </button>
           </div>
 
@@ -177,21 +178,27 @@ export const HealthModule: React.FC = () => {
           <div className="flex justify-between items-center">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
               <Flame className="w-4 h-4" />
-              <span>{lang === 'bn' ? 'শারীরিক সুস্থতা ও ধারাবাহিকতা' : 'Vitality & Habit Consistency'}</span>
+              <span>{t.vitalityScore}</span>
             </span>
           </div>
           <div className="space-y-2.5 text-xs">
             <div className="p-3 rounded-xl bg-gray-900 border border-gray-800 flex justify-between items-center">
-              <span>💧 8 Glasses Water Habit</span>
-              <span className="font-mono text-cyan-300 font-bold">{waterMl >= 2000 ? '✓ Complete' : 'In Progress'}</span>
+              <span>💧 {lang === 'bn' ? '৮ গ্লাস পানি পানের অভ্যাস' : '8 Glasses Water Habit'}</span>
+              <span className="font-mono text-cyan-300 font-bold">
+                {waterMl >= 2000 ? (lang === 'bn' ? '✓ সম্পন্ন' : '✓ Complete') : (lang === 'bn' ? 'চলমান' : 'In Progress')}
+              </span>
             </div>
             <div className="p-3 rounded-xl bg-gray-900 border border-gray-800 flex justify-between items-center">
-              <span>🥪 On-Time Breakfast</span>
-              <span className="font-mono text-emerald-300 font-bold">{mealReminders[0].done ? '✓ Done' : 'Pending'}</span>
+              <span>🥪 {lang === 'bn' ? 'সময়মতো সকালের নাস্তা' : 'On-Time Breakfast'}</span>
+              <span className="font-mono text-emerald-300 font-bold">
+                {mealReminders[0].done ? (lang === 'bn' ? '✓ সম্পন্ন' : '✓ Done') : (lang === 'bn' ? 'অপেক্ষমাণ' : 'Pending')}
+              </span>
             </div>
             <div className="p-3 rounded-xl bg-gray-900 border border-gray-800 flex justify-between items-center">
-              <span>🥗 On-Time Lunch</span>
-              <span className="font-mono text-emerald-300 font-bold">{mealReminders[1].done ? '✓ Done' : 'Pending'}</span>
+              <span>🥗 {lang === 'bn' ? 'সময়মতো দুপুরের খাবার' : 'On-Time Lunch'}</span>
+              <span className="font-mono text-emerald-300 font-bold">
+                {mealReminders[1].done ? (lang === 'bn' ? '✓ সম্পন্ন' : '✓ Done') : (lang === 'bn' ? 'অপেক্ষমাণ' : 'Pending')}
+              </span>
             </div>
           </div>
         </div>

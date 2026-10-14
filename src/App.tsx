@@ -101,7 +101,11 @@ export const App: React.FC = () => {
       <footer className="border-t border-gray-900 py-4 px-6 text-center text-xs text-gray-400 flex flex-wrap items-center justify-between gap-3 max-w-7xl mx-auto w-full">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span>
-          <span>NEXUS Life OS • Engineered for Peak Focus & Circadian Balance</span>
+          <span>
+            {useApp().lang === 'bn' 
+              ? 'নেক্সাস লাইফ ওএস • সর্বোচ্চ ফোকাস ও সার্কেডিয়ান ভারসাম্যের জন্য নির্মিত' 
+              : 'NEXUS Life OS • Engineered for Peak Focus & Circadian Balance'}
+          </span>
         </div>
         <div className="flex items-center gap-4 text-gray-400">
           <span>React + TypeScript + Node.js</span>

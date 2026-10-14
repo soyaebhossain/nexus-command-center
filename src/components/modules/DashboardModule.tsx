@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { 
-  Sparkles, Flame, CheckCircle2, Circle, ArrowRight, 
-  Moon, Zap, Wallet, CheckSquare, Activity, Plus
+  Sparkles, Flame, CheckCircle2, Circle, 
+  Zap, Wallet, CheckSquare, Activity, Plus
 } from 'lucide-react';
 import { parseNaturalLanguage, ParsedNLPResult } from '../../utils/nlp';
+import { useTranslation } from '../../utils/i18n';
 
 export const DashboardModule: React.FC = () => {
   const { 
@@ -14,6 +15,7 @@ export const DashboardModule: React.FC = () => {
     addTask, addTransaction, showToast
   } = useApp();
 
+  const t = useTranslation(lang);
   const [nlpInput, setNlpInput] = useState('');
   const [nlpPreview, setNlpPreview] = useState<ParsedNLPResult | null>(null);
   const [eveningText, setEveningText] = useState(() => localStorage.getItem('nexus_evening_win') || '');
@@ -23,9 +25,9 @@ export const DashboardModule: React.FC = () => {
   const completedTasks = tasks.filter(t => t.done).length;
   let totalIncome = 0;
   let totalExpense = 0;
-  transactions.forEach(t => {
-    if (t.type === 'income') totalIncome += t.amount;
-    else totalExpense += t.amount;
+  transactions.forEach(tr => {
+    if (tr.type === 'income') totalIncome += tr.amount;
+    else totalExpense += tr.amount;
   });
   const balance = totalIncome - totalExpense;
 
@@ -58,7 +60,7 @@ export const DashboardModule: React.FC = () => {
     if (!eveningText.trim()) return;
     localStorage.setItem('nexus_evening_win', eveningText);
     localStorage.setItem('nexus_daily_mood', dailyMood);
-    showToast(lang === 'bn' ? 'সন্ধ্যার আত্মপর্যালোচনা সংরক্ষিত হয়েছে!' : 'Evening reflection saved!');
+    showToast(t.reflectionSaved);
   };
 
   return (
@@ -69,20 +71,18 @@ export const DashboardModule: React.FC = () => {
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span>
             <span className="text-[11px] font-mono text-lime-300 uppercase tracking-wider font-bold">
-              {activeAccount.role.toUpperCase()} COMMAND CENTER
+              {activeAccount.role.toUpperCase()} {t.commandCenter}
             </span>
             <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-bold font-mono flex items-center gap-1">
               <Flame className="w-3 h-3 text-amber-400" />
-              <span>{habitStreak} Days Streak</span>
+              <span>{habitStreak} {t.streak}</span>
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-100 tracking-tight">
-            {lang === 'bn' ? `শুভ সময়, ${activeAccount.name}!` : `Welcome back, ${activeAccount.name}!`}
+            {t.welcomeBack}, {activeAccount.name}!
           </h1>
           <p className="text-xs text-gray-400 mt-1">
-            {lang === 'bn' 
-              ? 'দৈনিক অগ্রাধিকার, আর্থিক স্বচ্ছতা এবং পুষ্টিকর অভ্যাসের ব্যক্তিগত কমান্ড সেন্টার।' 
-              : 'Unified life cockpit: tracking clarity, finances, and circadian vitality.'}
+            {t.dashboardSub}
           </p>
         </div>
 
@@ -96,7 +96,7 @@ export const DashboardModule: React.FC = () => {
           }`}
         >
           <Sparkles className="w-4 h-4" />
-          <span>{isFocusMode ? (lang === 'bn' ? '⚡ ফোকাস মোড: সক্রিয়' : '⚡ Focus Mode: ON') : (lang === 'bn' ? '⚡ ফোকাস মোড' : '⚡ Daily Essentials')}</span>
+          <span>{isFocusMode ? t.focusModeOn : t.focusModeOff}</span>
         </button>
       </div>
 
@@ -106,7 +106,7 @@ export const DashboardModule: React.FC = () => {
         <div className="p-5 rounded-2xl bg-gray-950/80 border border-gray-800/80 hover:border-lime-400/30 transition-all">
           <div className="flex justify-between items-start">
             <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              {lang === 'bn' ? 'কাজের অগ্রগতি' : 'Tasks & Progress'}
+              {t.tasksProgress}
             </span>
             <CheckSquare className="w-4 h-4 text-lime-300" />
           </div>
@@ -114,7 +114,7 @@ export const DashboardModule: React.FC = () => {
             {completedTasks} / {tasks.length}
           </div>
           <div className="text-[11px] text-gray-400 mt-1">
-            {tasks.length - completedTasks} {lang === 'bn' ? 'টি কাজ বাকি' : 'pending deadlines'}
+            {tasks.length - completedTasks} {t.pendingDeadlines}
           </div>
         </div>
 
@@ -122,7 +122,7 @@ export const DashboardModule: React.FC = () => {
         <div className="p-5 rounded-2xl bg-gray-950/80 border border-gray-800/80 hover:border-emerald-400/30 transition-all">
           <div className="flex justify-between items-start">
             <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              {lang === 'bn' ? 'নেট ক্যাশ ব্যালেন্স' : 'Net Cash Balance'}
+              {t.netCashBalance}
             </span>
             <Wallet className="w-4 h-4 text-emerald-400" />
           </div>
@@ -130,7 +130,7 @@ export const DashboardModule: React.FC = () => {
             {currency} {balance.toLocaleString()}
           </div>
           <div className="text-[11px] text-gray-400 mt-1">
-            {currency} {totalExpense.toLocaleString()} {lang === 'bn' ? 'চলতি খরচ' : 'total outflow'}
+            {currency} {totalExpense.toLocaleString()} {t.totalOutflow}
           </div>
         </div>
 
@@ -138,15 +138,15 @@ export const DashboardModule: React.FC = () => {
         <div className="p-5 rounded-2xl bg-gray-950/80 border border-gray-800/80 hover:border-amber-400/30 transition-all">
           <div className="flex justify-between items-start">
             <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              {lang === 'bn' ? 'ধারাবাহিক স্ট্রিক' : 'Habit Momentum'}
+              {t.consistency}
             </span>
             <Flame className="w-4 h-4 text-amber-400" />
           </div>
           <div className="text-2xl font-bold font-mono text-amber-300 mt-2">
-            {habitStreak} Days 🔥
+            {habitStreak} {t.streak}
           </div>
           <div className="text-[11px] text-gray-400 mt-1">
-            {lang === 'bn' ? 'প্রতিদিন অভ্যাসের সক্রিয়তা' : 'Consistency is victory'}
+            {t.streakSubtitle}
           </div>
         </div>
 
@@ -154,7 +154,7 @@ export const DashboardModule: React.FC = () => {
         <div className="p-5 rounded-2xl bg-gray-950/80 border border-gray-800/80 hover:border-cyan-400/30 transition-all">
           <div className="flex justify-between items-start">
             <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              {lang === 'bn' ? 'দৈনিক হাইড্রেশন' : 'Daily Hydration'}
+              {t.waterVitality}
             </span>
             <Activity className="w-4 h-4 text-cyan-400" />
           </div>
@@ -162,7 +162,7 @@ export const DashboardModule: React.FC = () => {
             {waterMl} ml
           </div>
           <div className="text-[11px] text-gray-400 mt-1">
-            {Math.round((waterMl / 2500) * 100)}% {lang === 'bn' ? 'টার্গেট পূরণ' : 'of 2,500 ml target'}
+            {t.waterGoal}
           </div>
         </div>
       </div>
@@ -174,18 +174,18 @@ export const DashboardModule: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span>
               <span className="text-[10px] font-mono uppercase font-bold text-lime-300 tracking-wider">
-                DAILY CLARITY • RULE OF 3
+                RULE OF 3
               </span>
             </div>
             <h2 className="text-base sm:text-lg font-bold text-gray-100 mt-0.5">
-              {lang === 'bn' ? 'আজকের ৩টি প্রধান লক্ষ্য (Rule of 3)' : "Today's 3 Critical Priorities (Rule of 3)"}
+              {t.ruleOf3Title}
             </h2>
             <p className="text-xs text-gray-400">
-              {lang === 'bn' ? 'সারাদিন বিজয়ী হতে এই ৩টি কাজ সবার আগে সম্পন্ন করুন।' : 'Win the day by conquering these 3 non-negotiables before anything else.'}
+              {t.ruleOf3Sub}
             </p>
           </div>
           <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-gray-900 border border-lime-400/30 text-lime-300">
-            {ruleOf3.filter(r => r.done).length} / 3 {lang === 'bn' ? 'সম্পন্ন' : 'Conquered'}
+            {ruleOf3.filter(r => r.done).length} / 3 {lang === 'bn' ? 'সম্পন্ন' : 'Completed'}
           </span>
         </div>
 
@@ -202,7 +202,7 @@ export const DashboardModule: React.FC = () => {
                 <span className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded ${
                   item.done ? 'bg-lime-400 text-gray-950' : 'bg-gray-800 text-gray-400'
                 }`}>
-                  #{idx + 1} Priority
+                  #{idx + 1} {lang === 'bn' ? 'অগ্রাধিকার' : 'Priority'}
                 </span>
                 <button
                   onClick={() => toggleRuleOf3(item.id)}
@@ -211,7 +211,7 @@ export const DashboardModule: React.FC = () => {
                   }`}
                 >
                   {item.done ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-                  <span>{item.done ? '✓ Done' : 'Mark Done'}</span>
+                  <span>{item.done ? (lang === 'bn' ? '✓ সম্পন্ন' : '✓ Done') : (lang === 'bn' ? 'সম্পন্ন করুন' : 'Mark Done')}</span>
                 </button>
               </div>
               <input
@@ -221,7 +221,7 @@ export const DashboardModule: React.FC = () => {
                 className={`bg-transparent border-0 text-xs font-medium text-gray-200 focus:outline-none focus:ring-1 focus:ring-lime-300 rounded px-1 w-full ${
                   item.done ? 'line-through text-gray-500' : ''
                 }`}
-                placeholder={`Priority #${idx + 1}...`}
+                placeholder={lang === 'bn' ? `অগ্রাধিকার #${idx + 1}...` : `Priority #${idx + 1}...`}
               />
             </div>
           ))}
@@ -237,16 +237,13 @@ export const DashboardModule: React.FC = () => {
             </div>
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-gray-200 flex items-center gap-2">
-                <span>{lang === 'bn' ? 'স্মার্ট কুইক ক্যাপচার' : 'Smart Natural Language Capture'}</span>
-                <span className="text-[9px] font-mono bg-lime-400/10 text-lime-300 px-1.5 py-0.5 rounded border border-lime-400/20">AI Heuristic</span>
+                <span>{t.smartCaptureTitle}</span>
+                <span className="text-[9px] font-mono bg-lime-400/10 text-lime-300 px-1.5 py-0.5 rounded border border-lime-400/20">AI</span>
               </h3>
               <p className="text-[11px] text-gray-400">
-                {lang === 'bn' ? 'মুখে বলার মতো লিখুন—খরচ বা প্রায়োরিটি কাজ স্বয়ংক্রিয়ভাবে শনাক্ত হবে।' : 'Type expenses or tasks naturally—automatically categorized and saved.'}
+                {t.smartCaptureSub}
               </p>
             </div>
-          </div>
-          <div className="text-[10px] text-gray-500 font-mono">
-            Examples: <span className="text-lime-300">"কাচ্চি ৩৫০"</span> • <span className="text-cyan-300">"উবার ১২০"</span> • <span className="text-amber-300">"সন্ধ্যায় মিটিং"</span>
           </div>
         </div>
 
@@ -257,14 +254,14 @@ export const DashboardModule: React.FC = () => {
               value={nlpInput}
               onChange={handleNlpChange}
               className="field py-3 pl-3.5 pr-24 text-xs font-medium bg-gray-900 border-gray-800 focus:border-lime-300 w-full rounded-2xl"
-              placeholder={lang === 'bn' ? "যেমন: 'দুপুরে কাচ্চি ৩৫০ টাকা' বা 'কাল বিকাল ৪টায় মিটিং'..." : "e.g. 'Lunch 350 bdt' or 'Meeting tomorrow at 4pm'..."}
+              placeholder={t.capturePlaceholder}
             />
             <button
               type="submit"
               className="absolute right-1.5 px-4 py-2 bg-lime-300 hover:bg-lime-400 text-gray-950 font-bold rounded-xl text-xs transition-colors flex items-center gap-1"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Log</span>
+              <span>{t.addSmartItem}</span>
             </button>
           </div>
 
@@ -274,18 +271,20 @@ export const DashboardModule: React.FC = () => {
               <span className="font-mono">
                 {nlpPreview.type === 'expense' ? (
                   <>
-                    <span className="text-rose-400 font-bold">💸 Expense:</span>{' '}
+                    <span className="text-rose-400 font-bold">💸 {t.detectedExpense}:</span>{' '}
                     <span className="text-emerald-300 font-bold">{currency} {nlpPreview.amount?.toLocaleString()}</span>{' '}
                     <span className="text-gray-400">({nlpPreview.category})</span>
                   </>
                 ) : (
                   <>
-                    <span className="text-lime-300 font-bold">✓ Task:</span>{' '}
+                    <span className="text-lime-300 font-bold">✓ {t.detectedTask}:</span>{' '}
                     <span className="text-gray-200">{nlpPreview.text}</span>
                   </>
                 )}
               </span>
-              <span className="text-[10px] text-gray-500 font-mono">Press Enter ↵ to commit</span>
+              <span className="text-[10px] text-gray-500 font-mono">
+                {lang === 'bn' ? 'যুক্ত করতে Enter চাপুন ↵' : 'Press Enter ↵ to commit'}
+              </span>
             </div>
           )}
         </form>
@@ -298,24 +297,24 @@ export const DashboardModule: React.FC = () => {
             <span className="text-2xl">🌙</span>
             <div>
               <h3 className="text-sm font-bold text-gray-100">
-                {lang === 'bn' ? 'সন্ধ্যার আত্মপর্যালোচনা ও দিনের প্রাপ্তি' : 'Evening Reflection & Daily Win'}
+                {t.eveningTitle}
               </h3>
               <p className="text-[11px] text-gray-400">
-                {lang === 'bn' ? 'দিনের শেষে নিজের প্রাপ্তি ও কৃতজ্ঞতা লিপিবদ্ধ করুন।' : 'Close your day with intentional gratitude and habit satisfaction.'}
+                {t.eveningSub}
               </p>
             </div>
           </div>
 
           {/* Mood Emojis */}
           <div className="flex items-center gap-1.5 bg-gray-900 p-1 rounded-xl border border-gray-800">
-            {['⚡ Energized', '🎯 Productive', '☕ Balanced', '😴 Exhausted'].map(m => (
+            {['⚡', '🎯', '☕', '😴'].map(m => (
               <button
                 key={m}
-                onClick={() => { setDailyMood(m); showToast(`Mood logged: ${m}`); }}
+                onClick={() => { setDailyMood(m); showToast(`${t.howEnergy} ${m}`); }}
                 className={`px-2 py-1 rounded text-xs transition-all ${dailyMood === m ? 'bg-purple-500/20 text-purple-300 font-bold' : 'text-gray-400 hover:text-white'}`}
                 title={m}
               >
-                {m.split(' ')[0]}
+                {m}
               </button>
             ))}
           </div>
@@ -328,13 +327,13 @@ export const DashboardModule: React.FC = () => {
             onChange={e => setEveningText(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSaveEvening()}
             className="field flex-1 text-xs py-2.5 bg-gray-900 border-gray-800 rounded-xl"
-            placeholder={lang === 'bn' ? "আজকের সবচেয়ে বড় প্রাপ্তি বা শিক্ষা কী ছিল?..." : "Write today's biggest win or lesson learned..."}
+            placeholder={t.eveningPlaceholder}
           />
           <button
             onClick={handleSaveEvening}
             className="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs transition-colors shrink-0 flex items-center gap-1"
           >
-            <span>Save Win</span>
+            <span>{t.saveReflection}</span>
           </button>
         </div>
       </div>

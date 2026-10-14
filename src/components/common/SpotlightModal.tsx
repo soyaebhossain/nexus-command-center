@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Search, X, CheckSquare, Wallet, Target, Activity } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { ModuleId } from '../../types';
 
 export const SpotlightModal: React.FC = () => {
   const { 
     isSearchModalOpen, closeSearchModal, tasks, transactions, 
-    setActiveModule 
+    setActiveModule, lang 
   } = useApp();
 
   const [query, setQuery] = useState('');
@@ -27,13 +27,13 @@ export const SpotlightModal: React.FC = () => {
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-start justify-center pt-20 px-4 animate-in fade-in">
       <div className="w-full max-w-2xl bg-gray-950 border border-gray-800 rounded-3xl p-4 space-y-4 max-h-[80vh] flex flex-col shadow-2xl">
         <div className="flex items-center gap-3 border-b border-gray-800 pb-3">
-          <Search className="w-5 h-5 text-lime-300" />
+          <Search className="w-5 h-5 text-lime-300 shrink-0" />
           <input
             type="text"
             autoFocus
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder="Type to search across tasks, finance, goals, and modules... (ESC to close)"
+            placeholder={lang === 'bn' ? 'টাস্ক, লেনদেন বা মডিউল খুঁজতে লিখুন... (বন্ধ করতে ESC)' : 'Type to search across tasks, finance, and modules... (ESC to close)'}
             className="flex-1 bg-transparent border-0 text-sm text-gray-100 focus:outline-none"
           />
           <button onClick={closeSearchModal} className="text-xs text-gray-500 hover:text-white px-2 py-1 rounded border border-gray-800">
@@ -44,13 +44,17 @@ export const SpotlightModal: React.FC = () => {
         <div className="overflow-y-auto space-y-3 flex-1 pr-1 text-xs">
           {!q ? (
             <div className="text-gray-500 text-center py-8">
-              Quick search tasks, financial transactions, or jump directly to modules...
+              {lang === 'bn' 
+                ? 'টাস্ক, আর্থিক লেনদেন খুঁজতে লিখুন অথবা সরাসরি যেকোনো মডিউলে যান...' 
+                : 'Quick search tasks, financial transactions, or jump directly to modules...'}
             </div>
           ) : (
             <>
               {matchedTasks.length > 0 && (
                 <div className="space-y-1">
-                  <div className="text-[10px] font-mono uppercase text-lime-300 font-bold px-2">Matched Tasks</div>
+                  <div className="text-[10px] font-mono uppercase text-lime-300 font-bold px-2">
+                    {lang === 'bn' ? 'খুঁজে পাওয়া টাস্ক' : 'Matched Tasks'}
+                  </div>
                   {matchedTasks.map(t => (
                     <div
                       key={t.id}
@@ -66,7 +70,9 @@ export const SpotlightModal: React.FC = () => {
 
               {matchedTrans.length > 0 && (
                 <div className="space-y-1">
-                  <div className="text-[10px] font-mono uppercase text-emerald-400 font-bold px-2">Matched Transactions</div>
+                  <div className="text-[10px] font-mono uppercase text-emerald-400 font-bold px-2">
+                    {lang === 'bn' ? 'খুঁজে পাওয়া লেনদেন' : 'Matched Transactions'}
+                  </div>
                   {matchedTrans.map(t => (
                     <div
                       key={t.id}
@@ -81,7 +87,9 @@ export const SpotlightModal: React.FC = () => {
               )}
 
               {matchedTasks.length === 0 && matchedTrans.length === 0 && (
-                <div className="text-gray-500 text-center py-6">No matching records found.</div>
+                <div className="text-gray-500 text-center py-6">
+                  {lang === 'bn' ? 'কোনো ফলাফল পাওয়া যায়নি।' : 'No matching records found.'}
+                </div>
               )}
             </>
           )}

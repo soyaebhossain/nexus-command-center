@@ -1,13 +1,16 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { X, Sliders, Languages, Coins } from 'lucide-react';
-import { CurrencySymbol, LanguageCode } from '../../types';
+import { CurrencySymbol } from '../../types';
+import { useTranslation } from '../../utils/i18n';
 
 export const SettingsModal: React.FC = () => {
   const { 
     isSettingsModalOpen, closeSettingsModal, currency, setCurrency, 
-    lang, setLang, activeAccount 
+    lang, setLang 
   } = useApp();
+
+  const t = useTranslation(lang);
 
   if (!isSettingsModalOpen) return null;
 
@@ -17,7 +20,7 @@ export const SettingsModal: React.FC = () => {
         <div className="flex justify-between items-center border-b border-gray-800 pb-4">
           <h3 className="text-lg font-bold text-gray-100 flex items-center gap-2">
             <Sliders className="text-lime-300 w-5 h-5" />
-            <span>Workspace Preferences & Settings</span>
+            <span>{t.settingsTitle}</span>
           </h3>
           <button onClick={closeSettingsModal} className="text-gray-400 hover:text-white p-1">
             <X className="w-5 h-5" />
@@ -28,7 +31,7 @@ export const SettingsModal: React.FC = () => {
           <div>
             <label className="text-gray-400 block mb-1.5 font-medium flex items-center gap-1.5">
               <Languages className="w-4 h-4 text-lime-300" />
-              <span>System Language (সিস্টেম ভাষা)</span>
+              <span>{t.language}</span>
             </label>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -38,7 +41,7 @@ export const SettingsModal: React.FC = () => {
                   lang === 'bn' ? 'bg-lime-400/20 text-lime-300 border-lime-400/40' : 'bg-gray-900 border-gray-800 text-gray-400'
                 }`}
               >
-                বাংলা (Bengali)
+                বাংলা
               </button>
               <button
                 type="button"
@@ -47,7 +50,7 @@ export const SettingsModal: React.FC = () => {
                   lang === 'en' ? 'bg-lime-400/20 text-lime-300 border-lime-400/40' : 'bg-gray-900 border-gray-800 text-gray-400'
                 }`}
               >
-                English (International)
+                English
               </button>
             </div>
           </div>
@@ -55,7 +58,7 @@ export const SettingsModal: React.FC = () => {
           <div>
             <label className="text-gray-400 block mb-1.5 font-medium flex items-center gap-1.5">
               <Coins className="w-4 h-4 text-emerald-400" />
-              <span>Active Currency Symbol (সক্রিয় মুদ্রা)</span>
+              <span>{t.currency}</span>
             </label>
             <div className="grid grid-cols-4 gap-2 font-mono">
               {(['৳', '$', '€', '£'] as CurrencySymbol[]).map(c => (
@@ -74,9 +77,11 @@ export const SettingsModal: React.FC = () => {
           </div>
 
           <div className="p-4 rounded-2xl bg-gray-900 border border-gray-800 space-y-1">
-            <h4 className="font-bold text-gray-200">Production React 19 + TypeScript Engine</h4>
+            <h4 className="font-bold text-gray-200">{lang === 'bn' ? 'প্রোডাকশন রিঅ্যাক্ট ১৯ + টাইপস্ক্রিপ্ট ফ্রেমওয়ার্ক' : 'Production React 19 + TypeScript Engine'}</h4>
             <p className="text-[11px] text-gray-400">
-              Clean modular components, Express REST API synchronization, and 100% offline fallback.
+              {lang === 'bn' 
+                ? 'ক্লিন মডুলার কম্পোনেন্টস, এক্সপ্রেস রেস্ট এপিআই সিনক্রোনাইজেশন এবং ১০০% অফলাইন ব্যাকআপ সমর্থন।'
+                : 'Clean modular components, Express REST API synchronization, and 100% offline fallback.'}
             </p>
           </div>
         </div>
@@ -85,7 +90,7 @@ export const SettingsModal: React.FC = () => {
           onClick={closeSettingsModal}
           className="w-full py-2.5 bg-lime-300 hover:bg-lime-400 text-gray-950 font-bold rounded-xl text-xs"
         >
-          Close Preferences
+          {t.close}
         </button>
       </div>
     </div>
