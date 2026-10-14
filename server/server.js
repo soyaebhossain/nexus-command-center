@@ -19,9 +19,9 @@ const rootDir = path.join(__dirname, '..');
 app.use(express.static(rootDir));
 
 // SPA Fallback: send index.html for any unhandled routes
-app.get('*', (req, res, next) => {
+app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
-    return next();
+    return res.status(404).json({ error: 'API endpoint not found' });
   }
   res.sendFile(path.join(rootDir, 'index.html'));
 });
