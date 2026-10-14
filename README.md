@@ -28,17 +28,27 @@ NEXUS solves multi-user and shared-computer needs with an **Offline-First Multi-
 
 ---
 
-## 3. The Core Philosophy: "Daily Focus & The Rule of 3" (Zen Essentials Mode)
+## 3. Data Safety & 1-Click Offline Backup / Restore (JSON Portability)
+
+NEXUS eliminates any fear of browser cache loss or switching devices:
+- **📥 1-Click JSON Backup:** Download a single, timestamped `.json` file (`nexus_backup_YYYY-MM-DD.json`) containing all your user profiles, ledgers, habits, and priorities.
+- **📤 Instant Restore & Transfer:** Move your entire workspace from PC to mobile (or vice-versa) by uploading your backup file with 1 click.
+- **100% Private & Offline:** Your financial and personal data never touches an external server. You own 100% of your data.
+
+---
+
+## 4. The Core Philosophy: "Daily Focus, Habit Streak & The Rule of 3" (Zen Essentials Mode)
 
 Real productivity is not about having endless overwhelming features, but having a few critical tools that work reliably and build strong daily habits:
 - **⚡ Daily Essentials (Focus Mode):** With 1-click on the `⚡ Daily Essentials` toggle, NEXUS strips away cognitive clutter and focuses solely on the 4 pillars of daily life: **Dashboard, Priorities, Finance & Habits**. Power users can switch back to **`📊 Full Modules`** anytime.
+- **🔥 Daily Habit Streak Counter (ধারাবাহিক স্ট্রিক):** Visual flame badge and tracking engine (`🔥 X Days Streak`) that rewards users for daily logins, completing Rule of 3, and recording daily reflections.
 - **🎯 Morning Rule of 3 (সকালের ৩টি প্রধান লক্ষ্য):** Win the day by defining and conquering your top 3 non-negotiable priorities before anything else. Includes celebratory audio chord progression upon completing all 3.
 - **⚡ 3-Second Frictionless Capture:** Instantly record expenses (e.g. coffee, commute, groceries) or add priority tasks directly from the dashboard without navigating across tabs.
 - **🌙 Evening Reflection & Mood Tracker:** Close each day with an intentional win, lesson learned, and daily energy check (`⚡ Energized`, `🎯 Productive`, `☕ Balanced`, `😴 Exhausted`).
 
 ---
 
-## 4. Progressive Web App (PWA) — Native Install
+## 5. Progressive Web App (PWA) — Native Install
 
 NEXUS includes full **Progressive Web App (PWA)** capabilities:
 - **Desktop Installation (Windows / macOS / Linux):** Open the application in Google Chrome or Microsoft Edge and click the **Install App** icon in the address bar to run NEXUS as a standalone desktop window.
@@ -47,15 +57,15 @@ NEXUS includes full **Progressive Web App (PWA)** capabilities:
 
 ---
 
-## 5. Core Operating System Architecture (14 Unified Modules)
+## 6. Core Operating System Architecture (14 Unified Modules)
 
 | # | Module / Subsystem | Key Capabilities & Features | Persona Suitability |
 | :-: | :--- | :--- | :--- |
-| **0** | **Executive Cockpit (Dashboard)** | Personalized greeting, **Account Switcher Pill**, 4 KPI cards, **Morning Rule of 3**, **3-Sec Quick Log**, **Evening Reflection & Mood**, chronological feed. | All Personas |
+| **0** | **Executive Cockpit (Dashboard)** | Personalized greeting, **Account Switcher Pill**, 4 KPI cards, **Habit Streak Flame**, **Morning Rule of 3**, **3-Sec Quick Log**, **Evening Reflection & Mood**, chronological feed. | All Personas |
 | **1** | **Life Planner & Goal Matrix** | 1-3 year vision milestones, OKRs, category tags, progress sliders (`+10%`, `-10%`), daily reflection journal & decision helper. | Students, Professionals, Entrepreneurs |
 | **2** | **Unified Calendar & Reminders** | Synchronized monthly calendar grid, day event dots, task/exam/bill/meeting badges, upcoming schedule agenda, add event modal. | Everyone |
 | **3** | **Productivity & Focus Engine** | Priorities with P1-P3 severity, category tags, due dates, filters, search, Pomodoro timer with Web Audio chord chimes, quick capture notes, **CSV Task Export**. | Students, Freelancers, Engineers |
-| **4** | **Personal & Business Finance** | Multi-currency (৳ BDT, $ USD, € EUR, £ GBP), Income/Expense ledger, Net Balance, Savings Rate %, Chart.js Doughnut category breakdown with **Item-wise Vibrant Color Coding**, **Debts & Loans Tracker (দেনা-পাওনা)**, **CSV Ledger Export** & **Print to PDF**. | Homemakers, Freelancers, Business |
+| **4** | **Personal & Business Finance** | Multi-currency (৳ BDT, $ USD, € EUR, £ GBP), **Monthly Budget Cap & Overspend Alert Bar**, Income/Expense ledger, Net Balance, Savings Rate %, Chart.js Doughnut category breakdown with **Item-wise Vibrant Color Coding**, **Debts & Loans Tracker (দেনা-পাওনা)**, **CSV Ledger Export** & **Print to PDF**. | Homemakers, Freelancers, Business |
 | **5** | **Learning & Skill Hub** | Active course trackers with study hours progress, upcoming exams and project assignments with weightages, book library with star ratings and notes. | Students, Lifelong Learners, Researchers |
 | **6** | **IT & Operations Engine** | Incident ticket tracker (Open/In Progress/Resolved), severity P1-P4, daily infrastructure verification checklist with timestamps, edge node table. | DevOps, SysAdmins, IT Leads |
 | **7** | **Email Action & Triage Center** | Thread intent analyzer, priority classification (Urgent, High, Normal), multi-tone response generator (Executive, Concise, Decline, Ops), 1-click Convert to Task. | Executives, Support, Project Managers |
@@ -68,7 +78,7 @@ NEXUS includes full **Progressive Web App (PWA)** capabilities:
 
 ---
 
-## 6. Personalization & Internationalization (Universal Life OS)
+## 7. Personalization & Internationalization (Universal Life OS)
 
 ### 1. Role-Based Persona Switching
 Click the role badge in the top header or press the role selector to instantly activate one of 7 curated personas:
@@ -97,7 +107,7 @@ All financial KPI cards, forms, category charts, debts, and ledger tables automa
 
 ---
 
-## 7. Global Spotlight Search (`Ctrl+K` / `⌘K`)
+## 8. Global Spotlight Search (`Ctrl+K` / `⌘K`)
 
 Press **`Ctrl+K`** (or **`Cmd+K`** on macOS) or click the search bar to launch the Spotlight Search modal:
 - Searches simultaneously across Tasks, Calendar, Goals, Courses, Knowledge SOPs, Debts & Loans, and IT Tickets.
@@ -106,7 +116,7 @@ Press **`Ctrl+K`** (or **`Cmd+K`** on macOS) or click the search bar to launch t
 
 ---
 
-## 8. Automated GitHub Pages CI/CD
+## 9. Automated GitHub Pages CI/CD
 
 The repository includes a GitHub Actions workflow [`deploy.yml`](file:///f:/Al-Ameen%20IT/web/Personal%20Traker/.github/workflows/deploy.yml) that automatically deploys the application to **GitHub Pages** on every push to `main`.
 - Live URL format: `https://<username>.github.io/<repo-name>/`

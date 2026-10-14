@@ -268,6 +268,29 @@ body {
     <!-- Accounts Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5" id="accountsListContainer"></div>
 
+    <!-- 1-Click Offline Data Backup & Restore Section -->
+    <div class="pt-4 border-t border-gray-800 space-y-3">
+      <div class="flex justify-between items-center">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
+          <i data-lucide="shield-check" class="w-4 h-4"></i> Data Safety & Backup (সম্পূর্ণ ব্যাকআপ ও রিস্টোর)
+        </h4>
+        <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/50 border border-cyan-800/50 px-2 py-0.5 rounded">100% Offline JSON</span>
+      </div>
+      <p class="text-xs text-gray-400">Download a single JSON backup file containing all your isolated profiles and finances, or restore anytime on another phone or computer.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+        <button type="button" onclick="exportFullJSONBackup()" class="py-2.5 px-3 rounded-xl bg-gray-950 hover:bg-gray-800 border border-gray-800 hover:border-lime-300/50 text-gray-200 text-xs font-bold flex items-center justify-center gap-2 transition-all">
+          <i data-lucide="download" class="w-4 h-4 text-lime-300"></i>
+          <span>Download Backup (.json)</span>
+        </button>
+        <button type="button" onclick="triggerRestoreBackup()" class="py-2.5 px-3 rounded-xl bg-gray-950 hover:bg-gray-800 border border-gray-800 hover:border-cyan-300/50 text-gray-200 text-xs font-bold flex items-center justify-center gap-2 transition-all">
+          <i data-lucide="upload" class="w-4 h-4 text-cyan-300"></i>
+          <span>Restore Backup (.json)</span>
+        </button>
+        <input type="file" id="backupFileInput" accept=".json" class="hidden" onchange="handleRestoreBackupFile(event)">
+      </div>
+    </div>
+
+
     <!-- Create New Account Section -->
     <div class="pt-4 border-t border-gray-800 space-y-3">
       <div class="flex justify-between items-center">
@@ -635,9 +658,14 @@ body {
         </h2>
         <p class="text-xs text-gray-400 mt-0.5">Win the day by conquering these 3 non-negotiables before anything else.</p>
       </div>
-      <span id="ruleOf3ProgressBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-full bg-gray-950 border border-lime-400/40 text-lime-300 shrink-0">
-        0 / 3 Conquered
-      </span>
+      <div class="flex items-center gap-2 shrink-0">
+        <span id="ruleOf3StreakBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center gap-1.5 shadow-sm" title="Consecutive Daily Habit Streak">
+          🔥 <span id="streakCountNumber">1</span> Day Streak
+        </span>
+        <span id="ruleOf3ProgressBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-full bg-gray-950 border border-lime-400/40 text-lime-300 shrink-0">
+          0 / 3 Conquered
+        </span>
+      </div>
     </div>
 
     <!-- 3 Focus Slots -->
@@ -1022,6 +1050,38 @@ body {
       <button onclick="resetFinanceData()" title="Reset Transactions" class="p-2 bg-gray-900 border border-gray-800 hover:border-red-500 rounded-xl text-xs text-gray-400 hover:text-red-400">
         <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
       </button>
+    </div>
+  </div>
+
+  <!-- Monthly Budget Cap & Overspend Alert Banner -->
+  <div class="panel p-5 bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 border border-gray-800 space-y-3">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-lime-400/10 text-lime-300 flex items-center justify-center shrink-0 border border-lime-400/20">
+          <i data-lucide="target" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-gray-200">Monthly Budget Cap (মাসিক বাজেট লক্ষ্য)</h3>
+            <button type="button" onclick="promptSetMonthlyBudget()" class="text-[11px] text-lime-300 hover:text-lime-200 font-semibold underline underline-offset-2 flex items-center gap-1">
+              <i data-lucide="edit-3" class="w-3 h-3"></i> <span id="budgetEditBtnText">Edit Target</span>
+            </button>
+          </div>
+          <p class="text-xs text-gray-400 mt-0.5" id="budgetLimitDesc">
+            Target: <span class="font-bold font-mono text-gray-200" id="budgetTargetDisplay">৳ 50,000</span> | 
+            Spent: <span class="font-bold font-mono text-rose-400" id="budgetSpentDisplay">৳ 0</span> 
+            (<span class="font-mono font-bold" id="budgetPercentDisplay">0%</span>)
+          </p>
+        </div>
+      </div>
+      <div id="budgetStatusBadge" class="px-3 py-1.5 rounded-full text-xs font-bold font-mono border flex items-center gap-1.5 bg-emerald-500/10 border-emerald-500/40 text-emerald-300">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="budgetStatusText">✅ On Track (বাজেটের মধ্যে)</span>
+      </div>
+    </div>
+    <!-- Interactive Budget Progress Bar -->
+    <div class="w-full bg-gray-950 h-2.5 rounded-full overflow-hidden border border-gray-800 p-0.5">
+      <div id="budgetVisualBar" class="bg-gradient-to-r from-emerald-400 to-lime-400 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
     </div>
   </div>
 
@@ -2039,6 +2099,7 @@ function toggleRuleOf3Item(id) {
   const item = ruleOf3.find(r => r.id === id);
   if (item) {
     item.done = !item.done;
+    if (item.done) checkAndIncrementStreak();
     renderRuleOf3();
     if (item.done) {
       playChime(950);
@@ -2137,6 +2198,7 @@ function saveEveningReflection() {
 
   const text = inp.value.trim();
   localStorage.setItem('nexus_daily_reflection', text);
+  checkAndIncrementStreak();
   if (notice) {
     notice.textContent = `✓ Saved for today: "${text}"`;
     notice.classList.remove('hidden');
@@ -2380,6 +2442,9 @@ function saveCurrentAccountData() {
   localStorage.setItem(p + 'role', currentRole);
   localStorage.setItem(p + 'enabled_modules', JSON.stringify(enabledModules));
   localStorage.setItem(p + 'currency', currentCurrency);
+  localStorage.setItem(p + 'monthly_budget', currentMonthlyBudget.toString());
+  localStorage.setItem(p + 'habit_streak', habitStreak.toString());
+  localStorage.setItem(p + 'last_active_date', lastActiveDate);
 }
 
 function loadAccountData(accId) {
@@ -2411,6 +2476,9 @@ function loadAccountData(accId) {
 
   const savedCurr = localStorage.getItem(p + 'currency');
   if (savedCurr) setCurrency(savedCurr);
+  currentMonthlyBudget = parseFloat(localStorage.getItem(p + 'monthly_budget') || '50000');
+  habitStreak = parseInt(localStorage.getItem(p + 'habit_streak') || '1');
+  lastActiveDate = localStorage.getItem(p + 'last_active_date') || new Date().toISOString().split('T')[0];
 }
 
 function initializeAccountData(acc) {
@@ -2444,6 +2512,9 @@ function initializeAccountData(acc) {
   localStorage.setItem(p + 'role', acc.role || 'universal');
   const roleMods = ROLES[acc.role] ? ROLES[acc.role].modules : ROLES.universal.modules;
   localStorage.setItem(p + 'enabled_modules', JSON.stringify(roleMods));
+  localStorage.setItem(p + 'monthly_budget', '50000');
+  localStorage.setItem(p + 'habit_streak', '1');
+  localStorage.setItem(p + 'last_active_date', new Date().toISOString().split('T')[0]);
 }
 
 function deleteAccount(accId) {
@@ -3178,6 +3249,7 @@ function renderFinance() {
   if (statSav) statSav.textContent = `${savRate}%`;
   if (savBar) savBar.style.width = `${Math.min(100, savRate)}%`;
 
+  updateBudgetUI(exp);
   renderCategoryChart(exp);
   renderTransactionList();
   renderDebts();
@@ -3898,6 +3970,7 @@ function toggleItChecklistItem(id) {
   const item = itChecklist.find(x => x.id === id);
   if (item) {
     item.done = !item.done;
+    if (item.done) checkAndIncrementStreak();
     renderItChecklist();
     showToast(item.done ? 'Maintenance checklist item verified' : 'Item marked unverified');
   }
@@ -4871,6 +4944,7 @@ function refreshAllModules() {
   renderGroceries();
   renderChores();
   renderDashboardOverview();
+  renderHabitStreakUI();
 }
 
 // ========================================================
@@ -4880,6 +4954,225 @@ function refreshAllModules() {
 // ========================================================
 // DATA EXPORT ENGINES & PWA WORKER
 // ========================================================
+
+// ========================================================
+// 18. DATA SAFETY, BUDGET ENGINE & HABIT STREAK MOMENTUM
+// ========================================================
+let currentMonthlyBudget = parseFloat(localStorage.getItem('nexus_monthly_budget') || '50000');
+let habitStreak = parseInt(localStorage.getItem('nexus_habit_streak') || '1');
+let lastActiveDate = localStorage.getItem('nexus_last_active_date') || new Date().toISOString().split('T')[0];
+
+function promptSetMonthlyBudget() {
+  const p = activeAccountId === 'acc_default' ? 'nexus_' : `nexus_${activeAccountId}_`;
+  const savedBudget = parseFloat(localStorage.getItem(p + 'monthly_budget') || currentMonthlyBudget.toString() || '50000');
+  const promptText = currentLang === 'bn' 
+    ? 'চলতি মাসের বাজেট লিমিট নির্ধারণ করুন (টাকা):' 
+    : 'Set your monthly budget cap:';
+  const val = prompt(promptText, savedBudget);
+  if (val !== null) {
+    const num = parseFloat(val);
+    if (!isNaN(num) && num > 0) {
+      currentMonthlyBudget = num;
+      localStorage.setItem(p + 'monthly_budget', num.toString());
+      renderFinance();
+      showToast(currentLang === 'bn' ? `বাজেট লিমিট নির্ধারিত হয়েছে: ${currentCurrency} ${num.toLocaleString()}` : `Monthly budget set to: ${currentCurrency} ${num.toLocaleString()}`);
+      logActivity(`Updated monthly budget target to ${currentCurrency} ${num}`);
+    }
+  }
+}
+
+function updateBudgetUI(exp) {
+  const p = activeAccountId === 'acc_default' ? 'nexus_' : `nexus_${activeAccountId}_`;
+  const budget = parseFloat(localStorage.getItem(p + 'monthly_budget') || currentMonthlyBudget.toString() || '50000');
+  
+  const targetEl = document.getElementById('budgetTargetDisplay');
+  const spentEl = document.getElementById('budgetSpentDisplay');
+  const pctEl = document.getElementById('budgetPercentDisplay');
+  const barEl = document.getElementById('budgetVisualBar');
+  const badgeEl = document.getElementById('budgetStatusBadge');
+  const badgeText = document.getElementById('budgetStatusText');
+
+  const pct = budget > 0 ? Math.round((exp / budget) * 100) : 0;
+
+  if (targetEl) targetEl.textContent = `${currentCurrency} ${budget.toLocaleString()}`;
+  if (spentEl) spentEl.textContent = `${currentCurrency} ${exp.toLocaleString()}`;
+  if (pctEl) {
+    pctEl.textContent = `${pct}%`;
+    pctEl.className = `font-mono font-bold ${pct >= 100 ? 'text-rose-400' : pct >= 80 ? 'text-amber-400' : 'text-emerald-400'}`;
+  }
+
+  if (barEl) {
+    barEl.style.width = `${Math.min(100, pct)}%`;
+    if (pct >= 100) {
+      barEl.className = 'bg-gradient-to-r from-rose-500 to-red-600 h-full rounded-full transition-all duration-700 animate-pulse';
+    } else if (pct >= 80) {
+      barEl.className = 'bg-gradient-to-r from-amber-400 to-rose-400 h-full rounded-full transition-all duration-700';
+    } else {
+      barEl.className = 'bg-gradient-to-r from-emerald-400 to-lime-400 h-full rounded-full transition-all duration-700';
+    }
+  }
+
+  if (badgeEl && badgeText) {
+    if (pct >= 100) {
+      badgeEl.className = 'px-3 py-1.5 rounded-full text-xs font-bold font-mono border flex items-center gap-1.5 bg-rose-500/20 border-rose-500/60 text-rose-300 animate-pulse';
+      badgeText.textContent = currentLang === 'bn' ? '⚠️ বাজেট অতিক্রম করেছে! (Over Budget)' : '⚠️ Over Budget Limit!';
+    } else if (pct >= 80) {
+      badgeEl.className = 'px-3 py-1.5 rounded-full text-xs font-bold font-mono border flex items-center gap-1.5 bg-amber-500/20 border-amber-500/60 text-amber-300';
+      badgeText.textContent = currentLang === 'bn' ? '⚡ সতর্কবার্তা: ৮০%+ ব্যয় হয়েছে' : '⚡ Warning: 80%+ Budget Spent';
+    } else {
+      badgeEl.className = 'px-3 py-1.5 rounded-full text-xs font-bold font-mono border flex items-center gap-1.5 bg-emerald-500/10 border-emerald-500/40 text-emerald-300';
+      badgeText.textContent = currentLang === 'bn' ? '✅ বাজেট নিয়ন্ত্রণে রয়েছে' : '✅ On Track (Safe)';
+    }
+  }
+}
+
+function checkAndIncrementStreak() {
+  const today = new Date().toISOString().split('T')[0];
+  const p = activeAccountId === 'acc_default' ? 'nexus_' : `nexus_${activeAccountId}_`;
+  
+  let savedStreak = parseInt(localStorage.getItem(p + 'habit_streak') || '0');
+  let savedLastDate = localStorage.getItem(p + 'last_active_date') || '';
+
+  if (!savedLastDate) {
+    savedStreak = 1;
+    savedLastDate = today;
+  } else if (savedLastDate === today) {
+    if (savedStreak === 0) savedStreak = 1;
+  } else {
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    if (savedLastDate === yesterday) {
+      savedStreak += 1;
+    } else {
+      savedStreak = 1;
+    }
+    savedLastDate = today;
+  }
+
+  habitStreak = savedStreak;
+  lastActiveDate = savedLastDate;
+  localStorage.setItem(p + 'habit_streak', savedStreak.toString());
+  localStorage.setItem(p + 'last_active_date', savedLastDate);
+
+  renderHabitStreakUI();
+}
+
+function renderHabitStreakUI() {
+  const streakText = document.getElementById('streakCountNumber');
+  const dashHabitStreak = document.getElementById('dashHabitStreak');
+
+  const p = activeAccountId === 'acc_default' ? 'nexus_' : `nexus_${activeAccountId}_`;
+  const streak = parseInt(localStorage.getItem(p + 'habit_streak') || habitStreak.toString() || '1');
+
+  if (streakText) streakText.textContent = streak;
+  if (dashHabitStreak) {
+    dashHabitStreak.textContent = currentLang === 'bn' 
+      ? `🔥 ${streak} দিনের ধারাবাহিক স্ট্রিক` 
+      : `🔥 ${streak} Days Active Streak`;
+  }
+}
+
+function exportFullJSONBackup() {
+  saveCurrentAccountData();
+  const backupData = {
+    app: "NEXUS Command Center",
+    version: "2.5.0",
+    exportedAt: new Date().toISOString(),
+    activeAccountId: activeAccountId,
+    accounts: accounts,
+    lang: currentLang,
+    storage: {}
+  };
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('nexus_')) {
+      backupData.storage[key] = localStorage.getItem(key);
+    }
+  }
+
+  const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dateStr = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = `nexus_backup_${dateStr}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  playChime(1150);
+  showToast(currentLang === 'bn' ? 'সম্পূর্ণ অফলাইন ব্যাকআপ (.json) সফলভাবে ডাউনলোড হয়েছে' : 'Full offline backup (.json) downloaded successfully');
+  logActivity('Exported full system JSON backup');
+}
+
+function triggerRestoreBackup() {
+  const inp = document.getElementById('backupFileInput');
+  if (inp) inp.click();
+}
+
+function handleRestoreBackupFile(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data || !data.storage) {
+        showToast(currentLang === 'bn' ? 'ভুল ফরম্যাট! এটি বৈধ NEXUS ব্যাকআপ ফাইল নয়।' : 'Invalid file! Not a recognized NEXUS backup.');
+        return;
+      }
+
+      const totalProfiles = (data.accounts && Array.isArray(data.accounts)) ? data.accounts.length : 1;
+      const confirmMsg = currentLang === 'bn'
+        ? `এই ব্যাকআপটিতে ${totalProfiles}টি প্রোফাইল রয়েছে (${data.exportedAt.slice(0, 10)})। আপনি কি ডেটা রিস্টোর করতে চান?`
+        : `This backup contains ${totalProfiles} profiles (${data.exportedAt.slice(0, 10)}). Restore and replace current workspace data?`;
+
+      if (!confirm(confirmMsg)) {
+        event.target.value = '';
+        return;
+      }
+
+      for (const [key, val] of Object.entries(data.storage)) {
+        localStorage.setItem(key, val);
+      }
+
+      if (data.accounts && Array.isArray(data.accounts)) {
+        accounts = data.accounts;
+        localStorage.setItem('nexus_accounts', JSON.stringify(accounts));
+      }
+
+      if (data.activeAccountId) {
+        activeAccountId = data.activeAccountId;
+        localStorage.setItem('nexus_active_account_id', activeAccountId);
+      }
+
+      if (data.lang) {
+        currentLang = data.lang;
+        localStorage.setItem('nexus_lang', currentLang);
+      }
+
+      loadAccountData(activeAccountId);
+      updateAccountHeaderUI();
+      renderAccountsList();
+      renderNavBar();
+      refreshAllModules();
+
+      playChime(1250);
+      showToast(currentLang === 'bn' ? '🎉 ডেটা সফলভাবে রিস্টোর করা হয়েছে!' : '🎉 Data restored successfully from backup!');
+      logActivity('Restored full system JSON backup');
+      closeAccountModal();
+    } catch (err) {
+      console.error(err);
+      showToast(currentLang === 'bn' ? 'ফাইল পড়তে ত্রুটি হয়েছে' : 'Error parsing backup file');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+
 function exportFinanceCSV() {
   if (transactions.length === 0) {
     showToast(currentLang === 'bn' ? 'কোনো লেনদেনের হিসাব পাওয়া যায়নি' : 'No transactions recorded');
@@ -4979,6 +5272,8 @@ window.addEventListener('DOMContentLoaded', () => {
   setInterval(updateLiveClock, 1000);
   updateSummitCountdown();
   setInterval(updateSummitCountdown, 1000);
+  checkAndIncrementStreak();
+  renderHabitStreakUI();
 
   lucide.createIcons();
 
@@ -4999,6 +5294,8 @@ window.addEventListener('DOMContentLoaded', () => {
       closeUpgradeModal();
       closeCalendarModal();
       closeSopModal();
+      closeAccountModal();
+      closePinModal();
     }
   });
 
