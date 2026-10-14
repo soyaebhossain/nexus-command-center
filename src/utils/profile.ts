@@ -191,3 +191,175 @@ export function calculateProfileCompletion(account?: Account): ProfileCompletion
     missingItemsBn: missingBn
   };
 }
+
+export interface CircadianPhaseInfo {
+  phaseKey: 'morning_peak' | 'midday_slump' | 'afternoon_drive' | 'evening_winddown' | 'night_recovery';
+  phaseNameEn: string;
+  phaseNameBn: string;
+  taglineEn: string;
+  taglineBn: string;
+  optimalFocusEn: string;
+  optimalFocusBn: string;
+  energyLevelPercent: number;
+  colorClass: string;
+  bgGradient: string;
+  accentBorder: string;
+  progressPercent: number; // 0 - 100 representing position in 24hr cycle
+}
+
+export function getCircadianPhase(details?: UserProfileDetails, nowDate: Date = new Date()): CircadianPhaseInfo {
+  const currentHours = nowDate.getHours();
+  const currentMinutes = nowDate.getMinutes();
+  const currentTotalMin = currentHours * 60 + currentMinutes;
+  const progressPercent = Math.round((currentTotalMin / 1440) * 100);
+
+  // Parse wake and sleep times with safe fallbacks
+  let wakeH = 7;
+  let wakeM = 30;
+  let sleepH = 23;
+  let sleepM = 30;
+
+  if (details?.targetWakeTime) {
+    const [h, m] = details.targetWakeTime.split(':').map(Number);
+    if (!isNaN(h)) { wakeH = h; wakeM = m || 0; }
+  }
+  if (details?.targetSleepTime) {
+    const [h, m] = details.targetSleepTime.split(':').map(Number);
+    if (!isNaN(h)) { sleepH = h; sleepM = m || 0; }
+  }
+
+  // Adjust for chronotype if custom times aren't explicitly customized
+  if (!details?.targetWakeTime && details?.chronotype === 'lark') {
+    wakeH = 6; wakeM = 0; sleepH = 22; sleepM = 0;
+  } else if (!details?.targetWakeTime && details?.chronotype === 'owl') {
+    wakeH = 9; wakeM = 0; sleepH = 1; sleepM = 30;
+  }
+
+  const wakeTotalMin = wakeH * 60 + wakeM;
+  let sleepTotalMin = sleepH * 60 + sleepM;
+  if (sleepTotalMin <= wakeTotalMin) {
+    sleepTotalMin += 1440; // Past midnight
+  }
+
+  let normalizedCurrentMin = currentTotalMin;
+  if (normalizedCurrentMin < wakeTotalMin && currentTotalMin < 360) {
+    normalizedCurrentMin += 1440;
+  }
+
+  const minSinceWake = normalizedCurrentMin - wakeTotalMin;
+
+  // Phase classification based on circadian chronobiology
+  if (minSinceWake < 0 || normalizedCurrentMin >= sleepTotalMin) {
+    return {
+      phaseKey: 'night_recovery',
+      phaseNameEn: 'Rest & Cellular Recovery',
+      phaseNameBn: 'গভীর সারকাডিয়ান ঘুম ও রিকভারি',
+      taglineEn: 'Restorative Sleep • Synaptic Pruning',
+      taglineBn: 'শারীরবৃত্তীয় পুনরুদ্ধার ও গভীর ঘুম',
+      optimalFocusEn: 'Unplug completely. Allow circadian cellular repair and memory consolidation.',
+      optimalFocusBn: 'ডিভাইস থেকে দূরে থাকুন। গভীর ঘুমের মাধ্যমে শরীরের শক্তি ও কোষ পুনরুদ্ধার করুন।',
+      energyLevelPercent: 20,
+      colorClass: 'text-indigo-400',
+      bgGradient: 'from-indigo-950/30 via-gray-950 to-gray-950',
+      accentBorder: 'border-indigo-500/30',
+      progressPercent
+    };
+  } else if (minSinceWake <= 330) { // Up to 5.5 hours after waking
+    return {
+      phaseKey: 'morning_peak',
+      phaseNameEn: 'Peak Focus & Deep Work',
+      phaseNameBn: 'সকালের পিক ফোকাস ও ডিপ-ওয়ার্ক',
+      taglineEn: 'Cortisol Primed • Highest Cognitive Bandwidth',
+      taglineBn: 'সর্বোচ্চ মনোযোগ ও সিদ্ধান্ত গ্রহণের সময়',
+      optimalFocusEn: 'Execute high-complexity tasks, system architecture, and strategic deep work.',
+      optimalFocusBn: 'জটিল কাজ, কোডিং, স্ট্র্যাটেজি ও সবচেয়ে গুরুত্বপূর্ণ অগ্রাধিকারগুলো সম্পন্ন করুন।',
+      energyLevelPercent: 94,
+      colorClass: 'text-lime-400',
+      bgGradient: 'from-lime-950/30 via-gray-950 to-gray-950',
+      accentBorder: 'border-lime-400/40',
+      progressPercent
+    };
+  } else if (minSinceWake <= 480) { // 5.5 to 8 hours after waking (post-lunch dip)
+    return {
+      phaseKey: 'midday_slump',
+      phaseNameEn: 'Post-Prandial Dip & Admin',
+      phaseNameBn: 'দুপুরের রিকভারি ও হালকা কাজ',
+      taglineEn: 'Digestive Shift • Core Temp Dip',
+      taglineBn: 'হজম প্রক্রিয়া ও হালকা বিশ্রামের সময়',
+      optimalFocusEn: 'Low-cognitive email triage, admin tasks, hydration, and a brisk 10-min walk.',
+      optimalFocusBn: 'ইমেইল ট্রায়াজ, হালকা রুটিন কাজ, পানি পান এবং ১০ মিনিটের হালকা হাঁটাচলা।',
+      energyLevelPercent: 55,
+      colorClass: 'text-amber-400',
+      bgGradient: 'from-amber-950/30 via-gray-950 to-gray-950',
+      accentBorder: 'border-amber-400/40',
+      progressPercent
+    };
+  } else if (minSinceWake <= 750) { // 8 to 12.5 hours after waking
+    return {
+      phaseKey: 'afternoon_drive',
+      phaseNameEn: 'Afternoon Second Wind',
+      phaseNameBn: 'বিকেলের সেকেন্ড উইন্ড ও স্প্রিন্ট',
+      taglineEn: 'Physical & Execution Surge',
+      taglineBn: 'কাজের দ্বিতীয় পর্যায় ও শারীরিক গতিশীলতা',
+      optimalFocusEn: 'Meetings, task sprints, collaborative reviews, and physical training.',
+      optimalFocusBn: 'মিটিং, স্প্রিন্ট টাস্ক সম্পন্নকরণ, দলগত সমন্বয় এবং ফিটনেস ওয়ার্কআউট।',
+      energyLevelPercent: 82,
+      colorClass: 'text-cyan-400',
+      bgGradient: 'from-cyan-950/30 via-gray-950 to-gray-950',
+      accentBorder: 'border-cyan-400/40',
+      progressPercent
+    };
+  } else { // Wind down prior to sleep
+    return {
+      phaseKey: 'evening_winddown',
+      phaseNameEn: 'Evening Melatonin Wind-down',
+      phaseNameBn: 'সন্ধ্যার মেলাটোনিন ট্রানজিশন ও রিল্যাক্স',
+      taglineEn: 'Dim Light • Parasympathetic Activation',
+      taglineBn: 'স্ক্রিন টাইম কমানো ও পরদিনের প্রস্তুতি',
+      optimalFocusEn: 'Evening reflection, dim warm lights, log daily wins, plan tomorrow\'s Rule of 3.',
+      optimalFocusBn: 'দিনের সফলতার মূল্যায়ন, মৃদু আলো, এবং আগামীকালের ৩টি প্রধান কাজের পরিকল্পনা।',
+      energyLevelPercent: 42,
+      colorClass: 'text-purple-400',
+      bgGradient: 'from-purple-950/30 via-gray-950 to-gray-950',
+      accentBorder: 'border-purple-400/40',
+      progressPercent
+    };
+  }
+}
+
+export function calculateDaysRemaining(deadlineStr?: string): { days: number; isOverdue: boolean; labelEn: string; labelBn: string } | null {
+  if (!deadlineStr) return null;
+  const target = new Date(deadlineStr);
+  if (isNaN(target.getTime())) return null;
+
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  target.setHours(0, 0, 0, 0);
+
+  const diffMs = target.getTime() - now.getTime();
+  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    return {
+      days: Math.abs(diffDays),
+      isOverdue: true,
+      labelEn: `${Math.abs(diffDays)}d overdue`,
+      labelBn: `${Math.abs(diffDays)} দিন অতিক্রান্ত`
+    };
+  } else if (diffDays === 0) {
+    return {
+      days: 0,
+      isOverdue: false,
+      labelEn: 'Due Today',
+      labelBn: 'আজ শেষ দিন'
+    };
+  } else {
+    return {
+      days: diffDays,
+      isOverdue: false,
+      labelEn: `${diffDays} days remaining`,
+      labelBn: `${diffDays} দিন বাকি`
+    };
+  }
+}
+

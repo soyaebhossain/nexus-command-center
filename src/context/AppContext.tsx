@@ -252,7 +252,77 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
   }, [tasks, ruleOf3, transactions, monthlyBudget, habitStreak, mealReminders, waterMl, calendarEvents, activeAccountId, prefix]);
 
+  // Active Real-time Circadian & Task Reminder Engine
+  useEffect(() => {
+    const notifiedKeys = new Set<string>();
+
+    const checkReminders = () => {
+      const now = new Date();
+      const currentHHMM = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const todayDate = now.toISOString().split('T')[0];
+
+      // 1. Check Circadian Meal Reminders
+      mealReminders.forEach(meal => {
+        if (meal.enabled && !meal.done && meal.time === currentHHMM) {
+          const key = `meal_${meal.id}_${todayDate}_${currentHHMM}`;
+          if (!notifiedKeys.has(key)) {
+            notifiedKeys.add(key);
+            sendLocalNotification(
+              `${meal.icon} ${lang === 'bn' ? meal.nameBn : meal.name}`,
+              meal.advice
+            );
+            showToast(`${meal.icon} ${lang === 'bn' ? meal.nameBn : meal.name}: ${meal.advice}`);
+          }
+        }
+      });
+
+      // 2. Check Task Due Time Reminders
+      tasks.forEach(task => {
+        if (!task.done && task.dueTime === currentHHMM && (!task.dueDate || task.dueDate === todayDate)) {
+          const key = `task_${task.id}_${todayDate}_${currentHHMM}`;
+          if (!notifiedKeys.has(key)) {
+            notifiedKeys.add(key);
+            sendLocalNotification(
+              lang === 'bn' ? '⏰ কাজের সময় হয়েছে!' : '⏰ Task Due Now!',
+              task.text
+            );
+            showToast(`⏰ [${task.priority.toUpperCase()}] ${task.text}`);
+          }
+        }
+      });
+
+      // 3. Circadian Wind-down Bedtime Reminder (15 mins before targetSleepTime)
+      const sleepTarget = activeAccount.profileDetails?.targetSleepTime;
+      if (sleepTarget) {
+        const [sH, sM] = sleepTarget.split(':').map(Number);
+        if (!isNaN(sH) && !isNaN(sM)) {
+          let alertMinutes = sH * 60 + sM - 15;
+          if (alertMinutes < 0) alertMinutes += 24 * 60;
+          const alertHHMM = `${String(Math.floor(alertMinutes / 60)).padStart(2, '0')}:${String(alertMinutes % 60).padStart(2, '0')}`;
+          if (currentHHMM === alertHHMM) {
+            const key = `bedtime_${todayDate}_${currentHHMM}`;
+            if (!notifiedKeys.has(key)) {
+              notifiedKeys.add(key);
+              sendLocalNotification(
+                lang === 'bn' ? '🌙 সারকাডিয়ান রিকভারি অ্যালার্ট' : '🌙 Circadian Wind-down Alert',
+                lang === 'bn' 
+                  ? '১৫ মিনিট পর আপনার নির্ধারিত ঘুমানোর সময়। পর্যাপ্ত ৮ ঘণ্টা রিকভারির জন্য বিশ্রামের প্রস্তুতি নিন।' 
+                  : '15 minutes until your scheduled bedtime. Prepare for sleep to protect your circadian recovery.'
+              );
+              showToast(lang === 'bn' ? '🌙 ঘুমানোর প্রস্তুতির সময় হয়েছে' : '🌙 Bedtime wind-down alert');
+            }
+          }
+        }
+      }
+    };
+
+    const interval = setInterval(checkReminders, 25000);
+    checkReminders();
+    return () => clearInterval(interval);
+  }, [mealReminders, tasks, activeAccount, lang]);
+
   const addTask = (text: string, priority: 'high' | 'medium' | 'low' = 'medium', dueTime?: string) => {
+
     const newTask: Task = {
       id: Date.now(),
       text,
