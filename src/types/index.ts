@@ -5,7 +5,7 @@ export type CurrencySymbol = '৳' | '$' | '€' | '£';
 export type LanguageCode = 'bn' | 'en';
 
 export interface UserProfileDetails {
-  // Circadian & Bio-Health Metrics
+  // Circadian & Bio-Health Metrics (Huberman, Walker, Panda)
   age?: number;
   gender?: 'male' | 'female' | 'other';
   heightCm?: number;
@@ -17,17 +17,32 @@ export interface UserProfileDetails {
   targetWakeTime?: string; // e.g. "07:00"
   chronotype?: 'lark' | 'owl' | 'balanced';
 
-  // Professional Persona
+  // Metabolic & Chrono-Nutrition (Mifflin-St Jeor 1990, Panda Cell Metabolism)
+  activityLevel?: 'sedentary' | 'light' | 'moderate' | 'very_active';
+  bmr?: number; // Basal Metabolic Rate (kcal)
+  tdee?: number; // Total Daily Energy Expenditure (kcal)
+  caffeineCurfewTime?: string; // Drake et al. 2013 sleep half-life curfew (e.g. "13:30")
+  fastingProtocol?: 'none' | '12_12' | '14_10' | '16_8'; // Time-Restricted Feeding
+  fastingWindowStart?: string;
+  fastingWindowEnd?: string;
+
+  // Cardiovascular & Recovery Baseline (Attia, JAMA Cardiology, Huberman)
+  morningLightMinutesTarget?: number; // Morning SCN photon sync (mins)
+  weeklyZone2MinutesTarget?: number; // Zone 2 mitochondrial volume (mins/week)
+  targetZone2HR?: { min: number; max: number };
+
+  // Professional Persona & Ultradian Cadence (Kleitman BRAC, Newport)
   profession?: string;
   workStyle?: 'remote' | 'hybrid' | 'onsite';
   dailyFocusHoursTarget?: number;
+  ultradianCyclesTarget?: number; // 90-minute deep work blocks
 
-  // Financial Blueprint
+  // Financial Blueprint (Trinity Study, 50/30/20 Rule)
   monthlyIncome?: number;
   savingsTargetPercent?: number; // e.g. 20%
   emergencyFundMonths?: number; // e.g. 6 months
 
-  // 1-Year North Star Goal
+  // 1-Year North Star Strategic Compass (Gollwitzer Implementation Intentions)
   northStarGoal?: string;
   northStarDeadline?: string;
 }

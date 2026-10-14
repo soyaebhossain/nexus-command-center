@@ -196,6 +196,28 @@ export const DashboardModule: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Scientific Bio-Cadence Badges */}
+          <div className="flex flex-wrap items-center gap-2 pt-1 text-[10px] font-mono">
+            <span className="px-2.5 py-1 rounded-xl bg-gray-900/80 border border-gray-800 text-amber-300 flex items-center gap-1 shadow-sm">
+              <span>☕</span>
+              <span className="text-gray-400">{lang === 'bn' ? 'ক্যাফেইন কার্ফু:' : 'Caffeine Cutoff:'}</span>
+              <span className="font-bold">{activeAccount.profileDetails?.caffeineCurfewTime || '14:00'}</span>
+            </span>
+            <span className="px-2.5 py-1 rounded-xl bg-gray-900/80 border border-gray-800 text-lime-300 flex items-center gap-1 shadow-sm">
+              <span>🍽️</span>
+              <span className="text-gray-400">{lang === 'bn' ? 'খাওয়া উইন্ডো:' : 'Eating:'}</span>
+              <span className="font-bold">{activeAccount.profileDetails?.fastingWindowStart || '10:00'} - {activeAccount.profileDetails?.fastingWindowEnd || '20:00'}</span>
+            </span>
+            <span className="px-2.5 py-1 rounded-xl bg-gray-900/80 border border-gray-800 text-orange-300 flex items-center gap-1 shadow-sm">
+              <span>🔥</span>
+              <span className="font-bold">{activeAccount.profileDetails?.bmr || 1675}</span>
+              <span className="text-gray-400">BMR</span>
+              <span className="text-gray-600">•</span>
+              <span className="font-bold">{activeAccount.profileDetails?.tdee || 2596}</span>
+              <span className="text-gray-400">TDEE</span>
+            </span>
+          </div>
         </div>
 
         {/* 1-Year North Star Strategic Compass Card (5 Cols) */}

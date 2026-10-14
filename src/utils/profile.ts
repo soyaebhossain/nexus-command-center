@@ -59,6 +59,120 @@ export function calculateBMI(weightKg: number, heightCm: number): BMIEstimate | 
   }
 }
 
+// 1. Basal Metabolic Rate (BMR) - Mifflin-St Jeor (American Journal of Clinical Nutrition 1990)
+export function calculateBMR(weightKg: number, heightCm: number, age: number, gender: 'male' | 'female' | 'other' = 'male'): number {
+  if (!weightKg || !heightCm || !age || weightKg <= 0 || heightCm <= 0 || age <= 0) return 1650;
+  if (gender === 'female') {
+    return Math.round(10 * weightKg + 6.25 * heightCm - 5 * age - 161);
+  }
+  return Math.round(10 * weightKg + 6.25 * heightCm - 5 * age + 5);
+}
+
+// 2. Total Daily Energy Expenditure (TDEE) - Physical Activity Multipliers
+export function calculateTDEE(bmr: number, activityLevel: 'sedentary' | 'light' | 'moderate' | 'very_active' = 'moderate'): number {
+  if (!bmr || bmr <= 0) return 2200;
+  const multipliers: Record<string, number> = {
+    sedentary: 1.2,     // Desk work, negligible training
+    light: 1.375,       // Light exercise 1-3 days/week
+    moderate: 1.55,     // Moderate exercise 3-5 days/week
+    very_active: 1.725  // Hard physical training 6-7 days/week
+  };
+  return Math.round(bmr * (multipliers[activityLevel] || 1.55));
+}
+
+// 3. Caffeine Curfew - Drake et al. (2013, Journal of Clinical Sleep Medicine)
+// Caffeine 5-6 hour half-life, 10-12 hour clearance window
+export function calculateCaffeineCurfew(sleepTime?: string): { curfewTime: string; hoursPrior: number; citation: string } {
+  if (!sleepTime) return { curfewTime: '14:00', hoursPrior: 9.5, citation: 'Drake et al., J Clin Sleep Med 2013' };
+  const [sH, sM] = sleepTime.split(':').map(Number);
+  if (isNaN(sH)) return { curfewTime: '14:00', hoursPrior: 9.5, citation: 'Drake et al., J Clin Sleep Med 2013' };
+
+  let totalCurfewMin = sH * 60 + (sM || 0) - Math.round(9.5 * 60);
+  if (totalCurfewMin < 0) totalCurfewMin += 24 * 60;
+
+  const h = Math.floor(totalCurfewMin / 60);
+  const m = totalCurfewMin % 60;
+  return {
+    curfewTime: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+    hoursPrior: 9.5,
+    citation: 'Drake et al., J Clin Sleep Med 2013'
+  };
+}
+
+// 4. Time-Restricted Eating (TRE) Window - Dr. Satchin Panda (Cell Metabolism, Salk Institute)
+export function calculateFastingWindow(wakeTime?: string, protocol: 'none' | '12_12' | '14_10' | '16_8' = '14_10'): {
+  start: string;
+  end: string;
+  fastHours: number;
+  feedHours: number;
+  citation: string;
+} {
+  const wakeH = wakeTime ? parseInt(wakeTime.split(':')[0], 10) || 7 : 7;
+  const wakeM = wakeTime ? parseInt(wakeTime.split(':')[1], 10) || 30 : 30;
+  const wakeMinutes = wakeH * 60 + wakeM;
+
+  let delayFromWake = 120; // 2 hours after waking
+  let feedHours = 10;
+  let fastHours = 14;
+
+  if (protocol === '16_8') {
+    delayFromWake = 240; // 4 hours after waking
+    feedHours = 8;
+    fastHours = 16;
+  } else if (protocol === '12_12') {
+    delayFromWake = 60; // 1 hour after waking
+    feedHours = 12;
+    fastHours = 12;
+  } else if (protocol === 'none') {
+    return {
+      start: '08:00',
+      end: '21:00',
+      fastHours: 0,
+      feedHours: 13,
+      citation: 'Unrestricted Baseline'
+    };
+  }
+
+  const startMin = (wakeMinutes + delayFromWake) % 1440;
+  const endMin = (startMin + feedHours * 60) % 1440;
+
+  const startH = Math.floor(startMin / 60);
+  const startM = startMin % 60;
+  const endH = Math.floor(endMin / 60);
+  const endM = endMin % 60;
+
+  return {
+    start: `${String(startH).padStart(2, '0')}:${String(startM).padStart(2, '0')}`,
+    end: `${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`,
+    fastHours,
+    feedHours,
+    citation: 'Panda et al., Cell Metabolism (Salk Inst.)'
+  };
+}
+
+// 5. Zone 2 Target Heart Rate - Dr. Peter Attia / AHA Cardiorespiratory Longevity
+export function calculateZone2HR(age: number): { min: number; max: number; citation: string } {
+  const userAge = age > 0 ? age : 28;
+  const maxHR = 220 - userAge;
+  return {
+    min: Math.round(maxHR * 0.65),
+    max: Math.round(maxHR * 0.75),
+    citation: 'Attia / AHA Mitochondrial Base'
+  };
+}
+
+// 6. Ultradian Focus Cadence - Nathaniel Kleitman BRAC (Basic Rest-Activity Cycle)
+export function calculateUltradianBlocks(dailyFocusHours: number): { blocks90min: number; totalMinutes: number; citation: string } {
+  const hours = dailyFocusHours > 0 ? dailyFocusHours : 4;
+  const totalMinutes = Math.round(hours * 60);
+  const blocks90min = Math.round((totalMinutes / 90) * 10) / 10;
+  return {
+    blocks90min,
+    totalMinutes,
+    citation: 'Kleitman 90-Min Ultradian BRAC'
+  };
+}
+
 export function calculateWaterTarget(weightKg: number): number {
   if (!weightKg || weightKg <= 0) return 2500;
   // Standard physiological guideline: ~35ml per kg of body weight
@@ -104,7 +218,7 @@ export function calculateProfileCompletion(account?: Account): ProfileCompletion
       levelTitleBn: 'প্রাথমিক প্রোফাইল',
       levelBadgeColor: 'text-gray-400 border-gray-700 bg-gray-900',
       completedItemsCount: 0,
-      totalItemsCount: 10,
+      totalItemsCount: 9,
       missingItemsEn: ['Name', 'Role'],
       missingItemsBn: ['নাম', 'পেশা/রোল']
     };
@@ -119,25 +233,30 @@ export function calculateProfileCompletion(account?: Account): ProfileCompletion
     labelEn: string; 
     labelBn: string; 
   }[] = [
-    // 1. Identity baseline (20%)
+    // 1. Identity baseline (15%)
     { id: 'name', done: Boolean(account.name && account.name.trim().length > 0), weight: 10, labelEn: 'Profile Name & Avatar', labelBn: 'নাম ও প্রোফাইল ছবি' },
-    { id: 'role', done: Boolean(account.role), weight: 10, labelEn: 'Core Role / Persona', labelBn: 'মূল ভূমিকা / রোল' },
+    { id: 'role', done: Boolean(account.role), weight: 5, labelEn: 'Persona & Role Architecture', labelBn: 'মূল ভূমিকা / রোল' },
     
-    // 2. Bio-Health Metrics (30%)
-    { id: 'age', done: Boolean(p.age && p.age > 0), weight: 5, labelEn: 'Age & Gender', labelBn: 'বয়স ও লিঙ্গ' },
-    { id: 'heightWeight', done: Boolean(p.heightCm && p.weightKg && p.heightCm > 0 && p.weightKg > 0), weight: 15, labelEn: 'Height & Weight (BMI)', labelBn: 'উচ্চতা ও ওজন (BMI)' },
-    { id: 'sleepWindow', done: Boolean(p.targetSleepTime && p.targetWakeTime), weight: 10, labelEn: 'Circadian Sleep Window', labelBn: 'ঘুমের লক্ষ্য ও সময়সূচী' },
+    // 2. Metabolic & Bio-Health Baseline (Mifflin-St Jeor 1990) (15%)
+    { id: 'bioMetrics', done: Boolean(p.heightCm && p.weightKg && p.age && p.heightCm > 0 && p.weightKg > 0), weight: 15, labelEn: 'Age, Height & Weight (BMI/BMR)', labelBn: 'বয়স, উচ্চতা ও ওজন (BMI/BMR)' },
+    
+    // 3. Circadian & Sleep Window (Walker / Drake 2013) (15%)
+    { id: 'sleepCircadian', done: Boolean(p.targetSleepTime && p.targetWakeTime), weight: 15, labelEn: 'Circadian Sleep & Caffeine Curfew', labelBn: 'সারকাডিয়ান ঘুম ও ক্যাফেইন কার্ফু' },
 
-    // 3. Professional & Focus Cadence (20%)
-    { id: 'profession', done: Boolean(p.profession && p.profession.trim().length > 0), weight: 10, labelEn: 'Specific Profession', labelBn: 'নির্দিষ্ট পেশা বা পদবী' },
-    { id: 'workStyle', done: Boolean(p.workStyle || p.dailyFocusHoursTarget), weight: 10, labelEn: 'Work Style & Focus Hours', labelBn: 'কাজের ধরন ও ফোকাস আওয়ার' },
+    // 4. Time-Restricted Feeding / Metabolic Cadence (Panda 2019) (10%)
+    { id: 'metabolicCadence', done: Boolean(p.activityLevel || p.fastingProtocol), weight: 10, labelEn: 'Activity Level & Fasting Protocol', labelBn: 'শারীরিক গতিশীলতা ও ফাস্টিং প্রটোকল' },
 
-    // 4. Financial Blueprint (20%)
-    { id: 'monthlyIncome', done: Boolean(p.monthlyIncome && p.monthlyIncome > 0), weight: 10, labelEn: 'Monthly Income Baseline', labelBn: 'মাসিক আয়ের ভিত্তি' },
-    { id: 'savingsTarget', done: Boolean(p.savingsTargetPercent && p.savingsTargetPercent > 0), weight: 10, labelEn: 'Monthly Savings Target %', labelBn: 'মাসিক সঞ্চয়ের লক্ষ্যমাত্রা' },
+    // 5. Cardiorespiratory & Light Exposure (Attia / Huberman) (10%)
+    { id: 'cardioMitochondrial', done: Boolean(p.weeklyZone2MinutesTarget || p.morningLightMinutesTarget), weight: 10, labelEn: 'Zone 2 Cardio & Morning Sunlight', labelBn: 'জোন ২ কার্ডিও ও মর্নিং সানলাইট' },
 
-    // 5. 1-Year North Star Goal (10%)
-    { id: 'northStar', done: Boolean(p.northStarGoal && p.northStarGoal.trim().length > 0), weight: 10, labelEn: '1-Year North Star Goal', labelBn: '১ বছরের মূল নর্থ স্টার লক্ষ্য' }
+    // 6. Professional Persona & Ultradian Cadence (Kleitman BRAC) (15%)
+    { id: 'professionWork', done: Boolean(p.profession && (p.dailyFocusHoursTarget || p.workStyle)), weight: 15, labelEn: 'Profession & 90-Min Ultradian Target', labelBn: 'পেশা ও ৯০ মিনিটের আল্ট্রাডিয়ান লক্ষ্য' },
+
+    // 7. Financial Resilience (Trinity Study / 50-30-20) (10%)
+    { id: 'financeBlueprint', done: Boolean(p.monthlyIncome && p.savingsTargetPercent), weight: 10, labelEn: 'Income & Savings Velocity', labelBn: 'মাসিক আয় ও সঞ্চয়ের হার' },
+
+    // 8. 1-Year North Star Strategic Compass (Gollwitzer) (10%)
+    { id: 'northStar', done: Boolean(p.northStarGoal && p.northStarGoal.trim().length > 0), weight: 10, labelEn: '1-Year North Star Strategic Compass', labelBn: '১ বছরের মূল নর্থ স্টার কম্পাস' }
   ];
 
   let earnedPercentage = 0;

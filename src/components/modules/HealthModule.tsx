@@ -119,6 +119,65 @@ export const HealthModule: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Row 2: Peer-Reviewed Scientific Metabolic & Cellular Markers */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-2 border-t border-gray-800/60">
+          {/* BMR / TDEE */}
+          <div className="p-3 rounded-2xl bg-gray-900/40 border border-gray-800/80 space-y-1">
+            <div className="flex items-center justify-between text-[10px] text-orange-400 font-mono">
+              <span className="uppercase">{lang === 'bn' ? 'মেটাবলিজম' : 'Metabolic Rate'}</span>
+              <span className="text-[9px] text-gray-500">Mifflin-St Jeor</span>
+            </div>
+            <div className="font-mono font-bold text-sm text-gray-200">
+              {activeAccount.profileDetails?.bmr || 1675} <span className="text-[10px] text-gray-500 font-normal">BMR</span> • {activeAccount.profileDetails?.tdee || 2596} <span className="text-[10px] text-gray-500 font-normal">TDEE</span>
+            </div>
+            <div className="text-[10px] text-gray-400">
+              {lang === 'bn' ? 'দৈনিক ক্যালোরি ভিত্তি' : 'Daily caloric equilibrium'}
+            </div>
+          </div>
+
+          {/* Caffeine Curfew */}
+          <div className="p-3 rounded-2xl bg-gray-900/40 border border-gray-800/80 space-y-1">
+            <div className="flex items-center justify-between text-[10px] text-amber-400 font-mono">
+              <span className="uppercase">{lang === 'bn' ? 'ক্যাফেইন কার্ফু' : 'Caffeine Cutoff'}</span>
+              <span className="text-[9px] text-gray-500">Drake 2013</span>
+            </div>
+            <div className="font-mono font-bold text-sm text-amber-300">
+              {activeAccount.profileDetails?.caffeineCurfewTime || '14:00'}
+            </div>
+            <div className="text-[10px] text-gray-400">
+              {lang === 'bn' ? 'গভীর ঘুমের সুরক্ষা' : 'Protects slow-wave delta sleep'}
+            </div>
+          </div>
+
+          {/* Time-Restricted Feeding Window */}
+          <div className="p-3 rounded-2xl bg-gray-900/40 border border-gray-800/80 space-y-1">
+            <div className="flex items-center justify-between text-[10px] text-lime-400 font-mono">
+              <span className="uppercase">{lang === 'bn' ? 'খাওয়া উইন্ডো' : 'Feeding Window'}</span>
+              <span className="text-[9px] text-gray-500">Panda 2019</span>
+            </div>
+            <div className="font-mono font-bold text-sm text-lime-300">
+              {activeAccount.profileDetails?.fastingWindowStart || '10:00'} – {activeAccount.profileDetails?.fastingWindowEnd || '20:00'}
+            </div>
+            <div className="text-[10px] text-gray-400">
+              {lang === 'bn' ? 'কোষীয় অটোফেজি সক্রিয়' : 'Cellular autophagy rhythm'}
+            </div>
+          </div>
+
+          {/* Zone 2 Cardiorespiratory Target */}
+          <div className="p-3 rounded-2xl bg-gray-900/40 border border-gray-800/80 space-y-1">
+            <div className="flex items-center justify-between text-[10px] text-cyan-400 font-mono">
+              <span className="uppercase">{lang === 'bn' ? 'জোন ২ কার্ডিও' : 'Zone 2 Cardio'}</span>
+              <span className="text-[9px] text-gray-500">Attia / JAMA</span>
+            </div>
+            <div className="font-mono font-bold text-sm text-cyan-300">
+              {activeAccount.profileDetails?.weeklyZone2MinutesTarget || 150}m • {activeAccount.profileDetails?.targetZone2HR?.min || 126}-{activeAccount.profileDetails?.targetZone2HR?.max || 146} BPM
+            </div>
+            <div className="text-[10px] text-gray-400">
+              {lang === 'bn' ? 'মাইটোকন্ড্রিয়াল স্বাস্থ্য' : 'Mitochondrial density base'}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 2. 4 CIRCADIAN MEAL REMINDER CARDS */}
