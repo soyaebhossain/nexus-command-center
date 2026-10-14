@@ -80,9 +80,15 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0b0d12] text-gray-100 transition-colors selection:bg-lime-400 selection:text-black">
+    <div className={`min-h-screen flex flex-col transition-colors selection:bg-lime-400 selection:text-black ${
+      theme === 'light' ? 'bg-[#f8fafc] text-slate-900' : 'bg-[#0b0d12] text-gray-100'
+    }`}>
       {/* Sticky Scroll-Locked Top Header & Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-[#0b0d12]/95 backdrop-blur-md border-b border-gray-800/80 shadow-md shadow-black/20">
+      <header className={`sticky top-0 z-40 backdrop-blur-md border-b transition-colors ${
+        theme === 'light' 
+          ? 'bg-white/95 border-slate-200/90 shadow-sm shadow-slate-200/50' 
+          : 'bg-[#0b0d12]/95 border-gray-800/80 shadow-md shadow-black/20'
+      }`}>
         <Header />
         <NavigationBar />
       </header>
@@ -98,19 +104,24 @@ export const App: React.FC = () => {
       <SpotlightModal />
       <ProfileWizardModal />
 
-
       {/* Global Floating Toast */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-gray-950/95 border border-lime-400/40 text-lime-300 text-xs font-semibold rounded-2xl shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-5">
-          <Sparkles className="w-4 h-4 text-lime-400 shrink-0" />
+        <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 text-xs font-semibold rounded-2xl shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-5 border ${
+          theme === 'light'
+            ? 'bg-white/95 border-lime-500/50 text-lime-800 shadow-slate-300'
+            : 'bg-gray-950/95 border-lime-400/40 text-lime-300'
+        }`}>
+          <Sparkles className="w-4 h-4 text-lime-500 shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Minimalist Engineered Footer */}
-      <footer className="border-t border-gray-900 py-4 px-6 text-center text-xs text-gray-400 flex flex-wrap items-center justify-between gap-3 max-w-7xl mx-auto w-full">
+      <footer className={`border-t py-4 px-6 text-center text-xs flex flex-wrap items-center justify-between gap-3 max-w-7xl mx-auto w-full transition-colors ${
+        theme === 'light' ? 'border-slate-200 text-slate-500 bg-white' : 'border-gray-900 text-gray-400 bg-transparent'
+      }`}>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span>
+          <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span>
           <span>
             {useApp().lang === 'bn' 
               ? 'নেক্সাস লাইফ ওএস • সর্বোচ্চ ফোকাস ও সার্কেডিয়ান ভারসাম্যের জন্য নির্মিত' 

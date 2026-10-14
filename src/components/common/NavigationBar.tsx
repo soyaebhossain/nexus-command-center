@@ -26,7 +26,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const NavigationBar: React.FC = () => {
-  const { activeModule, setActiveModule, enabledModules, isFocusMode, lang } = useApp();
+  const { activeModule, setActiveModule, enabledModules, isFocusMode, lang, theme } = useApp();
 
   const enabledList = NAV_ITEMS.filter(item => enabledModules.includes(item.id));
 
@@ -34,8 +34,10 @@ export const NavigationBar: React.FC = () => {
     ? enabledList.filter(item => ['dashboard', 'tasks', 'finance', 'health'].includes(item.id))
     : enabledList;
 
+  const isLight = theme === 'light';
+
   return (
-    <nav className="px-4 sm:px-8 py-1 bg-[#090b0f]/80">
+    <nav className={`px-4 sm:px-8 py-1 transition-colors ${isLight ? 'bg-slate-50/90 border-b border-slate-200/80' : 'bg-[#090b0f]/80'}`}>
       <div className="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
         {items.map(item => {
           const isActive = activeModule === item.id;
@@ -51,8 +53,12 @@ export const NavigationBar: React.FC = () => {
               }}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shrink-0 select-none ${
                 isActive
-                  ? 'bg-lime-400/15 text-lime-300 border border-lime-400/30 shadow-sm'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900 border border-transparent'
+                  ? isLight
+                    ? 'bg-lime-100 text-lime-900 border border-lime-300 shadow-sm font-bold'
+                    : 'bg-lime-400/15 text-lime-300 border border-lime-400/30 shadow-sm'
+                  : isLight
+                    ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70 border border-transparent'
+                    : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900 border border-transparent'
               }`}
             >
               {item.icon}
