@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NEXUS — Universal Life & Work OS</title>
 <meta name="description" content="NEXUS: Personal productivity, finance, learning, health, family, IT operations, and life planning.">
+<meta name="theme-color" content="#0b0d12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23a3e635'/></svg>">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -741,7 +746,12 @@ body {
           <button onclick="setTaskFilter('completed')" id="taskFilterCompleted" class="px-2.5 py-1 rounded-lg text-gray-400 hover:text-white">Done</button>
           <button onclick="setTaskFilter('high')" id="taskFilterHigh" class="px-2.5 py-1 rounded-lg text-gray-400 hover:text-white">High</button>
         </div>
-        <input id="taskSearchInput" oninput="renderTasks()" type="text" placeholder="Search tasks..." class="field text-xs py-1 max-w-[150px]">
+        <div class="flex items-center gap-1.5">
+          <input id="taskSearchInput" oninput="renderTasks()" type="text" placeholder="Search tasks..." class="field text-xs py-1 max-w-[130px]">
+          <button type="button" onclick="exportTasksCSV()" title="Export tasks to CSV" class="p-1.5 bg-gray-900 border border-gray-800 hover:border-lime-300 rounded-lg text-gray-300 hover:text-lime-300 transition-colors">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
       </div>
       <div id="taskList" class="space-y-2 max-h-96 overflow-y-auto pr-1"></div>
     </div>
@@ -962,7 +972,15 @@ body {
           <button onclick="filterTransactions('expense')" id="filterExpense" class="px-3 py-1 rounded-lg text-gray-400 hover:text-white">Expense</button>
           <button onclick="filterTransactions('income')" id="filterIncome" class="px-3 py-1 rounded-lg text-gray-400 hover:text-white">Income</button>
         </div>
-        <input id="searchTransInput" oninput="renderTransactionList()" type="text" placeholder="Filter category..." class="field text-xs py-1.5 max-w-[170px]">
+        <div class="flex items-center gap-1.5">
+          <input id="searchTransInput" oninput="renderTransactionList()" type="text" placeholder="Filter category..." class="field text-xs py-1.5 max-w-[140px]">
+          <button type="button" onclick="exportFinanceCSV()" title="Export ledger to CSV" class="px-2.5 py-1.5 bg-gray-900 border border-gray-800 hover:border-lime-300 rounded-lg text-xs font-semibold text-gray-300 hover:text-lime-300 transition-colors flex items-center gap-1">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-lime-300"></i> <span class="hidden sm:inline">CSV</span>
+          </button>
+          <button type="button" onclick="printFinanceReport()" title="Print financial report" class="p-1.5 bg-gray-900 border border-gray-800 hover:border-cyan-400 rounded-lg text-gray-300 hover:text-cyan-400 transition-colors">
+            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
       </div>
     </div>
     <div id="transactionList" class="space-y-2 max-h-96 overflow-y-auto pr-1"></div>
@@ -1696,6 +1714,12 @@ function updateRoleUI() {
   if (badge) badge.innerHTML = `<span>${title}</span> <i data-lucide="chevron-down" class="w-3 h-3"></i>`;
   if (pill) pill.textContent = title;
   lucide.createIcons();
+
+  // Register Service Worker for PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+
 }
 
 // ALL MODULE DEFINITIONS
@@ -4120,6 +4144,67 @@ function refreshAllModules() {
 // ========================================================
 // 17. INITIALIZATION & GLOBAL EVENT LISTENERS
 // ========================================================
+
+// ========================================================
+// DATA EXPORT ENGINES & PWA WORKER
+// ========================================================
+function exportFinanceCSV() {
+  if (transactions.length === 0) {
+    showToast(currentLang === 'bn' ? 'কোনো লেনদেনের হিসাব পাওয়া যায়নি' : 'No transactions recorded');
+    return;
+  }
+  const headers = ['ID', 'Type', 'Category', 'Description', 'Amount', 'Currency', 'Date'];
+  const rows = transactions.map(t => [
+    t.id,
+    t.type,
+    `"${(t.category || '').replace(/"/g, '""')}"`,
+    `"${(t.desc || '').replace(/"/g, '""')}"`,
+    t.amount,
+    currentCurrency,
+    t.date
+  ]);
+  const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `nexus_financial_ledger_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(currentLang === 'bn' ? 'আর্থিক হিসাব CSV ফাইলে এক্সপোর্ট হয়েছে' : 'Financial CSV ledger exported');
+  logActivity('Exported financial statement to CSV');
+}
+
+function printFinanceReport() {
+  window.print();
+}
+
+function exportTasksCSV() {
+  if (tasks.length === 0) {
+    showToast(currentLang === 'bn' ? 'কোনো টাস্ক নেই' : 'No tasks recorded');
+    return;
+  }
+  const headers = ['ID', 'Task', 'Priority', 'Category', 'Due Date', 'Status'];
+  const rows = tasks.map(t => [
+    t.id,
+    `"${(t.text || '').replace(/"/g, '""')}"`,
+    t.priority,
+    `"${(t.category || 'General').replace(/"/g, '""')}"`,
+    t.dueDate || 'None',
+    t.done ? 'Completed' : 'Pending'
+  ]);
+  const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `nexus_priorities_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(currentLang === 'bn' ? 'টাস্ক তালিকা CSV ফাইলে এক্সপোর্ট হয়েছে' : 'Task list exported to CSV');
+  logActivity('Exported task priorities to CSV');
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   applyTheme();
   updateRoleUI();

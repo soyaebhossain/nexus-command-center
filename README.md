@@ -9,7 +9,7 @@ Built with semantic HTML5, modern Tailwind CSS architecture, Chart.js analytics,
 ## 1. Quick Start & Setup
 
 ### Running Locally
-- **Option A (Instant Direct Access):** Double-click [`index.html`](file:///f:/Al-Ameen%20IT/web/index.html) to open directly in any modern web browser (Google Chrome, Microsoft Edge, Mozilla Firefox, Apple Safari).
+- **Option A (Instant Direct Access):** Double-click [`index.html`](file:///f:/Al-Ameen%20IT/web/Personal%20Traker/index.html) to open directly in any modern web browser (Google Chrome, Microsoft Edge, Mozilla Firefox, Apple Safari).
 - **Option B (Local Web Server):**
   ```bash
   python -m http.server 3000
@@ -18,15 +18,24 @@ Built with semantic HTML5, modern Tailwind CSS architecture, Chart.js analytics,
 
 ---
 
-## 2. Core Operating System Architecture (14 Unified Modules)
+## 2. Progressive Web App (PWA) — Native Install
+
+NEXUS includes full **Progressive Web App (PWA)** capabilities:
+- **Desktop Installation (Windows / macOS / Linux):** Open the application in Google Chrome or Microsoft Edge and click the **Install App** icon in the address bar to run NEXUS as a standalone desktop window.
+- **Mobile Installation (Android / iOS):** On mobile browsers, tap **"Add to Home Screen"** to launch NEXUS with native app gestures, full-screen viewport, and zero browser chrome.
+- **100% Offline Resilience:** Powered by [`sw.js`](file:///f:/Al-Ameen%20IT/web/Personal%20Traker/sw.js) Service Worker caching, NEXUS works seamlessly even with zero internet connectivity.
+
+---
+
+## 3. Core Operating System Architecture (14 Unified Modules)
 
 | # | Module / Subsystem | Key Capabilities & Features | Persona Suitability |
 | :-: | :--- | :--- | :--- |
 | **0** | **Executive Cockpit (Dashboard)** | Personalized greeting, live clock/date/timezone, 4 KPI cards (Tasks, Net Balance, Courses, Hydration), top urgent priorities, live chronological activity feed. | All Personas |
 | **1** | **Life Planner & Goal Matrix** | 1-3 year vision milestones, OKRs, category tags, progress sliders (`+10%`, `-10%`), daily reflection journal & decision helper. | Students, Professionals, Entrepreneurs |
 | **2** | **Unified Calendar & Reminders** | Synchronized monthly calendar grid, day event dots, task/exam/bill/meeting badges, upcoming schedule agenda, add event modal. | Everyone |
-| **3** | **Productivity & Focus Engine** | Priorities with P1-P3 severity, category tags, due dates, filters, search, Pomodoro timer with Web Audio chord chimes, quick capture notes. | Students, Freelancers, Engineers |
-| **4** | **Personal & Business Finance** | Multi-currency (৳ BDT, $ USD, € EUR, £ GBP), Income/Expense ledger, Net Balance, Savings Rate %, Chart.js Doughnut category breakdown, **Debts & Loans Tracker (দেনা-পাওনা ট্র্যাকার)** with settlement tracking. | Homemakers, Freelancers, Business |
+| **3** | **Productivity & Focus Engine** | Priorities with P1-P3 severity, category tags, due dates, filters, search, Pomodoro timer with Web Audio chord chimes, quick capture notes, **CSV Task Export**. | Students, Freelancers, Engineers |
+| **4** | **Personal & Business Finance** | Multi-currency (৳ BDT, $ USD, € EUR, £ GBP), Income/Expense ledger, Net Balance, Savings Rate %, Chart.js Doughnut category breakdown with **Item-wise Vibrant Color Coding**, **Debts & Loans Tracker (দেনা-পাওনা)**, **CSV Ledger Export** & **Print to PDF**. | Homemakers, Freelancers, Business |
 | **5** | **Learning & Skill Hub** | Active course trackers with study hours progress, upcoming exams and project assignments with weightages, book library with star ratings and notes. | Students, Lifelong Learners, Researchers |
 | **6** | **IT & Operations Engine** | Incident ticket tracker (Open/In Progress/Resolved), severity P1-P4, daily infrastructure verification checklist with timestamps, edge node table. | DevOps, SysAdmins, IT Leads |
 | **7** | **Email Action & Triage Center** | Thread intent analyzer, priority classification (Urgent, High, Normal), multi-tone response generator (Executive, Concise, Decline, Ops), 1-click Convert to Task. | Executives, Support, Project Managers |
@@ -39,7 +48,7 @@ Built with semantic HTML5, modern Tailwind CSS architecture, Chart.js analytics,
 
 ---
 
-## 3. Personalization & Internationalization (Universal Life OS)
+## 4. Personalization & Internationalization (Universal Life OS)
 
 ### 1. Role-Based Persona Switching
 Click the role badge in the top header or press the role selector to instantly activate one of 7 curated personas:
@@ -68,34 +77,17 @@ All financial KPI cards, forms, category charts, debts, and ledger tables automa
 
 ---
 
-## 4. Global Spotlight Search (`Ctrl+K` / `⌘K`)
+## 5. Global Spotlight Search (`Ctrl+K` / `⌘K`)
 
 Press **`Ctrl+K`** (or **`Cmd+K`** on macOS) or click the search bar to launch the Spotlight Search modal:
-- Searches simultaneously across:
-  - **Executable Tasks** (title, priority, due date)
-  - **Unified Calendar Events** (title, date, event type)
-  - **Life Planner Goals** (milestone name, target date)
-  - **Learning Courses** (course name, instructor)
-  - **Knowledge SOPs** (title, contents)
-  - **Debts & Loans** (person name, reason)
-  - **IT Incident Tickets** (ticket ID, subject)
+- Searches simultaneously across Tasks, Calendar, Goals, Courses, Knowledge SOPs, Debts & Loans, and IT Tickets.
 - Displays matching results with instant 1-click navigation to the relevant module.
 - Fully accessible with **`Escape`** to dismiss.
 
 ---
 
-## 5. Data Privacy, Storage & Security Architecture
+## 6. Automated GitHub Pages CI/CD
 
-1. **Zero External Data Leaks:** 100% offline-first. All records, goals, debts, and tasks are stored exclusively in the browser's HTML5 `LocalStorage`. No telemetry or external server tracking.
-2. **XSS Sanitization:** All text inputs are rendered through `escapeHtml()` to mitigate cross-site scripting risks.
-3. **Sound Chimes via Web Audio API:** Synthesized sine and harmonic wave tones for task completion, timers, and alerts without external audio file dependencies.
-4. **Schema Versioning (`v2.5.0`):** Strict JSON structure verification prevents corrupt or outdated imports.
-5. **Dual-Confirmation Factory Reset:** Protects against accidental data destruction.
-
----
-
-## 6. Commercial SaaS Readiness
-
-- **Tier Structure:** Free Tier, Pro (\$9/mo), and Team/Family (\$19/mo).
-- **Upgrade Simulator:** Interactive modal allowing users to test tier upgrades, dynamically displaying plan badges (`PRO`, `TEAM`) and unlocking features.
-- **Production-Ready Frontend:** Single self-contained file (`index.html`) ready to be deployed to static hosting (Vercel, Netlify, Cloudflare Pages, GitHub Pages) or integrated into a full-stack SaaS backend (Next.js, FastAPI, Laravel, Node.js).
+The repository includes a GitHub Actions workflow [`deploy.yml`](file:///f:/Al-Ameen%20IT/web/Personal%20Traker/.github/workflows/deploy.yml) that automatically deploys the application to **GitHub Pages** on every push to `main`.
+- Live URL format: `https://<username>.github.io/<repo-name>/`
+- Zero maintenance, instant static hosting.
