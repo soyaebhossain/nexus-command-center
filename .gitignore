@@ -1,0 +1,31 @@
+# Ignore all subdirectories (other projects in web root)
+3d profile/
+A TV news/
+akervitorsob/
+apps/
+Assingment/
+Cross-Border Product Sourcing/
+FT Publication POS/
+hhh/
+infra/
+Khulna divition/
+News Static/
+noor-nikah/
+Porda-AI-main/
+Project/
+sadaqah foundation/
+SSC Smart Revision System/
+Subaha BD/
+Tour_Point/
+upi/
+upi worng/
+
+# Ignore scripts from other projects
+setup.ps1
+setup.sh
+
+# OS & Temp files
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
