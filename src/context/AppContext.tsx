@@ -1,7 +1,9 @@
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { 
   Account, Task, RuleOf3Item, Transaction, MealReminder, CalendarEvent,
   CurrencySymbol, LanguageCode, ModuleId, RoleKey, UserProfileDetails 
 } from '../types';
+
 import { getStoragePrefix, loadLocalData, saveLocalData, syncWithBackend } from '../utils/storage';
 import { playChime, playCelebrationArpeggio } from '../utils/audio';
 import { sendLocalNotification } from '../utils/notifications';
@@ -132,8 +134,15 @@ const ALL_MODULES: ModuleId[] = ['dashboard', 'tasks', 'triage', 'finance', 'hea
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [accounts, setAccounts] = useState<Account[]>(() => loadLocalData('nexus_accounts', defaultAccounts));
+  const [accounts, setAccounts] = useState<Account[]>(() => {
+    const loaded = loadLocalData<Account[]>('nexus_accounts', defaultAccounts);
+    if (!Array.isArray(loaded) || loaded.length === 0) {
+      return defaultAccounts;
+    }
+    return loaded;
+  });
   const [activeAccountId, setActiveAccountId] = useState<string>(() => localStorage.getItem('nexus_active_account_id') || 'acc_default');
+
   const [currency, setCurrencyState] = useState<CurrencySymbol>(() => (localStorage.getItem('nexus_currency') as CurrencySymbol) || '৳');
   const [lang, setLangState] = useState<LanguageCode>(() => (localStorage.getItem('nexus_lang') as LanguageCode) || 'bn');
   const [theme, setThemeState] = useState<'dark' | 'light'>('dark');
@@ -174,7 +183,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [waterMl, setWaterMl] = useState<number>(() => parseInt(localStorage.getItem(prefix + 'water') || '1250'));
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>(() => loadLocalData(prefix + 'calendar_events', defaultCalendarEvents));
 
-  const activeAccount = accounts.find(a => a.id === activeAccountId) || accounts[0];
+  const activeAccount: Account = (accounts && accounts.length > 0)
+    ? (accounts.find(a => a.id === activeAccountId) || accounts[0])
+    : defaultAccounts[0];
+
 
   const showToast = (msg: string) => {
     setToastMessage(msg);

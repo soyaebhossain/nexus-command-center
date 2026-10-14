@@ -7,9 +7,34 @@
     <title>NEXUS Life OS — Next-Gen Focus & Circadian Balance</title>
     <meta name="description" content="Minimalist, modular, multi-user personal operating system for focus, finances, circadian health, and goals." />
     <link rel="manifest" href="/manifest.json" />
-    <script type="module" crossorigin src="/assets/index-DthaOTKQ.js"></script>
+    <script>
+      window.addEventListener('error', function(e) {
+        console.error('GLOBAL JS ERROR:', e);
+        var div = document.getElementById('debug-error');
+        if (!div) {
+          div = document.createElement('div');
+          div.id = 'debug-error';
+          div.style = 'color:#ff5555;background:#151520;padding:25px;margin:20px;border:2px solid red;font-family:monospace;font-size:13px;white-space:pre-wrap;border-radius:12px;z-index:999999;position:relative;';
+          document.body ? document.body.prepend(div) : window.addEventListener('DOMContentLoaded', () => document.body.prepend(div));
+        }
+        div.innerHTML = '<h3>Initialization Error:</h3><pre>' + (e.error ? (e.error.stack || e.error.message) : e.message) + '</pre><p>File: ' + e.filename + ':' + e.lineno + '</p><button onclick="localStorage.clear();window.location.reload()" style="background:#a3e635;color:#000;padding:8px 16px;border:none;border-radius:6px;font-weight:bold;cursor:pointer">Clear Storage &amp; Reload</button>';
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        console.error('UNHANDLED REJECTION:', e);
+        var div = document.getElementById('debug-error');
+        if (!div) {
+          div = document.createElement('div');
+          div.id = 'debug-error';
+          div.style = 'color:#ff5555;background:#151520;padding:25px;margin:20px;border:2px solid red;font-family:monospace;font-size:13px;white-space:pre-wrap;border-radius:12px;z-index:999999;position:relative;';
+          document.body ? document.body.prepend(div) : window.addEventListener('DOMContentLoaded', () => document.body.prepend(div));
+        }
+        div.innerHTML = '<h3>Promise Rejection:</h3><pre>' + (e.reason ? (e.reason.stack || e.reason) : e) + '</pre><button onclick="localStorage.clear();window.location.reload()" style="background:#a3e635;color:#000;padding:8px 16px;border:none;border-radius:6px;font-weight:bold;cursor:pointer">Clear Storage &amp; Reload</button>';
+      });
+    </script>
+    <script type="module" crossorigin src="/assets/index-ClR6nxAS.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-DuuiIxu1.css">
   </head>
+
   <body class="bg-[#0b0d12] text-gray-100 antialiased selection:bg-lime-400 selection:text-black">
     <div id="root"></div>
     <script>
