@@ -20,8 +20,9 @@ export const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="border-b border-gray-800/80 bg-[#0b0d12]/95 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 py-2.5">
+    <div className="border-b border-gray-800/60 px-4 sm:px-8 py-2 sm:py-2.5">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6">
+
         {/* Left Side: Brand Logo + Minimal Inner Clock */}
         <div className="flex items-center gap-3 shrink-0">
           <div className="w-8 h-8 rounded-xl bg-lime-300 text-gray-950 flex items-center justify-center font-bold shadow-md shadow-lime-300/20">
@@ -63,6 +64,7 @@ export const Header: React.FC = () => {
           <AccountDropdown />
         </div>
       </div>
-    </header>
+    </div>
   );
 };
+

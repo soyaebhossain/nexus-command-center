@@ -76,11 +76,12 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0b0d12] text-gray-100 transition-colors selection:bg-lime-400 selection:text-black">
-      {/* Sticky Modular Header */}
-      <Header />
+      {/* Sticky Scroll-Locked Top Header & Navigation Bar */}
+      <header className="sticky top-0 z-40 bg-[#0b0d12]/95 backdrop-blur-md border-b border-gray-800/80 shadow-md shadow-black/20">
+        <Header />
+        <NavigationBar />
+      </header>
 
-      {/* Primary Life Pillar Navigation */}
-      <NavigationBar />
 
       {/* Active Module Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-6">

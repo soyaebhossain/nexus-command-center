@@ -35,8 +35,9 @@ export const NavigationBar: React.FC = () => {
     : enabledList;
 
   return (
-    <nav className="border-b border-gray-800/60 bg-[#090b0f] px-4 sm:px-8 py-1">
+    <nav className="px-4 sm:px-8 py-1 bg-[#090b0f]/80">
       <div className="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
+
         {items.map(item => {
           const isActive = activeModule === item.id;
           return (
