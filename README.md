@@ -18,7 +18,17 @@ Built with semantic HTML5, modern Tailwind CSS architecture, Chart.js analytics,
 
 ---
 
-## 2. The Core Philosophy: "Daily Focus & The Rule of 3" (Zen Essentials Mode)
+## 2. Multi-Account & Workspace Profile Switcher (Netflix-Style Isolation)
+
+NEXUS solves multi-user and shared-computer needs with an **Offline-First Multi-Profile Engine**:
+- **👥 Multiple Isolated Profiles:** Create and switch between profiles for family members, students, professionals, or separate personal and business lives (*"Who is using NEXUS?"*).
+- **🛡️ 100% Data Partitioning:** Each account has its own isolated sandbox for tasks, income/expenses, debts, goals, habits, and reflections. Zero data mixing.
+- **🔒 Optional 4-Digit Security PIN:** Users can protect sensitive financial records or personal journals with a 4-digit PIN lock.
+- **⚡ Instant 0.05s Space Switching:** Switch accounts seamlessly from the top header with zero page reloads.
+
+---
+
+## 3. The Core Philosophy: "Daily Focus & The Rule of 3" (Zen Essentials Mode)
 
 Real productivity is not about having endless overwhelming features, but having a few critical tools that work reliably and build strong daily habits:
 - **⚡ Daily Essentials (Focus Mode):** With 1-click on the `⚡ Daily Essentials` toggle, NEXUS strips away cognitive clutter and focuses solely on the 4 pillars of daily life: **Dashboard, Priorities, Finance & Habits**. Power users can switch back to **`📊 Full Modules`** anytime.
@@ -28,7 +38,7 @@ Real productivity is not about having endless overwhelming features, but having 
 
 ---
 
-## 3. Progressive Web App (PWA) — Native Install
+## 4. Progressive Web App (PWA) — Native Install
 
 NEXUS includes full **Progressive Web App (PWA)** capabilities:
 - **Desktop Installation (Windows / macOS / Linux):** Open the application in Google Chrome or Microsoft Edge and click the **Install App** icon in the address bar to run NEXUS as a standalone desktop window.
@@ -37,11 +47,11 @@ NEXUS includes full **Progressive Web App (PWA)** capabilities:
 
 ---
 
-## 4. Core Operating System Architecture (14 Unified Modules)
+## 5. Core Operating System Architecture (14 Unified Modules)
 
 | # | Module / Subsystem | Key Capabilities & Features | Persona Suitability |
 | :-: | :--- | :--- | :--- |
-| **0** | **Executive Cockpit (Dashboard)** | Personalized greeting, live clock/date/timezone, 4 KPI cards, **Morning Rule of 3**, **3-Sec Quick Log**, **Evening Reflection & Mood**, chronological feed. | All Personas |
+| **0** | **Executive Cockpit (Dashboard)** | Personalized greeting, **Account Switcher Pill**, 4 KPI cards, **Morning Rule of 3**, **3-Sec Quick Log**, **Evening Reflection & Mood**, chronological feed. | All Personas |
 | **1** | **Life Planner & Goal Matrix** | 1-3 year vision milestones, OKRs, category tags, progress sliders (`+10%`, `-10%`), daily reflection journal & decision helper. | Students, Professionals, Entrepreneurs |
 | **2** | **Unified Calendar & Reminders** | Synchronized monthly calendar grid, day event dots, task/exam/bill/meeting badges, upcoming schedule agenda, add event modal. | Everyone |
 | **3** | **Productivity & Focus Engine** | Priorities with P1-P3 severity, category tags, due dates, filters, search, Pomodoro timer with Web Audio chord chimes, quick capture notes, **CSV Task Export**. | Students, Freelancers, Engineers |
@@ -58,7 +68,7 @@ NEXUS includes full **Progressive Web App (PWA)** capabilities:
 
 ---
 
-## 5. Personalization & Internationalization (Universal Life OS)
+## 6. Personalization & Internationalization (Universal Life OS)
 
 ### 1. Role-Based Persona Switching
 Click the role badge in the top header or press the role selector to instantly activate one of 7 curated personas:
@@ -87,7 +97,7 @@ All financial KPI cards, forms, category charts, debts, and ledger tables automa
 
 ---
 
-## 6. Global Spotlight Search (`Ctrl+K` / `⌘K`)
+## 7. Global Spotlight Search (`Ctrl+K` / `⌘K`)
 
 Press **`Ctrl+K`** (or **`Cmd+K`** on macOS) or click the search bar to launch the Spotlight Search modal:
 - Searches simultaneously across Tasks, Calendar, Goals, Courses, Knowledge SOPs, Debts & Loans, and IT Tickets.
@@ -96,7 +106,7 @@ Press **`Ctrl+K`** (or **`Cmd+K`** on macOS) or click the search bar to launch t
 
 ---
 
-## 7. Automated GitHub Pages CI/CD
+## 8. Automated GitHub Pages CI/CD
 
 The repository includes a GitHub Actions workflow [`deploy.yml`](file:///f:/Al-Ameen%20IT/web/Personal%20Traker/.github/workflows/deploy.yml) that automatically deploys the application to **GitHub Pages** on every push to `main`.
 - Live URL format: `https://<username>.github.io/<repo-name>/`

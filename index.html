@@ -251,6 +251,103 @@ body {
   </div>
 </div>
 
+<!-- Multi-Account / Profile Switcher Modal (Netflix-Style Space Isolation) -->
+<div id="accountModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <div class="panel w-full max-w-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div class="flex justify-between items-start border-b border-gray-800 pb-4">
+      <div>
+        <span class="text-xs font-bold text-lime-300 uppercase tracking-wider">Multi-User Space Isolation</span>
+        <h3 class="text-2xl font-extrabold mt-1 text-gray-100 flex items-center gap-2">
+          <span>👥 Who is using NEXUS?</span>
+        </h3>
+        <p class="text-xs text-gray-400 mt-1">Switch between isolated accounts for personal, work, study, or family members. Data is strictly separated.</p>
+      </div>
+      <button onclick="closeAccountModal()" class="text-gray-400 hover:text-white p-1">✕</button>
+    </div>
+
+    <!-- Accounts Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5" id="accountsListContainer"></div>
+
+    <!-- Create New Account Section -->
+    <div class="pt-4 border-t border-gray-800 space-y-3">
+      <div class="flex justify-between items-center">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-lime-300 flex items-center gap-1.5">
+          <i data-lucide="user-plus" class="w-4 h-4"></i> Add New Account / Profile
+        </h4>
+        <button type="button" onclick="toggleNewAccountForm()" class="text-xs text-gray-400 hover:text-white">
+          <span id="newAccountToggleText">+ Create Profile</span>
+        </button>
+      </div>
+
+      <form id="newAccountForm" onsubmit="handleCreateAccount(event)" class="hidden space-y-3 bg-gray-950 p-4 rounded-xl border border-gray-800 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-gray-400 block mb-1 font-medium">Profile Name</label>
+            <input id="newAccName" required class="field text-xs" placeholder="e.g. Soyaeb (Work) / Tanvir (Student)">
+          </div>
+          <div>
+            <label class="text-gray-400 block mb-1 font-medium">Avatar Emoji</label>
+            <select id="newAccAvatar" class="field text-xs">
+              <option value="👤">👤 Default User</option>
+              <option value="💼">💼 Corporate Professional</option>
+              <option value="🎓">🎓 Student / Learner</option>
+              <option value="💻">💻 Tech / Developer</option>
+              <option value="🚀">🚀 Entrepreneur</option>
+              <option value="🏡">🏡 Household / Family</option>
+              <option value="🎨">🎨 Creator / Designer</option>
+              <option value="⚡">⚡ Power Executive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-gray-400 block mb-1 font-medium">Starting Persona</label>
+            <select id="newAccRole" class="field text-xs">
+              <option value="student">🎓 Student & Learner</option>
+              <option value="professional">💼 Corporate Professional</option>
+              <option value="freelancer">💻 Freelancer & Creator</option>
+              <option value="business">🏢 Business Owner</option>
+              <option value="teacher">📚 Teacher & Educator</option>
+              <option value="family">🏡 Household & Family</option>
+              <option value="universal" selected>⚡ Universal Executive (All)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-gray-400 block mb-1 font-medium">4-Digit Security PIN (Optional)</label>
+            <input id="newAccPin" type="password" maxlength="4" pattern="[0-9]*" class="field text-xs font-mono" placeholder="Leave blank if no PIN">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-lime-300 hover:bg-lime-400 text-gray-950 font-bold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i> Create Account & Switch
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Security PIN Verification Modal -->
+<div id="pinModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="panel w-full max-w-sm p-6 text-center space-y-4 shadow-2xl border border-gray-800">
+    <div class="w-12 h-12 rounded-2xl bg-lime-400/10 text-lime-300 mx-auto flex items-center justify-center">
+      <i data-lucide="lock" class="w-6 h-6"></i>
+    </div>
+    <div>
+      <h3 class="text-lg font-bold text-gray-100" id="pinModalTitle">Enter Security PIN</h3>
+      <p class="text-xs text-gray-400 mt-1" id="pinModalSubtitle">This account is protected by a 4-digit PIN.</p>
+    </div>
+    <form onsubmit="handleVerifyPin(event)" class="space-y-3">
+      <input id="pinInput" type="password" maxlength="4" autofocus required class="field text-center text-2xl font-mono tracking-widest py-2 bg-gray-950" placeholder="••••">
+      <div id="pinErrorMsg" class="text-xs text-rose-400 hidden font-medium">Incorrect PIN. Try again.</div>
+      <div class="flex gap-2">
+        <button type="button" onclick="closePinModal()" class="flex-1 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-bold">Cancel</button>
+        <button type="submit" class="flex-1 py-2 rounded-xl bg-lime-300 hover:bg-lime-400 text-gray-950 text-xs font-bold">Unlock</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- SaaS Commercial Tiers & Upgrade Modal -->
 <div id="upgradeModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
   <div class="panel w-full max-w-3xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl">
@@ -377,6 +474,7 @@ body {
 
       <!-- Mobile quick buttons -->
       <div class="flex items-center gap-2 md:hidden">
+        <button onclick="openAccountModal()" class="p-1.5 bg-gray-900 border border-gray-800 rounded-lg text-sm" id="mobileAccountBtn" title="Switch Profile">👤</button>
         <button onclick="toggleLang()" class="p-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs text-lime-300 font-bold" id="mobileLangBtn">বাং</button>
         <button onclick="openSearchModal()" class="p-2 bg-gray-900 border border-gray-800 rounded-xl text-gray-300">
           <i data-lucide="search" class="w-4 h-4"></i>
@@ -397,6 +495,13 @@ body {
 
     <!-- Right Controls -->
     <div class="hidden md:flex items-center gap-2.5">
+      <!-- Account Switcher Pill -->
+      <button onclick="openAccountModal()" id="headerAccountBtn" title="Switch User Profile" class="px-2.5 py-1 bg-gray-900 border border-gray-800 hover:border-lime-300 rounded-xl text-xs font-semibold text-gray-200 hover:text-white transition-all flex items-center gap-1.5 shadow-sm">
+        <span id="headerAccountAvatar" class="text-sm">👤</span>
+        <span id="headerAccountName" class="font-bold max-w-[110px] truncate">Md. Soyaeb Hossain</span>
+        <i data-lucide="chevron-down" class="w-3 h-3 text-lime-300"></i>
+      </button>
+
       <!-- Language Switcher Button -->
       <button onclick="toggleLang()" id="langBtn" class="px-2.5 py-1 bg-gray-900 border border-gray-800 hover:border-lime-300 rounded-xl text-xs font-bold text-lime-300 transition-colors flex items-center gap-1.5">
         <i data-lucide="languages" class="w-3.5 h-3.5"></i> <span id="langBtnText">বাংলা</span>
@@ -1860,6 +1965,7 @@ let ruleOf3 = JSON.parse(localStorage.getItem('nexus_rule_of_3') || 'null') || [
 function toggleFocusMode() {
   isFocusMode = !isFocusMode;
   localStorage.setItem('nexus_focus_mode', isFocusMode.toString());
+  updateAccountHeaderUI();
   updateFocusModeUI();
   renderNavBar();
   showToast(isFocusMode 
@@ -2049,6 +2155,319 @@ function loadEveningReflection() {
     notice.classList.remove('hidden');
     if (inp && !inp.value) inp.value = saved;
   }
+}
+
+
+// ========================================================
+// MULTI-ACCOUNT & PROFILE ENGINE (ISOLATED WORKSPACES)
+// ========================================================
+let accounts = JSON.parse(localStorage.getItem('nexus_accounts') || 'null') || [
+  {
+    id: 'acc_default',
+    name: localStorage.getItem('nexus_user_name') || 'Md. Soyaeb Hossain',
+    avatar: '👤',
+    role: localStorage.getItem('nexus_role') || 'universal',
+    pin: '',
+    createdAt: new Date().toISOString()
+  }
+];
+
+let activeAccountId = localStorage.getItem('nexus_active_account_id') || 'acc_default';
+let pendingSwitchAccount = null;
+
+function getActiveAccount() {
+  return accounts.find(a => a.id === activeAccountId) || accounts[0];
+}
+
+function openAccountModal() {
+  renderAccountsList();
+  const modal = document.getElementById('accountModal');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeAccountModal() {
+  const modal = document.getElementById('accountModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function renderAccountsList() {
+  const container = document.getElementById('accountsListContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  accounts.forEach(acc => {
+    const isAct = acc.id === activeAccountId;
+    const hasPin = Boolean(acc.pin);
+    const card = document.createElement('div');
+    card.className = `p-4 rounded-2xl bg-gray-900 border ${isAct ? 'border-lime-300 bg-lime-950/15' : 'border-gray-800 hover:border-gray-700'} space-y-2 cursor-pointer transition-all flex flex-col justify-between`;
+    card.onclick = (e) => {
+      if (e.target.closest('.delete-acc-btn')) return;
+      attemptSwitchAccount(acc.id);
+    };
+
+    card.innerHTML = `
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-start">
+          <span class="text-3xl">${acc.avatar || '👤'}</span>
+          <div class="flex items-center gap-1">
+            ${hasPin ? '<span class="text-[10px] text-amber-400 font-mono" title="PIN Protected">🔒</span>' : ''}
+            ${isAct ? '<span class="px-2 py-0.5 rounded bg-lime-300 text-gray-950 text-[10px] font-extrabold font-mono">ACTIVE</span>' : ''}
+            ${accounts.length > 1 && !isAct ? `<button type="button" onclick="deleteAccount('${acc.id}')" class="delete-acc-btn text-gray-500 hover:text-red-400 p-1 text-xs" title="Delete Profile">✕</button>` : ''}
+          </div>
+        </div>
+        <div>
+          <h4 class="font-bold text-gray-100 text-sm truncate">${escapeHtml(acc.name)}</h4>
+          <span class="text-[10px] text-gray-400 uppercase font-mono">${acc.role || 'universal'}</span>
+        </div>
+      </div>
+      <button type="button" class="w-full py-1.5 rounded-xl text-xs font-bold transition-colors ${isAct ? 'bg-lime-400/20 text-lime-300' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}">
+        ${isAct ? 'Current Workspace' : 'Switch Space ›'}
+      </button>
+    `;
+    container.appendChild(card);
+  });
+  localStorage.setItem('nexus_accounts', JSON.stringify(accounts));
+}
+
+function toggleNewAccountForm() {
+  const form = document.getElementById('newAccountForm');
+  const txt = document.getElementById('newAccountToggleText');
+  if (!form) return;
+  const isHidden = form.classList.toggle('hidden');
+  if (txt) txt.textContent = isHidden ? '+ Create Profile' : '− Close Form';
+}
+
+function handleCreateAccount(e) {
+  e.preventDefault();
+  const nameInput = document.getElementById('newAccName');
+  const avatarInput = document.getElementById('newAccAvatar');
+  const roleInput = document.getElementById('newAccRole');
+  const pinInput = document.getElementById('newAccPin');
+
+  const name = nameInput.value.trim();
+  if (!name) return;
+
+  const newAcc = {
+    id: 'acc_' + Date.now(),
+    name: name,
+    avatar: avatarInput.value,
+    role: roleInput.value,
+    pin: pinInput.value.trim(),
+    createdAt: new Date().toISOString()
+  };
+
+  accounts.push(newAcc);
+  localStorage.setItem('nexus_accounts', JSON.stringify(accounts));
+
+  initializeAccountData(newAcc);
+  switchToAccount(newAcc.id);
+
+  nameInput.value = '';
+  pinInput.value = '';
+  toggleNewAccountForm();
+  closeAccountModal();
+
+  playChime(1100);
+  showToast(currentLang === 'bn' ? `নতুন প্রোফাইল তৈরি হয়েছে: ${name}` : `Created & switched to profile: ${name}`);
+  logActivity(`Created new user workspace profile: "${name}"`);
+}
+
+function attemptSwitchAccount(accId) {
+  if (accId === activeAccountId) {
+    closeAccountModal();
+    return;
+  }
+  const target = accounts.find(a => a.id === accId);
+  if (!target) return;
+
+  if (target.pin) {
+    pendingSwitchAccount = target;
+    openPinModal(target);
+  } else {
+    switchToAccount(accId);
+    closeAccountModal();
+  }
+}
+
+function openPinModal(acc) {
+  const modal = document.getElementById('pinModal');
+  const title = document.getElementById('pinModalTitle');
+  const sub = document.getElementById('pinModalSubtitle');
+  const inp = document.getElementById('pinInput');
+  const err = document.getElementById('pinErrorMsg');
+  if (!modal) return;
+
+  if (title) title.textContent = `Unlock ${acc.name}`;
+  if (sub) sub.textContent = `Enter 4-digit security PIN to access ${acc.name}'s workspace.`;
+  if (inp) { inp.value = ''; inp.focus(); }
+  if (err) err.classList.add('hidden');
+
+  modal.classList.remove('hidden');
+}
+
+function closePinModal() {
+  const modal = document.getElementById('pinModal');
+  if (modal) modal.classList.add('hidden');
+  pendingSwitchAccount = null;
+}
+
+function handleVerifyPin(e) {
+  e.preventDefault();
+  const inp = document.getElementById('pinInput');
+  const err = document.getElementById('pinErrorMsg');
+  if (!inp || !pendingSwitchAccount) return;
+
+  if (inp.value === pendingSwitchAccount.pin) {
+    const accId = pendingSwitchAccount.id;
+    closePinModal();
+    closeAccountModal();
+    switchToAccount(accId);
+  } else {
+    if (err) err.classList.remove('hidden');
+    inp.value = '';
+    inp.focus();
+    playChime(350);
+  }
+}
+
+function switchToAccount(newAccId) {
+  saveCurrentAccountData();
+  activeAccountId = newAccId;
+  localStorage.setItem('nexus_active_account_id', newAccId);
+
+  loadAccountData(newAccId);
+  updateAccountHeaderUI();
+  updateRoleUI();
+  renderNavBar();
+  refreshAllModules();
+
+  const cur = getActiveAccount();
+  playChime(980);
+  showToast(currentLang === 'bn' ? `স্পেস পরিবর্তন: ${cur.name}` : `Switched workspace: ${cur.name}`);
+  logActivity(`Switched active workspace to "${cur.name}"`);
+}
+
+function updateAccountHeaderUI() {
+  const acc = getActiveAccount();
+  const nameEl = document.getElementById('headerAccountName');
+  const avatarEl = document.getElementById('headerAccountAvatar');
+  const mobBtn = document.getElementById('mobileAccountBtn');
+
+  if (nameEl) nameEl.textContent = acc.name;
+  if (avatarEl) avatarEl.textContent = acc.avatar || '👤';
+  if (mobBtn) mobBtn.textContent = acc.avatar || '👤';
+}
+
+function saveCurrentAccountData() {
+  const p = activeAccountId === 'acc_default' ? 'nexus_' : `nexus_${activeAccountId}_`;
+  localStorage.setItem(p + 'tasks', JSON.stringify(tasks));
+  localStorage.setItem(p + 'goals', JSON.stringify(goals));
+  localStorage.setItem(p + 'calendar_events', JSON.stringify(calendarEvents));
+  localStorage.setItem(p + 'transactions', JSON.stringify(transactions));
+  localStorage.setItem(p + 'debts', JSON.stringify(debts));
+  localStorage.setItem(p + 'courses', JSON.stringify(courses));
+  localStorage.setItem(p + 'exams', JSON.stringify(exams));
+  localStorage.setItem(p + 'books', JSON.stringify(books));
+  localStorage.setItem(p + 'tickets', JSON.stringify(tickets));
+  localStorage.setItem(p + 'it_checklist', JSON.stringify(itChecklist));
+  localStorage.setItem(p + 'inquiries', JSON.stringify(inquiries));
+  localStorage.setItem(p + 'habits', JSON.stringify(habits));
+  localStorage.setItem(p + 'water', waterMl.toString());
+  localStorage.setItem(p + 'groceries', JSON.stringify(groceries));
+  localStorage.setItem(p + 'chores', JSON.stringify(chores));
+  localStorage.setItem(p + 'notes', JSON.stringify(notes));
+  localStorage.setItem(p + 'rule_of_3', JSON.stringify(ruleOf3));
+  localStorage.setItem(p + 'role', currentRole);
+  localStorage.setItem(p + 'enabled_modules', JSON.stringify(enabledModules));
+  localStorage.setItem(p + 'currency', currentCurrency);
+}
+
+function loadAccountData(accId) {
+  const p = accId === 'acc_default' ? 'nexus_' : `nexus_${accId}_`;
+
+  tasks = JSON.parse(localStorage.getItem(p + 'tasks') || '[]');
+  goals = JSON.parse(localStorage.getItem(p + 'goals') || '[]');
+  calendarEvents = JSON.parse(localStorage.getItem(p + 'calendar_events') || '[]');
+  transactions = JSON.parse(localStorage.getItem(p + 'transactions') || '[]');
+  debts = JSON.parse(localStorage.getItem(p + 'debts') || '[]');
+  courses = JSON.parse(localStorage.getItem(p + 'courses') || '[]');
+  exams = JSON.parse(localStorage.getItem(p + 'exams') || '[]');
+  books = JSON.parse(localStorage.getItem(p + 'books') || '[]');
+  tickets = JSON.parse(localStorage.getItem(p + 'tickets') || '[]');
+  itChecklist = JSON.parse(localStorage.getItem(p + 'it_checklist') || '[]');
+  inquiries = JSON.parse(localStorage.getItem(p + 'inquiries') || '[]');
+  habits = JSON.parse(localStorage.getItem(p + 'habits') || '[]');
+  waterMl = parseInt(localStorage.getItem(p + 'water') || '0');
+  groceries = JSON.parse(localStorage.getItem(p + 'groceries') || '[]');
+  chores = JSON.parse(localStorage.getItem(p + 'chores') || '[]');
+  notes = JSON.parse(localStorage.getItem(p + 'notes') || '[]');
+  ruleOf3 = JSON.parse(localStorage.getItem(p + 'rule_of_3') || '[]');
+
+  currentRole = localStorage.getItem(p + 'role') || (getActiveAccount().role || 'universal');
+  enabledModules = JSON.parse(localStorage.getItem(p + 'enabled_modules') || 'null');
+  if (!enabledModules) {
+    enabledModules = [...(ROLES[currentRole] ? ROLES[currentRole].modules : ROLES.universal.modules)];
+  }
+
+  const savedCurr = localStorage.getItem(p + 'currency');
+  if (savedCurr) setCurrency(savedCurr);
+}
+
+function initializeAccountData(acc) {
+  const p = `nexus_${acc.id}_`;
+  const defaultTasks = [
+    { id: 1, text: `Welcome to ${acc.name}'s isolated space!`, priority: 'high', category: 'General', dueDate: new Date().toISOString().split('T')[0], done: false }
+  ];
+  const defaultRuleOf3 = [
+    { id: 1, text: 'Set up first critical priority', done: false },
+    { id: 2, text: 'Log initial budget / income', done: false },
+    { id: 3, text: 'Review habits and goals', done: false }
+  ];
+
+  localStorage.setItem(p + 'tasks', JSON.stringify(defaultTasks));
+  localStorage.setItem(p + 'goals', JSON.stringify([]));
+  localStorage.setItem(p + 'calendar_events', JSON.stringify([]));
+  localStorage.setItem(p + 'transactions', JSON.stringify([]));
+  localStorage.setItem(p + 'debts', JSON.stringify([]));
+  localStorage.setItem(p + 'courses', JSON.stringify([]));
+  localStorage.setItem(p + 'exams', JSON.stringify([]));
+  localStorage.setItem(p + 'books', JSON.stringify([]));
+  localStorage.setItem(p + 'tickets', JSON.stringify([]));
+  localStorage.setItem(p + 'it_checklist', JSON.stringify([]));
+  localStorage.setItem(p + 'inquiries', JSON.stringify([]));
+  localStorage.setItem(p + 'habits', JSON.stringify([]));
+  localStorage.setItem(p + 'water', '0');
+  localStorage.setItem(p + 'groceries', JSON.stringify([]));
+  localStorage.setItem(p + 'chores', JSON.stringify([]));
+  localStorage.setItem(p + 'notes', JSON.stringify([]));
+  localStorage.setItem(p + 'rule_of_3', JSON.stringify(defaultRuleOf3));
+  localStorage.setItem(p + 'role', acc.role || 'universal');
+  const roleMods = ROLES[acc.role] ? ROLES[acc.role].modules : ROLES.universal.modules;
+  localStorage.setItem(p + 'enabled_modules', JSON.stringify(roleMods));
+}
+
+function deleteAccount(accId) {
+  if (accounts.length <= 1) {
+    showToast('Cannot delete the only remaining account');
+    return;
+  }
+  const acc = accounts.find(a => a.id === accId);
+  if (!confirm(`Delete profile "${acc.name}" and all its isolated data?`)) return;
+
+  accounts = accounts.filter(a => a.id !== accId);
+  localStorage.setItem('nexus_accounts', JSON.stringify(accounts));
+
+  const p = `nexus_${accId}_`;
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(p)) {
+      localStorage.removeItem(k);
+    }
+  }
+
+  renderAccountsList();
+  showToast(`Profile "${acc.name}" deleted`);
+  logActivity(`Deleted user workspace profile "${acc.name}"`);
 }
 
 function renderNavBar() {
@@ -4583,7 +5002,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  ['roleModal', 'searchModal', 'settingsModal', 'upgradeModal', 'calendarEventModal', 'sopModal'].forEach(id => {
+  ['roleModal', 'searchModal', 'settingsModal', 'upgradeModal', 'calendarEventModal', 'sopModal', 'accountModal', 'pinModal'].forEach(id => {
     const modal = document.getElementById(id);
     if (modal) {
       modal.addEventListener('click', (e) => {
