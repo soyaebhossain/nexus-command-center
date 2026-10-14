@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { 
   Account, Task, RuleOf3Item, Transaction, MealReminder, CalendarEvent,
-  CurrencySymbol, LanguageCode, ModuleId, RoleKey 
+  CurrencySymbol, LanguageCode, ModuleId, RoleKey, UserProfileDetails 
 } from '../types';
 import { getStoragePrefix, loadLocalData, saveLocalData, syncWithBackend } from '../utils/storage';
 import { playChime, playCelebrationArpeggio } from '../utils/audio';
@@ -62,10 +61,14 @@ interface AppContextType {
   isSearchModalOpen: boolean;
   openSearchModal: () => void;
   closeSearchModal: () => void;
+  isProfileWizardOpen: boolean;
+  openProfileWizard: () => void;
+  closeProfileWizard: () => void;
   switchAccount: (id: string) => void;
-  createAccount: (name: string, avatar: string, role: RoleKey, pin?: string) => void;
+  createAccount: (name: string, avatar: string, role: RoleKey, pin?: string, details?: Partial<UserProfileDetails>) => void;
   deleteAccount: (id: string) => void;
   updateAccountName: (name: string) => void;
+  updateProfileDetails: (details: Partial<UserProfileDetails>) => void;
   loadDemoData: () => void;
   factoryReset: () => void;
 }
@@ -76,9 +79,30 @@ const defaultAccounts: Account[] = [
     name: 'Md. Soyaeb Hossain',
     avatar: '👤',
     role: 'universal',
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    profileDetails: {
+      age: 26,
+      gender: 'male',
+      heightCm: 175,
+      weightKg: 70,
+      bmi: 22.9,
+      bmiCategory: 'Normal',
+      targetWaterMl: 2500,
+      targetSleepTime: '23:30',
+      targetWakeTime: '07:30',
+      chronotype: 'lark',
+      profession: 'Solutions Architect & Tech Lead',
+      workStyle: 'hybrid',
+      dailyFocusHoursTarget: 5,
+      monthlyIncome: 85000,
+      savingsTargetPercent: 25,
+      emergencyFundMonths: 6,
+      northStarGoal: 'Scale Al-Ameen IT infrastructure & achieve peak circadian health',
+      northStarDeadline: '2026-12-31'
+    }
   }
 ];
+
 
 const defaultMeals: MealReminder[] = [
   { id: 'breakfast', name: 'Breakfast', nameBn: 'সকালের নাস্তা', icon: '🥪', time: '08:30', enabled: true, done: false, advice: 'পুষ্টিকর নাস্তা খেয়ে দিনটি চমৎকারভাবে শুরু করুন!' },
@@ -129,6 +153,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isProfileWizardOpen, setIsProfileWizardOpen] = useState(false);
+
 
   const prefix = getStoragePrefix(activeAccountId);
 
@@ -357,14 +383,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     showToast(`Switched workspace`);
   };
 
-  const createAccount = (name: string, avatar: string, role: RoleKey, pin?: string) => {
+  const createAccount = (name: string, avatar: string, role: RoleKey, pin?: string, details?: Partial<UserProfileDetails>) => {
     const newAcc: Account = {
       id: 'acc_' + Date.now(),
       name,
       avatar,
       role,
       pin,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      profileDetails: details
     };
     const updated = [...accounts, newAcc];
     setAccounts(updated);
@@ -391,6 +418,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setAccounts(updated);
     saveLocalData('nexus_accounts', updated);
     showToast('Profile name updated');
+  };
+
+  const updateProfileDetails = (details: Partial<UserProfileDetails>) => {
+    const updated = accounts.map(a => {
+      if (a.id === activeAccountId) {
+        const mergedDetails: UserProfileDetails = {
+          ...(a.profileDetails || {}),
+          ...details
+        };
+        return { ...a, profileDetails: mergedDetails };
+      }
+      return a;
+    });
+    setAccounts(updated);
+    saveLocalData('nexus_accounts', updated);
+    showToast(lang === 'bn' ? 'প্রোফাইল তথ্য সফলভাবে সংরক্ষিত হয়েছে' : 'Profile bio-cadence details saved');
   };
 
   const loadDemoData = () => {
@@ -431,10 +474,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       isAccountModalOpen, openAccountModal: () => setIsAccountModalOpen(true), closeAccountModal: () => setIsAccountModalOpen(false),
       isSettingsModalOpen, openSettingsModal: () => setIsSettingsModalOpen(true), closeSettingsModal: () => setIsSettingsModalOpen(false),
       isSearchModalOpen, openSearchModal: () => setIsSearchModalOpen(true), closeSearchModal: () => setIsSearchModalOpen(false),
-      switchAccount, createAccount, deleteAccount, updateAccountName, loadDemoData, factoryReset
+      isProfileWizardOpen, openProfileWizard: () => setIsProfileWizardOpen(true), closeProfileWizard: () => setIsProfileWizardOpen(false),
+      switchAccount, createAccount, deleteAccount, updateAccountName, updateProfileDetails, loadDemoData, factoryReset
     }}>
       {children}
     </AppContext.Provider>
+
   );
 };
 

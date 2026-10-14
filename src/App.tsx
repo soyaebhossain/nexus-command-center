@@ -13,7 +13,9 @@ import { EmailTriageModule } from './components/modules/EmailTriageModule';
 import { AccountModal } from './components/common/AccountModal';
 import { SettingsModal } from './components/common/SettingsModal';
 import { SpotlightModal } from './components/common/SpotlightModal';
+import { ProfileWizardModal } from './components/common/ProfileWizardModal';
 import { Sparkles } from 'lucide-react';
+
 
 export const App: React.FC = () => {
   const { 
@@ -23,7 +25,8 @@ export const App: React.FC = () => {
     openSearchModal, 
     closeAccountModal, 
     closeSettingsModal, 
-    closeSearchModal 
+    closeSearchModal,
+    closeProfileWizard 
   } = useApp();
 
   // Sync theme class to document.body
@@ -45,11 +48,13 @@ export const App: React.FC = () => {
         closeAccountModal();
         closeSettingsModal();
         closeSearchModal();
+        closeProfileWizard();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [openSearchModal, closeAccountModal, closeSettingsModal, closeSearchModal]);
+  }, [openSearchModal, closeAccountModal, closeSettingsModal, closeSearchModal, closeProfileWizard]);
+
 
   const renderModule = () => {
     switch (activeModule) {
@@ -92,6 +97,8 @@ export const App: React.FC = () => {
       <AccountModal />
       <SettingsModal />
       <SpotlightModal />
+      <ProfileWizardModal />
+
 
       {/* Global Floating Toast */}
       {toastMessage && (

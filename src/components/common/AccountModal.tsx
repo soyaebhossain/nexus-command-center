@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { X, UserPlus, Trash2, Check, Lock } from 'lucide-react';
+import { X, UserPlus, Trash2, Check, Lock, Sparkles, Award } from 'lucide-react';
 import { RoleKey } from '../../types';
 import { useTranslation } from '../../utils/i18n';
+import { calculateProfileCompletion } from '../../utils/profile';
 
 export const AccountModal: React.FC = () => {
   const { 
     isAccountModalOpen, closeAccountModal, accounts, 
     activeAccountId, switchAccount, createAccount, deleteAccount,
-    lang 
+    openProfileWizard, lang 
   } = useApp();
 
   const t = useTranslation(lang);
@@ -17,6 +18,7 @@ export const AccountModal: React.FC = () => {
   const [avatar, setAvatar] = useState('👤');
   const [role, setRole] = useState<RoleKey>('universal');
   const [pin, setPin] = useState('');
+  const [openWizardAfter, setOpenWizardAfter] = useState(true);
 
   if (!isAccountModalOpen) return null;
 
@@ -28,7 +30,11 @@ export const AccountModal: React.FC = () => {
     setPin('');
     setShowCreate(false);
     closeAccountModal();
+    if (openWizardAfter) {
+      setTimeout(() => openProfileWizard(), 100);
+    }
   };
+
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in">
@@ -52,6 +58,7 @@ export const AccountModal: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
           {accounts.map(acc => {
             const isAct = acc.id === activeAccountId;
+            const comp = calculateProfileCompletion(acc);
             return (
               <div
                 key={acc.id}
@@ -77,17 +84,49 @@ export const AccountModal: React.FC = () => {
                     </button>
                   ) : null}
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <h4 className="font-bold text-sm text-gray-100 truncate">{acc.name}</h4>
-                  <div className="flex items-center gap-1.5 mt-1">
+                  <div className="flex items-center gap-1.5">
                     <span className="text-[10px] font-mono uppercase text-lime-300 font-semibold bg-gray-950 px-2 py-0.5 rounded border border-gray-800">
                       {acc.role}
                     </span>
                     {acc.pin && <Lock className="w-3 h-3 text-amber-400" />}
                   </div>
+
+                  {/* Profile Strength Indicator */}
+                  <div className="pt-2 border-t border-gray-800/80 space-y-1">
+                    <div className="flex items-center justify-between text-[10px] font-mono">
+                      <span className="text-gray-400">{lang === 'bn' ? 'সম্পূর্ণতা' : 'Strength'}</span>
+                      <span className={`font-bold ${comp.percentage >= 100 ? 'text-lime-300' : 'text-sky-300'}`}>
+                        {comp.percentage}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-950 h-1.5 rounded-full overflow-hidden border border-gray-800">
+                      <div 
+                        className={`h-full rounded-full ${comp.percentage >= 100 ? 'bg-lime-400' : 'bg-sky-400'}`}
+                        style={{ width: `${comp.percentage}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {isAct && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        closeAccountModal();
+                        openProfileWizard();
+                      }}
+                      className="w-full mt-2 py-1 px-2 rounded-xl bg-gray-950 hover:bg-gray-850 border border-lime-400/30 hover:border-lime-400 text-lime-300 text-[10px] font-bold flex items-center justify-center gap-1 transition-all"
+                    >
+                      <Sparkles className="w-3 h-3 text-lime-400" />
+                      <span>{lang === 'bn' ? 'বায়ো-প্রোফাইল সেটআপ' : 'Setup Bio-Profile'}</span>
+                    </button>
+                  )}
                 </div>
               </div>
             );
+
           })}
         </div>
 
@@ -167,12 +206,26 @@ export const AccountModal: React.FC = () => {
                 </div>
               </div>
 
+              <div className="flex items-center gap-2 pt-1 pb-1">
+                <input
+                  type="checkbox"
+                  id="openWizardAfter"
+                  checked={openWizardAfter}
+                  onChange={e => setOpenWizardAfter(e.target.checked)}
+                  className="accent-lime-400 w-4 h-4 cursor-pointer rounded"
+                />
+                <label htmlFor="openWizardAfter" className="text-xs text-gray-300 cursor-pointer">
+                  {lang === 'bn' ? 'তৈরি করে সরাসরি ১০০% বায়ো-সারকাডিয়ান সেটআপ উইজার্ড খুলুন' : 'Launch 100% Bio & Lifestyle Setup Wizard immediately'}
+                </label>
+              </div>
+
               <button
                 type="submit"
                 className="w-full bg-lime-300 hover:bg-lime-400 text-gray-950 font-bold py-2.5 rounded-xl text-xs transition-colors"
               >
                 {t.saveProfile}
               </button>
+
             </form>
           )}
         </div>

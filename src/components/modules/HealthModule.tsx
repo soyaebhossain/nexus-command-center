@@ -2,7 +2,7 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { 
   Activity, Bell, CheckCircle2, Clock, Droplets, 
-  Flame, Plus, RotateCcw 
+  Flame, Plus, RotateCcw, HeartPulse, Sparkles, Moon 
 } from 'lucide-react';
 import { requestNotificationPermission, sendLocalNotification } from '../../utils/notifications';
 import { useTranslation } from '../../utils/i18n';
@@ -10,8 +10,9 @@ import { useTranslation } from '../../utils/i18n';
 export const HealthModule: React.FC = () => {
   const { 
     mealReminders, toggleMealDone, toggleMealEnabled, updateMealTime,
-    waterMl, addWater, resetWater, lang, showToast 
+    waterMl, addWater, resetWater, lang, showToast, activeAccount, openProfileWizard 
   } = useApp();
+
 
   const t = useTranslation(lang);
 
@@ -54,8 +55,75 @@ export const HealthModule: React.FC = () => {
         </button>
       </div>
 
+      {/* 1.5 Bio-Metrics & Circadian Cadence Overview Card */}
+      <div className="p-5 sm:p-6 rounded-3xl bg-gray-950 border border-gray-800 space-y-3.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-800/80 pb-3">
+          <div className="flex items-center gap-2">
+            <HeartPulse className="w-4 h-4 text-rose-400" />
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-gray-200">
+              {lang === 'bn' ? 'ব্যক্তিগত বায়ো-মেট্রিক্স ও সারকাডিয়ান প্রোফাইল' : 'Personal Bio-Metrics & Circadian Profile'}
+            </span>
+          </div>
+
+          <button
+            onClick={openProfileWizard}
+            className="text-xs font-bold text-lime-300 hover:text-lime-200 px-3 py-1.5 rounded-xl bg-gray-900 border border-lime-400/30 hover:border-lime-400 flex items-center gap-1.5 transition-all w-fit"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-lime-400" />
+            <span>{lang === 'bn' ? 'বায়ো-মেট্রিক্স অপ্টিমাইজ করুন' : 'Optimize Bio-Profile'}</span>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          {/* BMI Metric */}
+          <div className="p-3.5 rounded-2xl bg-gray-900/60 border border-gray-800/80 space-y-1">
+            <div className="text-[10px] text-gray-400 uppercase font-mono">{lang === 'bn' ? 'বডি ম্যাস (BMI)' : 'Body Mass (BMI)'}</div>
+            <div className="font-mono font-bold text-base text-lime-300">
+              {activeAccount.profileDetails?.bmi || '22.9'}
+            </div>
+            <div className="text-[10px] text-gray-400">
+              {activeAccount.profileDetails?.bmiCategory || 'Normal Weight'}
+            </div>
+          </div>
+
+          {/* Weight & Height */}
+          <div className="p-3.5 rounded-2xl bg-gray-900/60 border border-gray-800/80 space-y-1">
+            <div className="text-[10px] text-gray-400 uppercase font-mono">{lang === 'bn' ? 'ওজন ও উচ্চতা' : 'Weight & Height'}</div>
+            <div className="font-mono font-bold text-sm text-gray-200">
+              {activeAccount.profileDetails?.weightKg || 70} kg • {activeAccount.profileDetails?.heightCm || 175} cm
+            </div>
+            <div className="text-[10px] text-cyan-400">
+              Target: {activeAccount.profileDetails?.targetWaterMl || 2500} ml/day
+            </div>
+          </div>
+
+          {/* Circadian Sleep Window */}
+          <div className="p-3.5 rounded-2xl bg-gray-900/60 border border-gray-800/80 space-y-1">
+            <div className="text-[10px] text-gray-400 uppercase font-mono">{lang === 'bn' ? 'ঘুমের সময়সূচী' : 'Sleep Target'}</div>
+            <div className="font-mono font-bold text-sm text-indigo-300">
+              {activeAccount.profileDetails?.targetSleepTime || '23:30'} → {activeAccount.profileDetails?.targetWakeTime || '07:30'}
+            </div>
+            <div className="text-[10px] text-gray-400">
+              Optimal Recovery
+            </div>
+          </div>
+
+          {/* Chronotype */}
+          <div className="p-3.5 rounded-2xl bg-gray-900/60 border border-gray-800/80 space-y-1">
+            <div className="text-[10px] text-gray-400 uppercase font-mono">{lang === 'bn' ? 'ক্রোনো-টাইপ' : 'Chronotype'}</div>
+            <div className="font-mono font-bold text-sm text-amber-300">
+              {activeAccount.profileDetails?.chronotype === 'lark' ? '🌅 Morning Lark' : activeAccount.profileDetails?.chronotype === 'owl' ? '🦉 Night Owl' : '⚖️ Balanced'}
+            </div>
+            <div className="text-[10px] text-gray-400">
+              Peak Energy Window
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 2. 4 CIRCADIAN MEAL REMINDER CARDS */}
       <div className="p-6 rounded-3xl bg-gray-950 border border-gray-800/80 space-y-4">
+
         <div className="flex items-center justify-between border-b border-gray-800 pb-3">
           <div className="flex items-center gap-2">
             <span className="text-xl">🥗</span>
@@ -135,7 +203,7 @@ export const HealthModule: React.FC = () => {
           <div className="flex justify-between items-center">
             <span className="text-xs font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
               <Droplets className="w-4 h-4" />
-              <span>{t.waterVitality} (2,500 ml)</span>
+              <span>{t.waterVitality} ({(activeAccount.profileDetails?.targetWaterMl || 2500).toLocaleString()} ml)</span>
             </span>
             <button onClick={resetWater} className="text-xs text-gray-500 hover:text-red-400 flex items-center gap-1">
               <RotateCcw className="w-3 h-3" />
@@ -144,16 +212,17 @@ export const HealthModule: React.FC = () => {
           </div>
 
           <div className="text-3xl font-bold font-mono text-cyan-300">
-            {waterMl} ml <span className="text-xs text-gray-400 font-normal">/ 2,500 ml</span>
+            {waterMl} ml <span className="text-xs text-gray-400 font-normal">/ {(activeAccount.profileDetails?.targetWaterMl || 2500).toLocaleString()} ml</span>
           </div>
 
           {/* Progress Bar */}
           <div className="w-full bg-gray-900 h-2.5 rounded-full overflow-hidden border border-gray-800 p-0.5">
             <div
               className="bg-gradient-to-r from-cyan-400 to-blue-500 h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, Math.round((waterMl / 2500) * 100))}%` }}
+              style={{ width: `${Math.min(100, Math.round((waterMl / (activeAccount.profileDetails?.targetWaterMl || 2500)) * 100))}%` }}
             />
           </div>
+
 
           <div className="flex gap-2.5 pt-1">
             <button

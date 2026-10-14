@@ -2,17 +2,19 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { 
   Languages, Coins, Sun, Moon, Sparkles, Settings as SettingsIcon, 
-  Download, ChevronRight, ArrowRight, Database
+  Download, ChevronRight, ArrowRight, Database, Award 
 } from 'lucide-react';
 import { downloadJSON } from '../../utils/storage';
 import { useTranslation } from '../../utils/i18n';
+import { calculateProfileCompletion } from '../../utils/profile';
 
 export const AccountDropdown: React.FC = () => {
   const { 
     activeAccount, currency, setCurrency, lang, setLang, 
-    theme, toggleTheme, openAccountModal, openSettingsModal, 
+    theme, toggleTheme, openAccountModal, openSettingsModal, openProfileWizard,
     showToast, tasks, transactions, ruleOf3, mealReminders, loadDemoData 
   } = useApp();
+
 
   const t = useTranslation(lang);
   const [isOpen, setIsOpen] = useState(false);
@@ -82,8 +84,46 @@ export const AccountDropdown: React.FC = () => {
             </button>
           </div>
 
+          {/* 1.5 Profile Strength Meter & 100% Completion Action */}
+          <div className="p-3 rounded-xl bg-gray-900/80 border border-gray-800 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <Award className="w-3.5 h-3.5 text-lime-400" />
+                <span className="text-[11px] font-bold text-gray-200">
+                  {lang === 'bn' ? 'প্রোফাইল সম্পূর্ণতা:' : 'Profile Strength:'}
+                </span>
+                <span className="text-[11px] font-mono font-extrabold text-lime-300">
+                  {calculateProfileCompletion(activeAccount).percentage}%
+                </span>
+              </div>
+              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${calculateProfileCompletion(activeAccount).levelBadgeColor}`}>
+                {lang === 'bn' ? calculateProfileCompletion(activeAccount).levelTitleBn : calculateProfileCompletion(activeAccount).levelTitleEn}
+              </span>
+            </div>
+
+            <div className="w-full bg-gray-950 h-1.5 rounded-full overflow-hidden border border-gray-800/80">
+              <div 
+                className="h-full bg-gradient-to-r from-lime-400 to-emerald-400 rounded-full transition-all duration-500"
+                style={{ width: `${calculateProfileCompletion(activeAccount).percentage}%` }}
+              />
+            </div>
+
+            <button
+              onClick={() => { setIsOpen(false); openProfileWizard(); }}
+              className="w-full py-1.5 px-2.5 rounded-lg bg-gray-950 hover:bg-gray-850 border border-lime-400/30 hover:border-lime-400 text-lime-300 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all shadow-sm"
+            >
+              <Sparkles className="w-3 h-3 text-lime-400" />
+              <span>
+                {calculateProfileCompletion(activeAccount).percentage >= 100
+                  ? (lang === 'bn' ? 'বায়ো ও লাইফস্টাইল মেট্রিক্স দেখুন' : 'View Bio & Lifestyle Metrics')
+                  : (lang === 'bn' ? 'প্রোফাইল ১০০% সম্পন্ন করুন' : 'Complete 100% Profile')}
+              </span>
+            </button>
+          </div>
+
           {/* 2. Controls: Language, Currency, Theme, Pro Plan */}
           <div className="space-y-3 text-xs">
+
             {/* Language Toggle */}
             <div className="flex items-center justify-between">
               <span className="text-gray-400 font-medium flex items-center gap-1.5">

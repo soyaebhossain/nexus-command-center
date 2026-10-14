@@ -4,6 +4,34 @@ export type CurrencySymbol = '৳' | '$' | '€' | '£';
 
 export type LanguageCode = 'bn' | 'en';
 
+export interface UserProfileDetails {
+  // Circadian & Bio-Health Metrics
+  age?: number;
+  gender?: 'male' | 'female' | 'other';
+  heightCm?: number;
+  weightKg?: number;
+  bmi?: number;
+  bmiCategory?: 'Underweight' | 'Normal' | 'Overweight' | 'Obese';
+  targetWaterMl?: number;
+  targetSleepTime?: string; // e.g. "23:00"
+  targetWakeTime?: string; // e.g. "07:00"
+  chronotype?: 'lark' | 'owl' | 'balanced';
+
+  // Professional Persona
+  profession?: string;
+  workStyle?: 'remote' | 'hybrid' | 'onsite';
+  dailyFocusHoursTarget?: number;
+
+  // Financial Blueprint
+  monthlyIncome?: number;
+  savingsTargetPercent?: number; // e.g. 20%
+  emergencyFundMonths?: number; // e.g. 6 months
+
+  // 1-Year North Star Goal
+  northStarGoal?: string;
+  northStarDeadline?: string;
+}
+
 export interface Account {
   id: string;
   name: string;
@@ -11,7 +39,9 @@ export interface Account {
   role: RoleKey;
   pin?: string;
   createdAt: string;
+  profileDetails?: UserProfileDetails;
 }
+
 
 export interface Task {
   id: number;
