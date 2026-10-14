@@ -454,6 +454,10 @@ body {
       <p id="dashSubheading" class="text-xs sm:text-sm mt-1" style="color:var(--muted)">Unified life cockpit: tracking time, goals, finances, learning milestones, and daily vitality.</p>
     </div>
     <div class="flex flex-wrap items-center gap-2">
+      <button id="focusModeToggleBtn" onclick="toggleFocusMode()" class="px-3 py-2 bg-gradient-to-r from-lime-400/10 to-emerald-400/10 border border-lime-300/40 hover:border-lime-300 rounded-xl text-xs font-bold text-lime-300 flex items-center gap-1.5 transition-all shadow-sm">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span id="focusModeBtnText">⚡ Daily Essentials</span>
+      </button>
       <button onclick="openRoleModal()" class="px-3 py-2 bg-gray-900 border border-gray-800 hover:border-lime-300 rounded-xl text-xs font-bold text-lime-300 flex items-center gap-1.5 transition-colors">
         <i data-lucide="user-check" class="w-4 h-4"></i> Switch Persona
       </button>
@@ -511,6 +515,105 @@ body {
       <div id="dashHealthScore" class="text-2xl font-bold font-mono mt-2 text-cyan-300">0 ml</div>
       <div id="dashHabitStreak" class="text-[11px] text-gray-400 mt-1">Habit completion: 0%</div>
     </div>
+  </div>
+
+  <!-- DAILY RULE OF 3 (সকালের ৩টি প্রধান লক্ষ্য) -->
+  <div class="panel p-6 sm:p-7 border border-lime-400/30 bg-gradient-to-b from-lime-950/20 via-gray-900/60 to-gray-900 space-y-4">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-lime-400 animate-pulse"></span>
+          <span class="text-[10px] font-mono uppercase font-bold text-lime-300 tracking-wider">DAILY CLARITY • RULE OF 3</span>
+        </div>
+        <h2 class="text-base sm:text-lg font-bold tracking-tight text-gray-100 mt-0.5 flex items-center gap-2">
+          <span id="ruleOf3HeaderTitle">Today's 3 Critical Priorities (আজকের ৩টি প্রধান লক্ষ্য)</span>
+        </h2>
+        <p class="text-xs text-gray-400 mt-0.5">Win the day by conquering these 3 non-negotiables before anything else.</p>
+      </div>
+      <span id="ruleOf3ProgressBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-full bg-gray-950 border border-lime-400/40 text-lime-300 shrink-0">
+        0 / 3 Conquered
+      </span>
+    </div>
+
+    <!-- 3 Focus Slots -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1" id="ruleOf3Container"></div>
+  </div>
+
+  <!-- 3-SECOND INSTANT QUICK CAPTURE -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    <!-- Quick Expense Capture -->
+    <div class="panel p-4 sm:p-5 lg:col-span-6 space-y-3 bg-gray-900/80 border border-gray-800">
+      <div class="flex justify-between items-center">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+          <span>3-Sec Expense Log (৩-সেকেন্ডের খরচ এন্ট্রি)</span>
+        </h3>
+        <span class="text-[10px] text-gray-500 font-mono">Instant Entry</span>
+      </div>
+      <form id="dashQuickExpenseForm" onsubmit="handleQuickExpense(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-2 text-xs">
+        <div class="sm:col-span-4 relative">
+          <span class="absolute left-2.5 top-2.5 text-lime-300 font-bold font-mono" id="dashQuickCurr">৳</span>
+          <input id="dashQuickAmount" type="number" step="any" min="1" required class="field pl-7 py-2 text-xs font-mono" placeholder="Amount">
+        </div>
+        <div class="sm:col-span-4">
+          <select id="dashQuickCategory" class="field py-2 text-xs font-medium" required></select>
+        </div>
+        <div class="sm:col-span-4">
+          <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold py-2 rounded-xl text-xs transition-colors flex items-center justify-center gap-1">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Log Expense
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Quick Task Capture -->
+    <div class="panel p-4 sm:p-5 lg:col-span-6 space-y-3 bg-gray-900/80 border border-gray-800">
+      <div class="flex justify-between items-center">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-lime-300 flex items-center gap-1.5">
+          <i data-lucide="check-square" class="w-3.5 h-3.5"></i>
+          <span>3-Sec Priority Task (দ্রুত টাস্ক যুক্ত করুন)</span>
+        </h3>
+        <span class="text-[10px] text-gray-500 font-mono">Instant Priority</span>
+      </div>
+      <form id="dashQuickTaskForm" onsubmit="handleQuickTask(event)" class="flex gap-2 text-xs">
+        <input id="dashQuickTaskInput" required class="field flex-1 py-2 text-xs" placeholder="What needs to get done next?">
+        <select id="dashQuickTaskPriority" class="field w-24 py-2 text-xs">
+          <option value="high">P1 High</option>
+          <option value="medium" selected>P2 Med</option>
+          <option value="low">P3 Low</option>
+        </select>
+        <button type="submit" class="bg-lime-300 hover:bg-lime-400 text-gray-950 font-bold px-3 py-2 rounded-xl text-xs transition-colors shrink-0 flex items-center gap-1">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- EVENING REFLECTION & DAILY WIN -->
+  <div class="panel p-5 border border-purple-500/20 bg-gradient-to-r from-purple-950/15 via-gray-900 to-gray-900 space-y-3">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">🌙</span>
+        <div>
+          <h3 class="text-sm font-bold text-gray-100">Evening Reflection & Daily Win (সন্ধ্যার আত্মপর্যালোচনা)</h3>
+          <p class="text-[11px] text-gray-400">Close your day with intentional gratitude and habit satisfaction.</p>
+        </div>
+      </div>
+      <!-- Quick Mood Emojis -->
+      <div class="flex items-center gap-1.5 bg-gray-950 p-1 rounded-xl border border-gray-800" id="moodPicker">
+        <button type="button" onclick="setDailyMood('⚡ Energized')" title="Energized" class="px-2 py-1 hover:bg-gray-800 rounded text-sm transition-transform active:scale-95">⚡</button>
+        <button type="button" onclick="setDailyMood('🎯 Productive')" title="Productive" class="px-2 py-1 hover:bg-gray-800 rounded text-sm transition-transform active:scale-95">🎯</button>
+        <button type="button" onclick="setDailyMood('☕ Balanced')" title="Calm / Balanced" class="px-2 py-1 hover:bg-gray-800 rounded text-sm transition-transform active:scale-95">☕</button>
+        <button type="button" onclick="setDailyMood('😴 Exhausted')" title="Exhausted" class="px-2 py-1 hover:bg-gray-800 rounded text-sm transition-transform active:scale-95">😴</button>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <input id="eveningReflectionInput" onkeydown="if(event.key==='Enter') saveEveningReflection()" class="field flex-1 text-xs py-2" placeholder="Write today's biggest win or lesson learned...">
+      <button type="button" onclick="saveEveningReflection()" class="px-4 py-2 bg-purple-500 hover:bg-purple-400 text-gray-950 font-bold rounded-xl text-xs transition-colors shrink-0 flex items-center gap-1">
+        <i data-lucide="check" class="w-3.5 h-3.5"></i> Save Win
+      </button>
+    </div>
+    <div id="savedReflectionNotice" class="text-[11px] text-purple-300 font-mono hidden"></div>
   </div>
 
   <!-- Quick Actions Ribbon -->
@@ -1742,14 +1845,224 @@ const ALL_MODULES = [
 
 let activeTabId = 'dashboard';
 
+
+// ========================================================
+// DAILY ESSENTIALS: FOCUS MODE, RULE OF 3 & EVENING WIN
+// ========================================================
+let isFocusMode = localStorage.getItem('nexus_focus_mode') === 'true';
+
+let ruleOf3 = JSON.parse(localStorage.getItem('nexus_rule_of_3') || 'null') || [
+  { id: 1, text: 'Conquer highest priority deliverable / study session', done: false },
+  { id: 2, text: 'Track daily expenses & balance financial ledger', done: false },
+  { id: 3, text: 'Complete 30-min physical exercise & hydration goal', done: false }
+];
+
+function toggleFocusMode() {
+  isFocusMode = !isFocusMode;
+  localStorage.setItem('nexus_focus_mode', isFocusMode.toString());
+  updateFocusModeUI();
+  renderNavBar();
+  showToast(isFocusMode 
+    ? (currentLang === 'bn' ? '⚡ দৈনিক অপরিহার্য ফোকাস মোড চালু হয়েছে' : '⚡ Daily Essentials Focus Mode enabled')
+    : (currentLang === 'bn' ? '📊 পূর্ণাঙ্গ কমান্ড সেন্টার চালু হয়েছে' : '📊 Full Command Center mode enabled'));
+  logActivity(`Switched view to ${isFocusMode ? 'Daily Essentials Focus Mode' : 'Full Command Center'}`);
+}
+
+function updateFocusModeUI() {
+  const btn = document.getElementById('focusModeToggleBtn');
+  const txt = document.getElementById('focusModeBtnText');
+  if (!btn || !txt) return;
+
+  if (isFocusMode) {
+    btn.className = 'px-3 py-2 bg-lime-400/20 border border-lime-300 rounded-xl text-xs font-bold text-lime-300 flex items-center gap-1.5 transition-all shadow-sm';
+    txt.textContent = currentLang === 'bn' ? '⚡ ফোকাস মোড: চালু' : '⚡ Focus Mode: ON';
+  } else {
+    btn.className = 'px-3 py-2 bg-gray-900 border border-gray-800 hover:border-lime-300 rounded-xl text-xs font-semibold text-gray-300 hover:text-white flex items-center gap-1.5 transition-all';
+    txt.textContent = currentLang === 'bn' ? '📊 পূর্ণাঙ্গ ভিউ' : '📊 Full Modules';
+  }
+}
+
+function renderRuleOf3() {
+  const container = document.getElementById('ruleOf3Container');
+  const badge = document.getElementById('ruleOf3ProgressBadge');
+  const headerTitle = document.getElementById('ruleOf3HeaderTitle');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (headerTitle) {
+    headerTitle.textContent = currentLang === 'bn' 
+      ? 'আজকের ৩টি প্রধান লক্ষ্য (Rule of 3)' 
+      : "Today's 3 Critical Priorities (Rule of 3)";
+  }
+
+  const completedCount = ruleOf3.filter(r => r.done).length;
+  if (badge) {
+    badge.textContent = `${completedCount} / 3 ${currentLang === 'bn' ? 'সম্পন্ন' : 'Conquered'}`;
+    if (completedCount === 3) {
+      badge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-full bg-lime-400 text-gray-950 animate-pulse';
+    } else {
+      badge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-full bg-gray-950 border border-lime-400/40 text-lime-300';
+    }
+  }
+
+  ruleOf3.forEach((item, index) => {
+    const card = document.createElement('div');
+    card.className = `p-3.5 rounded-2xl bg-gray-950/80 border ${item.done ? 'border-lime-400/50 bg-lime-950/15' : 'border-gray-800'} space-y-2 transition-all`;
+    card.innerHTML = `
+      <div class="flex justify-between items-center">
+        <span class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded ${item.done ? 'bg-lime-400 text-gray-950' : 'bg-gray-800 text-gray-300'}">
+          #${index + 1} Priority
+        </span>
+        <button type="button" onclick="toggleRuleOf3Item(${item.id})" class="text-xs px-2 py-0.5 rounded font-bold transition-colors ${item.done ? 'bg-lime-400 text-gray-950' : 'bg-gray-800 text-gray-400 hover:text-white'}">
+          ${item.done ? '✓ Done' : 'Mark Done'}
+        </button>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="text" value="${escapeHtml(item.text)}" 
+               onchange="updateRuleOf3Text(${item.id}, this.value)"
+               class="bg-transparent border-0 text-xs font-medium text-gray-200 focus:outline-none focus:ring-1 focus:ring-lime-300 rounded px-1 w-full ${item.done ? 'line-through text-gray-400' : ''}" 
+               placeholder="Enter critical priority #${index + 1}...">
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  localStorage.setItem('nexus_rule_of_3', JSON.stringify(ruleOf3));
+}
+
+function toggleRuleOf3Item(id) {
+  const item = ruleOf3.find(r => r.id === id);
+  if (item) {
+    item.done = !item.done;
+    renderRuleOf3();
+    if (item.done) {
+      playChime(950);
+      const allDone = ruleOf3.every(r => r.done);
+      if (allDone) {
+        setTimeout(() => playChime(1200), 200);
+        showToast(currentLang === 'bn' ? '🏆 অসাধারণ! আজকের ৩টি প্রধান লক্ষ্যই অর্জিত হয়েছে!' : '🏆 Brilliant! All 3 daily priorities conquered today!');
+      } else {
+        showToast(currentLang === 'bn' ? 'অগ্রাধিকার সম্পন্ন হয়েছে' : 'Priority marked complete');
+      }
+      logActivity(`Completed daily priority: "${item.text}"`);
+    }
+  }
+}
+
+function updateRuleOf3Text(id, newText) {
+  const item = ruleOf3.find(r => r.id === id);
+  if (item && newText.trim()) {
+    item.text = newText.trim();
+    localStorage.setItem('nexus_rule_of_3', JSON.stringify(ruleOf3));
+    showToast('Priority updated');
+  }
+}
+
+function populateDashQuickCategories() {
+  const sel = document.getElementById('dashQuickCategory');
+  const curr = document.getElementById('dashQuickCurr');
+  if (curr) curr.textContent = currentCurrency;
+  if (!sel) return;
+  sel.innerHTML = EXPENSE_CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function handleQuickExpense(e) {
+  e.preventDefault();
+  const amtInput = document.getElementById('dashQuickAmount');
+  const catInput = document.getElementById('dashQuickCategory');
+  const amount = parseFloat(amtInput.value);
+  const category = catInput.value;
+  if (!amount || amount <= 0) return;
+
+  transactions.unshift({
+    id: Date.now(),
+    type: 'expense',
+    category: category,
+    amount: amount,
+    desc: `${category} quick log`,
+    date: new Date().toISOString().split('T')[0]
+  });
+
+  amtInput.value = '';
+  renderFinance();
+  renderDashboardOverview();
+  updateFocusModeUI();
+  renderRuleOf3();
+  populateDashQuickCategories();
+  loadEveningReflection();
+  playChime(750);
+  showToast(`${currentCurrency} ${amount} logged under ${category}`);
+  logActivity(`Quick expense: ${currentCurrency} ${amount} (${category})`);
+}
+
+function handleQuickTask(e) {
+  e.preventDefault();
+  const inp = document.getElementById('dashQuickTaskInput');
+  const prio = document.getElementById('dashQuickTaskPriority').value;
+  const text = inp.value.trim();
+  if (!text) return;
+
+  tasks.unshift({
+    id: Date.now(),
+    text: text,
+    priority: prio,
+    category: 'Work',
+    dueDate: new Date().toISOString().split('T')[0],
+    done: false
+  });
+
+  inp.value = '';
+  renderTasks();
+  renderDashboardOverview();
+  playChime(850);
+  showToast('Priority task added');
+  logActivity(`Quick task added: "${text}"`);
+}
+
+function setDailyMood(mood) {
+  localStorage.setItem('nexus_daily_mood', mood);
+  showToast(`Mood logged: ${mood}`);
+  logActivity(`Logged daily mood: ${mood}`);
+}
+
+function saveEveningReflection() {
+  const inp = document.getElementById('eveningReflectionInput');
+  const notice = document.getElementById('savedReflectionNotice');
+  if (!inp || !inp.value.trim()) return;
+
+  const text = inp.value.trim();
+  localStorage.setItem('nexus_daily_reflection', text);
+  if (notice) {
+    notice.textContent = `✓ Saved for today: "${text}"`;
+    notice.classList.remove('hidden');
+  }
+  playChime(1050);
+  showToast(currentLang === 'bn' ? 'আত্মপর্যালোচনা সংরক্ষিত হয়েছে' : 'Daily win recorded!');
+  logActivity(`Saved evening reflection: "${text.slice(0, 35)}..."`);
+}
+
+function loadEveningReflection() {
+  const saved = localStorage.getItem('nexus_daily_reflection');
+  const notice = document.getElementById('savedReflectionNotice');
+  const inp = document.getElementById('eveningReflectionInput');
+  if (saved && notice) {
+    notice.textContent = `✓ Today's win: "${saved}"`;
+    notice.classList.remove('hidden');
+    if (inp && !inp.value) inp.value = saved;
+  }
+}
+
 function renderNavBar() {
   const bar = document.getElementById('mainNavBar');
   if (!bar) return;
   bar.innerHTML = '';
   const langPack = I18N[currentLang] || I18N.en;
 
+  const activeModuleList = isFocusMode 
+    ? ['dashboard', 'tasks', 'finance', 'health'] 
+    : enabledModules;
+
   ALL_MODULES.forEach(m => {
-    if (enabledModules.includes(m.id)) {
+    if (activeModuleList.includes(m.id)) {
       const btn = document.createElement('button');
       btn.className = `nav-tab ${m.id === activeTabId ? 'active' : ''}`;
       btn.dataset.target = m.id;

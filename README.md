@@ -18,7 +18,17 @@ Built with semantic HTML5, modern Tailwind CSS architecture, Chart.js analytics,
 
 ---
 
-## 2. Progressive Web App (PWA) — Native Install
+## 2. The Core Philosophy: "Daily Focus & The Rule of 3" (Zen Essentials Mode)
+
+Real productivity is not about having endless overwhelming features, but having a few critical tools that work reliably and build strong daily habits:
+- **⚡ Daily Essentials (Focus Mode):** With 1-click on the `⚡ Daily Essentials` toggle, NEXUS strips away cognitive clutter and focuses solely on the 4 pillars of daily life: **Dashboard, Priorities, Finance & Habits**. Power users can switch back to **`📊 Full Modules`** anytime.
+- **🎯 Morning Rule of 3 (সকালের ৩টি প্রধান লক্ষ্য):** Win the day by defining and conquering your top 3 non-negotiable priorities before anything else. Includes celebratory audio chord progression upon completing all 3.
+- **⚡ 3-Second Frictionless Capture:** Instantly record expenses (e.g. coffee, commute, groceries) or add priority tasks directly from the dashboard without navigating across tabs.
+- **🌙 Evening Reflection & Mood Tracker:** Close each day with an intentional win, lesson learned, and daily energy check (`⚡ Energized`, `🎯 Productive`, `☕ Balanced`, `😴 Exhausted`).
+
+---
+
+## 3. Progressive Web App (PWA) — Native Install
 
 NEXUS includes full **Progressive Web App (PWA)** capabilities:
 - **Desktop Installation (Windows / macOS / Linux):** Open the application in Google Chrome or Microsoft Edge and click the **Install App** icon in the address bar to run NEXUS as a standalone desktop window.
@@ -27,11 +37,11 @@ NEXUS includes full **Progressive Web App (PWA)** capabilities:
 
 ---
 
-## 3. Core Operating System Architecture (14 Unified Modules)
+## 4. Core Operating System Architecture (14 Unified Modules)
 
 | # | Module / Subsystem | Key Capabilities & Features | Persona Suitability |
 | :-: | :--- | :--- | :--- |
-| **0** | **Executive Cockpit (Dashboard)** | Personalized greeting, live clock/date/timezone, 4 KPI cards (Tasks, Net Balance, Courses, Hydration), top urgent priorities, live chronological activity feed. | All Personas |
+| **0** | **Executive Cockpit (Dashboard)** | Personalized greeting, live clock/date/timezone, 4 KPI cards, **Morning Rule of 3**, **3-Sec Quick Log**, **Evening Reflection & Mood**, chronological feed. | All Personas |
 | **1** | **Life Planner & Goal Matrix** | 1-3 year vision milestones, OKRs, category tags, progress sliders (`+10%`, `-10%`), daily reflection journal & decision helper. | Students, Professionals, Entrepreneurs |
 | **2** | **Unified Calendar & Reminders** | Synchronized monthly calendar grid, day event dots, task/exam/bill/meeting badges, upcoming schedule agenda, add event modal. | Everyone |
 | **3** | **Productivity & Focus Engine** | Priorities with P1-P3 severity, category tags, due dates, filters, search, Pomodoro timer with Web Audio chord chimes, quick capture notes, **CSV Task Export**. | Students, Freelancers, Engineers |
@@ -48,7 +58,7 @@ NEXUS includes full **Progressive Web App (PWA)** capabilities:
 
 ---
 
-## 4. Personalization & Internationalization (Universal Life OS)
+## 5. Personalization & Internationalization (Universal Life OS)
 
 ### 1. Role-Based Persona Switching
 Click the role badge in the top header or press the role selector to instantly activate one of 7 curated personas:
@@ -77,7 +87,7 @@ All financial KPI cards, forms, category charts, debts, and ledger tables automa
 
 ---
 
-## 5. Global Spotlight Search (`Ctrl+K` / `⌘K`)
+## 6. Global Spotlight Search (`Ctrl+K` / `⌘K`)
 
 Press **`Ctrl+K`** (or **`Cmd+K`** on macOS) or click the search bar to launch the Spotlight Search modal:
 - Searches simultaneously across Tasks, Calendar, Goals, Courses, Knowledge SOPs, Debts & Loans, and IT Tickets.
@@ -86,7 +96,7 @@ Press **`Ctrl+K`** (or **`Cmd+K`** on macOS) or click the search bar to launch t
 
 ---
 
-## 6. Automated GitHub Pages CI/CD
+## 7. Automated GitHub Pages CI/CD
 
 The repository includes a GitHub Actions workflow [`deploy.yml`](file:///f:/Al-Ameen%20IT/web/Personal%20Traker/.github/workflows/deploy.yml) that automatically deploys the application to **GitHub Pages** on every push to `main`.
 - Live URL format: `https://<username>.github.io/<repo-name>/`
