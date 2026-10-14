@@ -32,7 +32,7 @@ interface AppContextType {
   toggleRuleOf3: (id: number) => void;
   updateRuleOf3Text: (id: number, text: string) => void;
   transactions: Transaction[];
-  addTransaction: (t: Omit<Transaction, 'id' | 'date'>) => void;
+  addTransaction: (t: Omit<Transaction, 'id'> & { date?: string }) => void;
   deleteTransaction: (id: number) => void;
   setAllTransactions: (list: Transaction[]) => void;
   monthlyBudget: number;
@@ -260,11 +260,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setRuleOf3(prev => prev.map(r => r.id === id ? { ...r, text } : r));
   };
 
-  const addTransaction = (t: Omit<Transaction, 'id' | 'date'>) => {
+  const addTransaction = (t: Omit<Transaction, 'id'> & { date?: string }) => {
     const newTr: Transaction = {
       ...t,
       id: Date.now(),
-      date: new Date().toISOString().split('T')[0]
+      date: t.date || new Date().toISOString().split('T')[0]
     };
     setTransactions(prev => [newTr, ...prev]);
     playChime(t.type === 'income' ? 1050 : 650);

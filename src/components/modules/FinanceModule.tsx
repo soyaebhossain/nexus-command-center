@@ -5,10 +5,9 @@ import {
   Download, PlusCircle, Trash2, Edit3, ShieldCheck, Database, 
   ArrowDownRight, ArrowUpRight, PieChart as PieIcon
 } from 'lucide-react';
-import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
+import Chart from 'chart.js/auto';
+import { convertBengaliDigits } from '../../utils/nlp';
 import { useTranslation } from '../../utils/i18n';
-
-ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 interface CategoryMeta {
   color: string;
@@ -19,22 +18,30 @@ interface CategoryMeta {
 const CATEGORY_MAP: Record<string, CategoryMeta> = {
   'বাড়ি ভাড়া ও ইউটিলিটি': { color: '#06b6d4', nameEn: 'Housing & Utilities', nameBn: 'বাড়ি ভাড়া ও ইউটিলিটি' },
   'Housing': { color: '#06b6d4', nameEn: 'Housing & Utilities', nameBn: 'বাড়ি ভাড়া ও ইউটিলিটি' },
+  'Housing & Utilities': { color: '#06b6d4', nameEn: 'Housing & Utilities', nameBn: 'বাড়ি ভাড়া ও ইউটিলিটি' },
   'খাদ্য ও বাজার': { color: '#10b981', nameEn: 'Food & Groceries', nameBn: 'খাদ্য ও বাজার' },
   'Food': { color: '#10b981', nameEn: 'Food & Groceries', nameBn: 'খাদ্য ও বাজার' },
+  'Food & Groceries': { color: '#10b981', nameEn: 'Food & Groceries', nameBn: 'খাদ্য ও বাজার' },
   'স্বাস্থ্য ও চিকিৎসা': { color: '#f43f5e', nameEn: 'Healthcare & Medical', nameBn: 'স্বাস্থ্য ও চিকিৎসা' },
   'Healthcare': { color: '#f43f5e', nameEn: 'Healthcare & Medical', nameBn: 'স্বাস্থ্য ও চিকিৎসা' },
+  'Healthcare & Medical': { color: '#f43f5e', nameEn: 'Healthcare & Medical', nameBn: 'স্বাস্থ্য ও চিকিৎসা' },
   'যাতায়াত ও পরিবহন': { color: '#f59e0b', nameEn: 'Transportation', nameBn: 'যাতায়াত ও পরিবহন' },
   'Transportation': { color: '#f59e0b', nameEn: 'Transportation', nameBn: 'যাতায়াত ও পরিবহন' },
   'বিনোদন ও রেস্তোরাঁ': { color: '#ec4899', nameEn: 'Dining & Entertainment', nameBn: 'বিনোদন ও রেস্তোরাঁ' },
   'Entertainment': { color: '#ec4899', nameEn: 'Dining & Entertainment', nameBn: 'বিনোদন ও রেস্তোরাঁ' },
+  'Dining & Entertainment': { color: '#ec4899', nameEn: 'Dining & Entertainment', nameBn: 'বিনোদন ও রেস্তোরাঁ' },
   'শিক্ষা ও বই': { color: '#8b5cf6', nameEn: 'Learning & Skills', nameBn: 'শিক্ষা ও বই' },
   'Learning': { color: '#8b5cf6', nameEn: 'Learning & Skills', nameBn: 'শিক্ষা ও বই' },
+  'Learning & Skills': { color: '#8b5cf6', nameEn: 'Learning & Skills', nameBn: 'শিক্ষা ও বই' },
   'দেনা ও কিস্তি': { color: '#ef4444', nameEn: 'Debt & EMI', nameBn: 'দেনা ও কিস্তি' },
   'Debt/EMI': { color: '#ef4444', nameEn: 'Debt & EMI', nameBn: 'দেনা ও কিস্তি' },
+  'Debt & EMI': { color: '#ef4444', nameEn: 'Debt & EMI', nameBn: 'দেনা ও কিস্তি' },
   'পরিবার ও সন্তান': { color: '#14b8a6', nameEn: 'Family & Household', nameBn: 'পরিবার ও সন্তান' },
   'Family': { color: '#14b8a6', nameEn: 'Family & Household', nameBn: 'পরিবার ও সন্তান' },
+  'Family & Household': { color: '#14b8a6', nameEn: 'Family & Household', nameBn: 'পরিবার ও সন্তান' },
   'অন্যান্য': { color: '#64748b', nameEn: 'Other Expenses', nameBn: 'অন্যান্য' },
-  'Other': { color: '#64748b', nameEn: 'Other Expenses', nameBn: 'অন্যান্য' }
+  'Other': { color: '#64748b', nameEn: 'Other Expenses', nameBn: 'অন্যান্য' },
+  'Other Expenses': { color: '#64748b', nameEn: 'Other Expenses', nameBn: 'অন্যান্য' }
 };
 
 const DISTINCT_COLORS = [
@@ -50,147 +57,7 @@ export const FinanceModule: React.FC = () => {
 
   const t = useTranslation(lang);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartInstanceRef = useRef<ChartJS | null>(null);
-
-  const [type, setType] = useState<'expense' | 'income'>('expense');
-  const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState(lang === 'bn' ? 'খাদ্য ও বাজার' : 'Food & Groceries');
-  const [date, setDate] = useState(() => new Date().toISOString().split('T')[0]);
-  const [desc, setDesc] = useState('');
-
-  // Calculate totals
-  let totalIncome = 0;
-  let totalExpense = 0;
-  const expenseCatMap: Record<string, number> = {};
-
-  transactions.forEach(tr => {
-    if (tr.type === 'income') {
-      totalIncome += tr.amount;
-    } else {
-      totalExpense += tr.amount;
-      const catName = tr.category || (lang === 'bn' ? 'অন্যান্য' : 'Other');
-      expenseCatMap[catName] = (expenseCatMap[catName] || 0) + tr.amount;
-    }
-  });
-
-  const balance = totalIncome - totalExpense;
-  const savingsRate = totalIncome > 0 ? Math.max(0, Math.round(((totalIncome - totalExpense) / totalIncome) * 100)) : 0;
-  const budgetPercent = monthlyBudget > 0 ? Math.round((totalExpense / monthlyBudget) * 100) : 0;
-
-  const expenseCategories = Object.keys(expenseCatMap);
-
-  const getCatColor = (cat: string, index: number) => {
-    if (CATEGORY_MAP[cat]) return CATEGORY_MAP[cat].color;
-    for (const [k, v] of Object.entries(CATEGORY_MAP)) {
-      if (cat.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(cat.toLowerCase())) {
-        return v.color;
-      }
-    }
-    return DISTINCT_COLORS[index % DISTINCT_COLORS.length];
-  };
-
-  // Render Doughnut Chart with distinct colors for each category
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    if (chartInstanceRef.current) {
-      chartInstanceRef.current.destroy();
-      chartInstanceRef.current = null;
-    }
-
-    const labels = expenseCategories.length > 0 ? expenseCategories : [lang === 'bn' ? 'কোনো ব্যয় নেই' : 'No Expense'];
-    const dataValues = expenseCategories.length > 0 ? expenseCategories.map(c => expenseCatMap[c]) : [1];
-    const bgColors = expenseCategories.length > 0 ? expenseCategories.map((c, idx) => getCatColor(c, idx)) : ['#1f2430'];
-
-    const ctx = canvasRef.current.getContext('2d');
-    if (!ctx) return;
-
-    chartInstanceRef.current = new ChartJS(ctx, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [{
-          data: dataValues,
-          backgroundColor: bgColors,
-          borderColor: '#0c0e14',
-          borderWidth: 3,
-          hoverOffset: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '72%',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: expenseCategories.length > 0,
-            callbacks: {
-              label: (item) => {
-                const val = item.raw as number;
-                const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
-                return ` ${currency} ${val.toLocaleString()} (${pct}%)`;
-              }
-            }
-          }
-        }
-      }
-    });
-
-    return () => {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.destroy();
-        chartInstanceRef.current = null;
-      }
-    };
-  }, [transactions, currency, lang, totalExpense]);
-
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault();
-    const parsedAmt = parseFloat(amount);
-    if (!parsedAmt || parsedAmt <= 0) return;
-
-    addTransaction({
-      type,
-      amount: parsedAmt,
-      category,
-      desc: desc.trim() || `${category}`
-    });
-
-    setAmount('');
-    setDesc('');
-  };
-
-  const handleEditBudget = () => {
-    const val = prompt(
-      lang === 'bn' ? 'চলতি মাসের বাজেট লিমিট নির্ধারণ করুন (টাকা):' : 'Set your monthly budget cap:',
-      monthlyBudget.toString()
-    );
-    if (val !== null) {
-      const num = parseFloat(val);
-      if (!isNaN(num) && num > 0) {
-        setMonthlyBudget(num);
-      }
-    }
-  };
-
-  const handleExportCSV = () => {
-    if (transactions.length === 0) {
-      showToast(lang === 'bn' ? 'এক্সপোর্ট করার মতো কোনো লেনদেন নেই' : 'No transactions to export');
-      return;
-    }
-    const headers = ['ID', 'Type', 'Category', 'Description', 'Amount', 'Currency', 'Date'];
-    const rows = transactions.map(tr => [tr.id, tr.type, tr.category, `"${tr.desc.replace(/"/g, '""')}"`, tr.amount, currency, tr.date]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    const encoded = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encoded);
-    link.setAttribute('download', `nexus_finance_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast(lang === 'bn' ? 'ফিন্যান্স CSV এক্সপোর্ট সফল হয়েছে!' : 'Finance CSV exported successfully!');
-  };
+  const chartInstanceRef = useRef<any>(null);
 
   const categoryOptions = lang === 'bn' ? [
     'খাদ্য ও বাজার',
@@ -213,6 +80,168 @@ export const FinanceModule: React.FC = () => {
     'Family & Household',
     'Other'
   ];
+
+  const [type, setType] = useState<'expense' | 'income'>('expense');
+  const [amount, setAmount] = useState('');
+  const [category, setCategory] = useState(categoryOptions[0]);
+  const [date, setDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [desc, setDesc] = useState('');
+
+  // Sync category default when language changes
+  useEffect(() => {
+    setCategory(categoryOptions[0]);
+  }, [lang]);
+
+  // Calculate totals and group expenses
+  let totalIncome = 0;
+  let totalExpense = 0;
+  const expenseCatMap: Record<string, number> = {};
+
+  transactions.forEach(tr => {
+    const val = Number(tr.amount) || 0;
+    if (tr.type === 'income') {
+      totalIncome += val;
+    } else {
+      totalExpense += val;
+      const catName = tr.category || (lang === 'bn' ? 'অন্যান্য' : 'Other');
+      expenseCatMap[catName] = (expenseCatMap[catName] || 0) + val;
+    }
+  });
+
+  const balance = totalIncome - totalExpense;
+  const savingsRate = totalIncome > 0 ? Math.max(0, Math.round(((totalIncome - totalExpense) / totalIncome) * 100)) : 0;
+  const budgetPercent = monthlyBudget > 0 ? Math.round((totalExpense / monthlyBudget) * 100) : 0;
+
+  const expenseCategories = Object.keys(expenseCatMap);
+
+  const getCatColor = (cat: string, index: number) => {
+    if (CATEGORY_MAP[cat]) return CATEGORY_MAP[cat].color;
+    for (const [k, v] of Object.entries(CATEGORY_MAP)) {
+      if (cat.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(cat.toLowerCase())) {
+        return v.color;
+      }
+    }
+    return DISTINCT_COLORS[index % DISTINCT_COLORS.length];
+  };
+
+  // Render Doughnut Chart with distinct colors for each category safely
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    try {
+      // Safe cleanup of any chart attached to this canvas
+      const existing = Chart.getChart(canvasRef.current);
+      if (existing) {
+        existing.destroy();
+      }
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
+        chartInstanceRef.current = null;
+      }
+
+      const labels = expenseCategories.length > 0 ? expenseCategories : [lang === 'bn' ? 'কোনো ব্যয় নেই' : 'No Expense'];
+      const dataValues = expenseCategories.length > 0 ? expenseCategories.map(c => expenseCatMap[c]) : [1];
+      const bgColors = expenseCategories.length > 0 ? expenseCategories.map((c, idx) => getCatColor(c, idx)) : ['#1f2430'];
+
+      const ctx = canvasRef.current.getContext('2d');
+      if (!ctx) return;
+
+      chartInstanceRef.current = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data: dataValues,
+            backgroundColor: bgColors,
+            borderColor: '#0c0e14',
+            borderWidth: 3,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '72%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              enabled: expenseCategories.length > 0,
+              callbacks: {
+                label: (item: any) => {
+                  const val = item.raw as number;
+                  const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
+                  return ` ${currency} ${val.toLocaleString()} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    } catch (err) {
+      console.error('Chart creation error:', err);
+    }
+
+    return () => {
+      try {
+        if (chartInstanceRef.current) {
+          chartInstanceRef.current.destroy();
+          chartInstanceRef.current = null;
+        }
+      } catch (e) {}
+    };
+  }, [transactions, currency, lang, totalExpense]);
+
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanStr = convertBengaliDigits(amount.trim());
+    const parsedAmt = parseFloat(cleanStr);
+    if (!parsedAmt || isNaN(parsedAmt) || parsedAmt <= 0) {
+      showToast(lang === 'bn' ? 'সঠিক টাকার পরিমাণ দিন' : 'Please enter a valid amount');
+      return;
+    }
+
+    addTransaction({
+      type,
+      amount: parsedAmt,
+      category: category || (lang === 'bn' ? 'অন্যান্য' : 'Other'),
+      desc: desc.trim() || category || (lang === 'bn' ? 'লেনদেন' : 'Transaction'),
+      date: date || new Date().toISOString().split('T')[0]
+    });
+
+    setAmount('');
+    setDesc('');
+  };
+
+  const handleEditBudget = () => {
+    const val = prompt(
+      lang === 'bn' ? 'চলতি মাসের বাজেট লিমিট নির্ধারণ করুন (টাকা):' : 'Set your monthly budget cap:',
+      monthlyBudget.toString()
+    );
+    if (val !== null) {
+      const cleanNum = parseFloat(convertBengaliDigits(val));
+      if (!isNaN(cleanNum) && cleanNum > 0) {
+        setMonthlyBudget(cleanNum);
+      }
+    }
+  };
+
+  const handleExportCSV = () => {
+    if (transactions.length === 0) {
+      showToast(lang === 'bn' ? 'এক্সপোর্ট করার মতো কোনো লেনদেন নেই' : 'No transactions to export');
+      return;
+    }
+    const headers = ['ID', 'Type', 'Category', 'Description', 'Amount', 'Currency', 'Date'];
+    const rows = transactions.map(tr => [tr.id, tr.type, tr.category, `"${tr.desc.replace(/"/g, '""')}"`, tr.amount, currency, tr.date]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encoded = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encoded);
+    link.setAttribute('download', `nexus_finance_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(lang === 'bn' ? 'ফিন্যান্স CSV এক্সপোর্ট সফল হয়েছে!' : 'Finance CSV exported successfully!');
+  };
 
   return (
     <div className="space-y-6">
@@ -240,7 +269,7 @@ export const FinanceModule: React.FC = () => {
         </button>
       </div>
 
-      {/* 2. THE EXACT USER-REQUESTED TWO-COLUMN SECTION */}
+      {/* 2. THE EXACT USER-REQUESTED TWO-COLUMN SECTION (MATCHING SCREENSHOT) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Add Transaction Form (5 Columns) */}
         <div className="panel p-6 lg:col-span-5 space-y-4">
@@ -262,8 +291,8 @@ export const FinanceModule: React.FC = () => {
                       : 'border-gray-800 bg-gray-900 text-gray-400 hover:text-white'
                   }`}
                 >
-                  <ArrowDownRight className="w-3.5 h-3.5" />
-                  <span>{lang === 'bn' ? 'ব্যয়' : 'Expense'}</span>
+                  <ArrowDownRight className="w-3.5 h-3.5 text-rose-400" />
+                  <span>{lang === 'bn' ? 'ব্যয় (Expense)' : 'Expense'}</span>
                 </button>
                 <button
                   type="button"
@@ -274,8 +303,8 @@ export const FinanceModule: React.FC = () => {
                       : 'border-gray-800 bg-gray-900 text-gray-400 hover:text-white'
                   }`}
                 >
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                  <span>{lang === 'bn' ? 'আয়' : 'Income'}</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{lang === 'bn' ? 'আয় (Income)' : 'Income'}</span>
                 </button>
               </div>
             </div>
@@ -285,9 +314,7 @@ export const FinanceModule: React.FC = () => {
               <div className="relative">
                 <span className="absolute left-3 top-2.5 text-lime-300 font-bold text-sm">{currency}</span>
                 <input
-                  type="number"
-                  step="any"
-                  min="1"
+                  type="text"
                   required
                   value={amount}
                   onChange={e => setAmount(e.target.value)}
@@ -336,9 +363,9 @@ export const FinanceModule: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full bg-lime-300 hover:bg-lime-400 text-gray-950 font-bold py-3 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-1.5"
+              className="w-full bg-lime-300 hover:bg-lime-400 text-gray-950 font-bold py-3 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <span>+ {lang === 'bn' ? 'লেনদেন সম্পন্ন করুন' : 'Commit Transaction'}</span>
+              <span>+ {lang === 'bn' ? 'Commit Transaction' : 'Commit Transaction'}</span>
             </button>
           </form>
         </div>
@@ -349,10 +376,10 @@ export const FinanceModule: React.FC = () => {
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-base font-semibold flex items-center gap-2 text-gray-100">
                 <PieIcon className="text-lime-300 w-4 h-4" />
-                <span>{lang === 'bn' ? 'ব্যয় বিভাজন (খাতভিত্তিক)' : 'Expense by Category'}</span>
+                <span>{lang === 'bn' ? 'Expense by Category' : 'Expense by Category'}</span>
               </h3>
               <span className="text-[11px] px-2.5 py-0.5 bg-gray-800 text-gray-300 rounded-full font-mono border border-gray-700">
-                {expenseCategories.length} {lang === 'bn' ? 'টি খাত' : 'Categories'}
+                {expenseCategories.length} {lang === 'bn' ? 'Categories' : 'Categories'}
               </span>
             </div>
 
@@ -362,7 +389,7 @@ export const FinanceModule: React.FC = () => {
                 <canvas ref={canvasRef}></canvas>
                 <div className="absolute text-center pointer-events-none">
                   <div className="text-[10px] text-gray-400 uppercase font-semibold tracking-wider">
-                    {lang === 'bn' ? 'সর্বমোট ব্যয়' : 'TOTAL EXPENSE'}
+                    {lang === 'bn' ? 'TOTAL EXPENSE' : 'TOTAL EXPENSE'}
                   </div>
                   <div className="text-sm sm:text-base font-bold text-gray-100 font-mono">
                     {currency} {totalExpense.toLocaleString()}
@@ -370,7 +397,7 @@ export const FinanceModule: React.FC = () => {
                 </div>
               </div>
 
-              {/* Category Breakdown List with Colorful Dots and Distinct Underline Bars */}
+              {/* Category Breakdown List with Distinct Colors Matching Each Segment */}
               <div className="md:col-span-7 space-y-2.5 max-h-56 overflow-y-auto pr-1">
                 {expenseCategories.length === 0 ? (
                   <div className="text-xs text-gray-500 py-10 text-center">
@@ -432,8 +459,8 @@ export const FinanceModule: React.FC = () => {
               <ShieldCheck className="w-4 h-4 text-lime-300 shrink-0" />
               <span>
                 {savingsRate >= 35 
-                  ? (lang === 'bn' ? `উত্তম আর্থিক স্বাস্থ্য: ৩৫%+ সঞ্চয় মার্জিন নিশ্চিত (${savingsRate}%)` : `Prime financial health: Over 35% net savings margin maintained (${savingsRate}%)`)
-                  : (lang === 'bn' ? `চলতি সঞ্চয় অনুপাত: ${savingsRate}%` : `Current savings margin: ${savingsRate}%`)}
+                  ? (lang === 'bn' ? `Prime financial health: Over 35% net savings margin maintained (${savingsRate}%).` : `Prime financial health: Over 35% net savings margin maintained (${savingsRate}%).`)
+                  : (lang === 'bn' ? `Current savings margin: ${savingsRate}%` : `Current savings margin: ${savingsRate}%`)}
               </span>
             </div>
             <button
@@ -442,7 +469,7 @@ export const FinanceModule: React.FC = () => {
               className="text-lime-300 hover:text-lime-400 hover:underline font-medium text-xs flex items-center gap-1 cursor-pointer"
             >
               <Database className="w-3.5 h-3.5" />
-              <span>{lang === 'bn' ? 'নমুনা ডাটা লোড করুন' : 'Load Sample Data'}</span>
+              <span>{lang === 'bn' ? 'Load Sample Data' : 'Load Sample Data'}</span>
             </button>
           </div>
         </div>
@@ -469,7 +496,7 @@ export const FinanceModule: React.FC = () => {
                 </button>
               </div>
               <p className="text-xs text-gray-400 mt-0.5">
-                {lang === 'bn' ? 'টার্গেট:' : 'Target:'} <span className="font-bold text-gray-200">{currency} {monthlyBudget.toLocaleString()}</span> | {lang === 'bn' ? 'ব্যয়:' : 'Spent:'} <span className="font-bold text-rose-400">{currency} {totalExpense.toLocaleString()}</span> ({budgetPercent}%)
+                Target: <span className="font-bold text-gray-200">{currency} {monthlyBudget.toLocaleString()}</span> | Spent: <span className="font-bold text-rose-400">{currency} {totalExpense.toLocaleString()}</span> ({budgetPercent}%)
               </p>
             </div>
           </div>
@@ -484,10 +511,10 @@ export const FinanceModule: React.FC = () => {
           }`}>
             <span>
               {budgetPercent >= 100 
-                ? (lang === 'bn' ? '⚠️ বাজেট অতিক্রম করেছে!' : '⚠️ Over Budget Limit!')
+                ? (lang === 'bn' ? '⚠️ Over Budget Limit!' : '⚠️ Over Budget Limit!')
                 : budgetPercent >= 80
-                ? (lang === 'bn' ? '⚡ সতর্কবার্তা: ৮০%+ ব্যয়' : '⚡ Warning: 80%+ Spent')
-                : (lang === 'bn' ? '✅ বাজেট নিয়ন্ত্রণে রয়েছে' : '✅ Budget Safe')}
+                ? (lang === 'bn' ? '⚡ Warning: 80%+ Spent' : '⚡ Warning: 80%+ Spent')
+                : (lang === 'bn' ? '✅ Budget Safe' : '✅ Budget Safe')}
             </span>
           </div>
         </div>
@@ -554,7 +581,7 @@ export const FinanceModule: React.FC = () => {
       <div className="p-6 rounded-3xl bg-gray-950 border border-gray-800 space-y-4">
         <div className="flex justify-between items-center border-b border-gray-800 pb-3">
           <h3 className="text-sm font-bold text-gray-100">{t.recentTransactions}</h3>
-          <span className="text-xs font-mono text-gray-400">{transactions.length} {lang === 'bn' ? 'টি এন্ট্রি' : 'records'}</span>
+          <span className="text-xs font-mono text-gray-400">{transactions.length} records</span>
         </div>
 
         {transactions.length === 0 ? (
