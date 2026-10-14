@@ -37,13 +37,15 @@ NEXUS eliminates any fear of browser cache loss or switching devices:
 
 ---
 
-## 4. The Core Philosophy: "Daily Focus, Habit Streak & The Rule of 3" (Zen Essentials Mode)
+## 4. The Core Philosophy: "Daily Focus, Habit Streak & Nutrition Rhythm" (Zen Essentials Mode)
 
 Real productivity is not about having endless overwhelming features, but having a few critical tools that work reliably and build strong daily habits:
-- **⚡ Daily Essentials (Focus Mode):** With 1-click on the `⚡ Daily Essentials` toggle, NEXUS strips away cognitive clutter and focuses solely on the 4 pillars of daily life: **Dashboard, Priorities, Finance & Habits**. Power users can switch back to **`📊 Full Modules`** anytime.
+- **🌿 Minimalist Executive Header:** Clean, calm single-row top navigation eliminating cognitive clutter (removed redundant currency and theme switches from view, keeping only essential Spotlight search, Next Meal reminder pill, and Profile switcher).
+- **🥗 Smart Nutrition & Meal Reminders (দৈনিক আহার ও পুষ্টি রিমাইন্ডার):** Built-in Circadian biological clock reminders for **Breakfast (08:30 AM)**, **Lunch (01:30 PM)**, **Afternoon Tea (05:30 PM)**, and **Dinner (08:45 PM)** with native browser alerts, audio chimes, and 1-click completion logging.
+- **✨ Natural Language Smart Quick-Capture (NLP Capture):** Type expenses or tasks naturally (e.g. *"দুপুরে কাচ্চি ৩৫০ টাকা"* or *"কাল বিকাল ৪টায় ক্লায়েন্ট মিটিং"* or *"Uber 120 bdt"*). The intelligent parser automatically extracts the amount, categorizes the expense or schedules the task without touching a single dropdown!
+- **⚡ Daily Essentials (Focus Mode):** With 1-click on the `⚡ Focus Mode` toggle, NEXUS strips away cognitive clutter and focuses solely on the 4 pillars of daily life: **Daily Flow, Tasks & Focus, Finance & Budget, Health & Meals**.
 - **🔥 Daily Habit Streak Counter (ধারাবাহিক স্ট্রিক):** Visual flame badge and tracking engine (`🔥 X Days Streak`) that rewards users for daily logins, completing Rule of 3, and recording daily reflections.
 - **🎯 Morning Rule of 3 (সকালের ৩টি প্রধান লক্ষ্য):** Win the day by defining and conquering your top 3 non-negotiable priorities before anything else. Includes celebratory audio chord progression upon completing all 3.
-- **⚡ 3-Second Frictionless Capture:** Instantly record expenses (e.g. coffee, commute, groceries) or add priority tasks directly from the dashboard without navigating across tabs.
 - **🌙 Evening Reflection & Mood Tracker:** Close each day with an intentional win, lesson learned, and daily energy check (`⚡ Energized`, `🎯 Productive`, `☕ Balanced`, `😴 Exhausted`).
 
 ---
