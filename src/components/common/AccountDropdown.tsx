@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { 
-  Languages, Coins, Sun, Moon, Sparkles, Sliders, 
-  Download, ChevronRight, ArrowRight
+  Languages, Coins, Sun, Moon, Sparkles, Settings as SettingsIcon, 
+  Download, ChevronRight, ArrowRight, Database
 } from 'lucide-react';
 import { downloadJSON } from '../../utils/storage';
 import { useTranslation } from '../../utils/i18n';
@@ -11,7 +11,7 @@ export const AccountDropdown: React.FC = () => {
   const { 
     activeAccount, currency, setCurrency, lang, setLang, 
     theme, toggleTheme, openAccountModal, openSettingsModal, 
-    showToast, tasks, transactions, ruleOf3, mealReminders 
+    showToast, tasks, transactions, ruleOf3, mealReminders, loadDemoData 
   } = useApp();
 
   const t = useTranslation(lang);
@@ -55,7 +55,7 @@ export const AccountDropdown: React.FC = () => {
         aria-label={t.workspace}
       >
         <span>{activeAccount.avatar || '👤'}</span>
-        {/* Subtle online / active indicator dot */}
+        {/* Subtle active indicator dot */}
         <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-lime-400 rounded-full border-2 border-[#0b0d12]"></span>
       </button>
 
@@ -160,16 +160,22 @@ export const AccountDropdown: React.FC = () => {
             </div>
           </div>
 
-          {/* 3. System Preferences & Backup Actions */}
+          {/* 3. Clearly Labeled SETTINGS and Data Actions */}
           <div className="pt-3 border-t border-gray-800 space-y-1 text-xs">
+            {/* The Explicit Settings Option */}
             <button
               type="button"
               onClick={() => { setIsOpen(false); openSettingsModal(); }}
-              className="w-full py-2 px-2.5 rounded-xl hover:bg-gray-900 text-gray-300 hover:text-white font-medium flex items-center gap-2 text-left transition-colors"
+              className="w-full py-2.5 px-3 rounded-xl bg-gray-900/80 hover:bg-gray-850 border border-gray-800 hover:border-lime-400/50 text-gray-200 hover:text-white font-bold flex items-center justify-between transition-all"
             >
-              <Sliders className="w-4 h-4 text-lime-300" />
-              <span>{t.workspaceSettings}</span>
+              <div className="flex items-center gap-2">
+                <SettingsIcon className="w-4 h-4 text-lime-300" />
+                <span>{lang === 'bn' ? 'সেটিংস (Settings)' : 'Settings & Preferences'}</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
             </button>
+
+            {/* Download Backup */}
             <button
               type="button"
               onClick={handleExportBackup}
@@ -177,6 +183,16 @@ export const AccountDropdown: React.FC = () => {
             >
               <Download className="w-4 h-4 text-cyan-300" />
               <span>{t.downloadBackup}</span>
+            </button>
+
+            {/* Load Sample Demo Data */}
+            <button
+              type="button"
+              onClick={() => { setIsOpen(false); loadDemoData(); }}
+              className="w-full py-2 px-2.5 rounded-xl hover:bg-gray-900 text-lime-300 hover:text-lime-200 font-medium flex items-center gap-2 text-left transition-colors"
+            >
+              <Database className="w-4 h-4 text-lime-300" />
+              <span>{lang === 'bn' ? 'নমুনা ডেমো ডাটা লোড করুন' : 'Load Demo Showcase Data'}</span>
             </button>
           </div>
         </div>

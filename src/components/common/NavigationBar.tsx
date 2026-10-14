@@ -24,11 +24,13 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const NavigationBar: React.FC = () => {
-  const { activeModule, setActiveModule, isFocusMode, lang } = useApp();
+  const { activeModule, setActiveModule, enabledModules, isFocusMode, lang } = useApp();
+
+  const enabledList = NAV_ITEMS.filter(item => enabledModules.includes(item.id));
 
   const items = isFocusMode 
-    ? NAV_ITEMS.filter(item => ['dashboard', 'tasks', 'finance', 'health'].includes(item.id))
-    : NAV_ITEMS;
+    ? enabledList.filter(item => ['dashboard', 'tasks', 'finance', 'health'].includes(item.id))
+    : enabledList;
 
   return (
     <nav className="border-b border-gray-800/60 bg-[#090b0f] px-4 sm:px-8 py-1">
