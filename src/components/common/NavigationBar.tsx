@@ -3,7 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { ModuleId } from '../../types';
 import { 
   Sun, CheckSquare, Wallet, Activity, Target, 
-  Calendar, GraduationCap 
+  Calendar, GraduationCap, Mail 
 } from 'lucide-react';
 
 interface NavItem {
@@ -16,12 +16,14 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { id: 'dashboard', labelEn: 'Daily Flow', labelBn: 'দৈনিক প্রবাহ', icon: <Sun className="w-3.5 h-3.5" /> },
   { id: 'tasks', labelEn: 'Tasks & Focus', labelBn: 'কাজ ও ফোকাস', icon: <CheckSquare className="w-3.5 h-3.5" /> },
+  { id: 'triage', labelEn: 'Daily Email', labelBn: 'ডেইলি ইমেইল', icon: <Mail className="w-3.5 h-3.5" /> },
   { id: 'finance', labelEn: 'Finance & Budget', labelBn: 'অর্থ ও বাজেট', icon: <Wallet className="w-3.5 h-3.5" /> },
   { id: 'health', labelEn: 'Health & Meals', labelBn: 'স্বাস্থ্য ও আহার', icon: <Activity className="w-3.5 h-3.5" /> },
   { id: 'planner', labelEn: 'Life Planner', labelBn: 'জীবন পরিকল্পনা', icon: <Target className="w-3.5 h-3.5" /> },
   { id: 'calendar', labelEn: 'Calendar', labelBn: 'ক্যালেন্ডার', icon: <Calendar className="w-3.5 h-3.5" /> },
   { id: 'learning', labelEn: 'Learning & Skills', labelBn: 'শিক্ষা ও ক্যারিয়ার', icon: <GraduationCap className="w-3.5 h-3.5" /> }
 ];
+
 
 export const NavigationBar: React.FC = () => {
   const { activeModule, setActiveModule, enabledModules, isFocusMode, lang } = useApp();

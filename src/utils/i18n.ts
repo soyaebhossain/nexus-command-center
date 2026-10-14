@@ -27,11 +27,13 @@ export const translations = {
     // Navigation
     navDailyFlow: 'Daily Flow',
     navTasks: 'Tasks & Focus',
+    navTriage: 'Daily Email',
     navFinance: 'Finance & Budget',
     navHealth: 'Health & Meals',
     navPlanner: 'Life Planner',
     navCalendar: 'Calendar',
     navLearning: 'Learning & Skills',
+
 
     // Dashboard
     commandCenter: 'COMMAND CENTER',
@@ -175,11 +177,13 @@ export const translations = {
     // Navigation
     navDailyFlow: 'দৈনিক প্রবাহ',
     navTasks: 'কাজ ও ফোকাস',
+    navTriage: 'ডেইলি ইমেইল',
     navFinance: 'অর্থ ও বাজেট',
     navHealth: 'স্বাস্থ্য ও আহার',
     navPlanner: 'জীবন পরিকল্পনা',
     navCalendar: 'ক্যালেন্ডার',
     navLearning: 'শিক্ষা ও ক্যারিয়ার',
+
 
     // Dashboard
     commandCenter: 'কমান্ড সেন্টার',

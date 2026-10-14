@@ -99,6 +99,8 @@ export type ModuleId =
   | 'planner'
   | 'calendar'
   | 'tasks'
+  | 'triage'
   | 'finance'
   | 'learning'
   | 'health';
+

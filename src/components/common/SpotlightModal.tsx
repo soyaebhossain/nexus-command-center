@@ -15,6 +15,25 @@ export const SpotlightModal: React.FC = () => {
 
   const q = query.toLowerCase().trim();
 
+  const MODULE_SHORTCUTS: { id: ModuleId; nameEn: string; nameBn: string; keywords: string }[] = [
+    { id: 'dashboard', nameEn: 'Daily Flow', nameBn: 'দৈনিক প্রবাহ', keywords: 'dashboard home overview flow দৈনিক' },
+    { id: 'tasks', nameEn: 'Tasks & Focus', nameBn: 'কাজ ও ফোকাস', keywords: 'tasks focus todo কাজ ফোকাস' },
+    { id: 'triage', nameEn: 'Daily Email', nameBn: 'ডেইলি ইমেইল', keywords: 'email triage mail inbox draft ডেইলি ইমেইল ট্রায়াজ' },
+    { id: 'finance', nameEn: 'Finance & Budget', nameBn: 'অর্থ ও বাজেট', keywords: 'finance budget money expense ledger অর্থ বাজেট টাকা খরচ' },
+    { id: 'health', nameEn: 'Health & Meals', nameBn: 'স্বাস্থ্য ও আহার', keywords: 'health meal food water nutrition স্বাস্থ্য খাবার পানি' },
+    { id: 'planner', nameEn: 'Life Planner', nameBn: 'জীবন পরিকল্পনা', keywords: 'planner vision okr goals পরিকল্পনা' },
+    { id: 'calendar', nameEn: 'Calendar', nameBn: 'ক্যালেন্ডার', keywords: 'calendar schedule events agenda ক্যালেন্ডার' },
+    { id: 'learning', nameEn: 'Learning & Skills', nameBn: 'শিক্ষা ও ক্যারিয়ার', keywords: 'learning courses skills reading শিক্ষা ক্যারিয়ার' }
+  ];
+
+  const matchedModules = q 
+    ? MODULE_SHORTCUTS.filter(m => 
+        m.nameEn.toLowerCase().includes(q) || 
+        m.nameBn.toLowerCase().includes(q) || 
+        m.keywords.toLowerCase().includes(q)
+      ) 
+    : [];
+
   const matchedTasks = q ? tasks.filter(t => t.text.toLowerCase().includes(q)) : [];
   const matchedTrans = q ? transactions.filter(t => t.desc.toLowerCase().includes(q) || t.category.toLowerCase().includes(q)) : [];
 
@@ -22,6 +41,7 @@ export const SpotlightModal: React.FC = () => {
     setActiveModule(mod);
     closeSearchModal();
   };
+
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-start justify-center pt-20 px-4 animate-in fade-in">
@@ -50,11 +70,30 @@ export const SpotlightModal: React.FC = () => {
             </div>
           ) : (
             <>
+              {matchedModules.length > 0 && (
+                <div className="space-y-1">
+                  <div className="text-[10px] font-mono uppercase text-sky-400 font-bold px-2">
+                    {lang === 'bn' ? 'মডিউল জাম্প' : 'Jump to Module'}
+                  </div>
+                  {matchedModules.map(m => (
+                    <div
+                      key={m.id}
+                      onClick={() => handleNavigate(m.id)}
+                      className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 hover:border-sky-400/50 cursor-pointer flex justify-between items-center transition-all"
+                    >
+                      <span className="text-gray-100 font-semibold">{lang === 'bn' ? m.nameBn : m.nameEn}</span>
+                      <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800/60">Module</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {matchedTasks.length > 0 && (
                 <div className="space-y-1">
                   <div className="text-[10px] font-mono uppercase text-lime-300 font-bold px-2">
                     {lang === 'bn' ? 'খুঁজে পাওয়া টাস্ক' : 'Matched Tasks'}
                   </div>
+
                   {matchedTasks.map(t => (
                     <div
                       key={t.id}
@@ -86,11 +125,12 @@ export const SpotlightModal: React.FC = () => {
                 </div>
               )}
 
-              {matchedTasks.length === 0 && matchedTrans.length === 0 && (
+              {matchedTasks.length === 0 && matchedTrans.length === 0 && matchedModules.length === 0 && (
                 <div className="text-gray-500 text-center py-6">
                   {lang === 'bn' ? 'কোনো ফলাফল পাওয়া যায়নি।' : 'No matching records found.'}
                 </div>
               )}
+
             </>
           )}
         </div>

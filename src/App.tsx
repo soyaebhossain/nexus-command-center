@@ -9,6 +9,7 @@ import { HealthModule } from './components/modules/HealthModule';
 import { PlannerModule } from './components/modules/PlannerModule';
 import { CalendarModule } from './components/modules/CalendarModule';
 import { LearningModule } from './components/modules/LearningModule';
+import { EmailTriageModule } from './components/modules/EmailTriageModule';
 import { AccountModal } from './components/common/AccountModal';
 import { SettingsModal } from './components/common/SettingsModal';
 import { SpotlightModal } from './components/common/SpotlightModal';
@@ -56,6 +57,8 @@ export const App: React.FC = () => {
         return <DashboardModule />;
       case 'tasks':
         return <TasksModule />;
+      case 'triage':
+        return <EmailTriageModule />;
       case 'finance':
         return <FinanceModule />;
       case 'health':

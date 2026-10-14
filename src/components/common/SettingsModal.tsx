@@ -12,12 +12,14 @@ import { useTranslation } from '../../utils/i18n';
 const ALL_MODULES_CONFIG: { id: ModuleId; nameEn: string; nameBn: string }[] = [
   { id: 'dashboard', nameEn: 'Daily Flow', nameBn: 'দৈনিক প্রবাহ' },
   { id: 'tasks', nameEn: 'Tasks & Focus', nameBn: 'কাজ ও ফোকাস' },
+  { id: 'triage', nameEn: 'Daily Email & Triage', nameBn: 'ডেইলি ইমেইল ও ট্রায়াজ' },
   { id: 'finance', nameEn: 'Finance & Budget', nameBn: 'অর্থ ও বাজেট' },
   { id: 'health', nameEn: 'Health & Meals', nameBn: 'স্বাস্থ্য ও আহার' },
   { id: 'planner', nameEn: 'Life Planner', nameBn: 'জীবন পরিকল্পনা' },
   { id: 'calendar', nameEn: 'Calendar & Agenda', nameBn: 'ক্যালেন্ডার ও এজেন্ডা' },
   { id: 'learning', nameEn: 'Learning & Skills', nameBn: 'শিক্ষা ও ক্যারিয়ার' }
 ];
+
 
 export const SettingsModal: React.FC = () => {
   const { 

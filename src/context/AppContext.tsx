@@ -103,7 +103,7 @@ const defaultSampleTransactions: Transaction[] = [
   { id: 6, type: 'expense', category: 'বিনোদন ও রেস্তোরাঁ', amount: 2500, desc: 'Weekend dining & cafe', date: '2026-10-12' }
 ];
 
-const ALL_MODULES: ModuleId[] = ['dashboard', 'tasks', 'finance', 'health', 'planner', 'calendar', 'learning'];
+const ALL_MODULES: ModuleId[] = ['dashboard', 'tasks', 'triage', 'finance', 'health', 'planner', 'calendar', 'learning'];
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -114,7 +114,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [lang, setLangState] = useState<LanguageCode>(() => (localStorage.getItem('nexus_lang') as LanguageCode) || 'bn');
   const [theme, setThemeState] = useState<'dark' | 'light'>('dark');
   const [activeModule, setActiveModule] = useState<ModuleId>('dashboard');
-  const [enabledModules, setEnabledModules] = useState<ModuleId[]>(() => loadLocalData('nexus_enabled_modules', ALL_MODULES));
+  const [enabledModules, setEnabledModules] = useState<ModuleId[]>(() => {
+    const loaded = loadLocalData<ModuleId[]>('nexus_enabled_modules', ALL_MODULES);
+    if (Array.isArray(loaded) && !loaded.includes('triage')) {
+      return [...loaded, 'triage'];
+    }
+    return loaded;
+  });
+
   const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
