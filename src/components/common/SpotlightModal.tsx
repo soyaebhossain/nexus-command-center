@@ -1,0 +1,92 @@
+import React, { useState } from 'react';
+import { useApp } from '../../context/AppContext';
+import { Search, X, CheckSquare, Wallet, Target, Activity } from 'lucide-react';
+import { ModuleId } from '../../types';
+
+export const SpotlightModal: React.FC = () => {
+  const { 
+    isSearchModalOpen, closeSearchModal, tasks, transactions, 
+    setActiveModule 
+  } = useApp();
+
+  const [query, setQuery] = useState('');
+
+  if (!isSearchModalOpen) return null;
+
+  const q = query.toLowerCase().trim();
+
+  const matchedTasks = q ? tasks.filter(t => t.text.toLowerCase().includes(q)) : [];
+  const matchedTrans = q ? transactions.filter(t => t.desc.toLowerCase().includes(q) || t.category.toLowerCase().includes(q)) : [];
+
+  const handleNavigate = (mod: ModuleId) => {
+    setActiveModule(mod);
+    closeSearchModal();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-start justify-center pt-20 px-4 animate-in fade-in">
+      <div className="w-full max-w-2xl bg-gray-950 border border-gray-800 rounded-3xl p-4 space-y-4 max-h-[80vh] flex flex-col shadow-2xl">
+        <div className="flex items-center gap-3 border-b border-gray-800 pb-3">
+          <Search className="w-5 h-5 text-lime-300" />
+          <input
+            type="text"
+            autoFocus
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Type to search across tasks, finance, goals, and modules... (ESC to close)"
+            className="flex-1 bg-transparent border-0 text-sm text-gray-100 focus:outline-none"
+          />
+          <button onClick={closeSearchModal} className="text-xs text-gray-500 hover:text-white px-2 py-1 rounded border border-gray-800">
+            ESC
+          </button>
+        </div>
+
+        <div className="overflow-y-auto space-y-3 flex-1 pr-1 text-xs">
+          {!q ? (
+            <div className="text-gray-500 text-center py-8">
+              Quick search tasks, financial transactions, or jump directly to modules...
+            </div>
+          ) : (
+            <>
+              {matchedTasks.length > 0 && (
+                <div className="space-y-1">
+                  <div className="text-[10px] font-mono uppercase text-lime-300 font-bold px-2">Matched Tasks</div>
+                  {matchedTasks.map(t => (
+                    <div
+                      key={t.id}
+                      onClick={() => handleNavigate('tasks')}
+                      className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 hover:border-lime-300/40 cursor-pointer flex justify-between items-center"
+                    >
+                      <span className="text-gray-200 font-medium">{t.text}</span>
+                      <span className="text-[10px] uppercase font-mono text-gray-400">{t.priority}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {matchedTrans.length > 0 && (
+                <div className="space-y-1">
+                  <div className="text-[10px] font-mono uppercase text-emerald-400 font-bold px-2">Matched Transactions</div>
+                  {matchedTrans.map(t => (
+                    <div
+                      key={t.id}
+                      onClick={() => handleNavigate('finance')}
+                      className="p-2.5 rounded-xl bg-gray-900 border border-gray-800 hover:border-emerald-400/40 cursor-pointer flex justify-between items-center"
+                    >
+                      <span className="text-gray-200 font-medium">{t.desc} ({t.category})</span>
+                      <span className="text-xs font-mono font-bold text-emerald-400">{t.amount}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {matchedTasks.length === 0 && matchedTrans.length === 0 && (
+                <div className="text-gray-500 text-center py-6">No matching records found.</div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -1,11 +1,8 @@
-const CACHE_NAME = 'nexus-cache-v2.6.0';
+const CACHE_NAME = 'nexus-cache-v3.0.0-react';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  'https://cdn.tailwindcss.com',
-  'https://unpkg.com/lucide@latest',
-  'https://cdn.jsdelivr.net/npm/chart.js'
+  '/',
+  '/index.html',
+  '/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
@@ -34,6 +31,11 @@ self.addEventListener('activate', (event) => {
 
 // Network-First for HTML navigation so updates are INSTANT
 self.addEventListener('fetch', (event) => {
+  // Do not intercept backend REST API calls
+  if (event.request.url.includes('/api/')) {
+    return;
+  }
+
   if (event.request.mode === 'navigate' || event.request.destination === 'document') {
     event.respondWith(
       fetch(event.request)
@@ -42,7 +44,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
           return response;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(() => caches.match('/index.html'))
     );
     return;
   }
